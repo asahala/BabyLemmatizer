@@ -1,5 +1,5 @@
 # BabyLemmatizer
-Neural tagger and lemmatizer for Akkadian. This repository will be officially published later.
+Neural tagger and lemmatizer for Akkadian. This repository will be officially published and documented in late February 2023.
 
 ## Requirements
 ...
