@@ -3,7 +3,10 @@ The files must be named as follows ```modelname-type.conllu```, where *modelname
 
 The standard practice is to use 80% of your training corpus as the train data, and split the remaining 20% into test and dev data.
 
-## How does Conllu look like?
+## Input data format
+Input data format must follow Oracc conventions. If you have your transliteration in any other notation, you must convert it into Oracc notation. Most importantly:
+
+## How does Conll-u look like?
 See official description of the format at [Universal Dependencies website](https://universaldependencies.org/format.html). In short, it is a word-per-line format closely related to TSV and VRT. Each segment (e.g. line, sentence, text) is separated by an empty line, and each line of text data consists of 10 tab-separated fields: ```ID, FORM, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC```. For our purposes ```UPOS``` and ```XPOS``` fields contain the same information, ```FEATS``` is always empty, ```HEAD``` and ```DEPREL``` indicate the first word as the segment as *root* and *0*, and the following words as *child* and *1*, ```DEPS``` field has and *_* and ```MISC``` contains whatever other information.
 
 The important fields are ```FORM``` that contains *transliteration* and ```LEMMA``` that contains the lemma. See example below. Conllu always wnends with and empty line.
