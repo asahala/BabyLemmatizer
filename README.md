@@ -1,4 +1,4 @@
-# BabyLemmatizer
+# BabyLemmatizer 2.0
 State-of-the-art neural tagger and lemmatizer for Akkadian (and other cuneiform languages). ***This repository will be officially published and documented in late February 2023.***
 
 ## Requirements
