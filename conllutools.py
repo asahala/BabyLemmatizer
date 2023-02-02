@@ -1,3 +1,4 @@
+import preprocessing
 
 """ BabyLemmatizer: Conll-u module                   asahala 2023
 
@@ -30,47 +31,67 @@ def get_training_data(filename):
         else:
             yield EOU
 
+
+def get_lemmatizer_input(filename):
+    """ """
+
+    yield EOU[0]
+    for line in read_conllu(filename):
+        if line.startswith('#'):
+            continue
+        if line:
+            data = line.split('\t')
+            yield data[FORM]
+        else:
+            yield EOU[0]
+
 #make_training_data('../conllu_train/' + 'test.conllu')
 
 
-class Conllu:
+def get_training_data2(filename, preprocess=None):
+    """ DOC """
 
-    """ Conll-u object """
+    stack = []
+    stack.append(EOU)
+    for line in read_conllu(filename):
+        if line.startswith('#'):
+            continue
+        if line:
+            data = line.split('\t')
+            if preprocess is not None:
+                data[FORM] = preprocess(data[FORM])
+            data[FORM] = preprocessing.get_chars(data[FORM])
+            stack.append((data[FORM], data[LEMMA], data[UPOS]))
+        else:
+            stack.append(EOU)
 
-    def __init__(self, filename):
-        self.fields = ('id', 'form', 'lemma', 'upos', 'xpos',
-                       'feats', 'head', 'deprel', 'deps', 'misc')
-        self.data = []
-        self.read_conllu(filename)
+        if len(stack) == 3:
+            if stack[1] != EOU:
+                yield tuple(stack)
+            else:
+                yield EOU
 
-    def get_training_data(self):
-        """ Iterate all lines with data in Conllu file """
-        for text in self.data:
-            for line in text:
-                if not line['is_comment']:
-                    yield line['content']
-            yield None
-    
-    def read_conllu(self, filename):
-        print(f'> Reading {filename}')
-        text = []
-        with open(filename, 'r', encoding='utf-8') as f:
-            for line in f.read().splitlines():
-                if line.startswith('#'):
-                    text.append(
-                        {'is_comment': True,
-                         'content': line}
-                        )
-                elif not line:
-                    self.data.append(text)
-                    text = []
-                else:
-                    data = zip(self.fields, line.split('\t'))
-                    text.append(
-                        {'is_comment': False,
-                         'content': {k: v for k, v in data}}
-                        )
-                    
-                
-        
+            stack.pop(0)
 
+
+def make_conllu(final_results, source_conllu, output_conllu):
+
+    with open(final_results, 'r', encoding='utf-8') as f:
+        results = f.read().splitlines()
+
+    with open(source_conllu, 'r', encoding='utf-8') as f,\
+         open(output_conllu, 'w', encoding='utf-8') as output:
+
+        for line in f.read().splitlines():
+            if not line:
+                output.write(line + '\n')
+                results.pop(0)
+            elif line.startswith('#'):
+                output.write(line + '\n')
+            else:
+                line = line.split('\t')
+                lemma, pos = results.pop(0).split('\t')
+                line[2] = lemma
+                line[3] = pos
+                line[4] = pos
+                output.write('\t'.join(line) + '\n')

@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import os
-from functools import lru_cache
+import math
 from collections import defaultdict
-from cuneiformtools import util
+from preferences import python_path, onmt_path
+import preprocessing
 import conllutools
 import base_yaml
 
@@ -22,45 +23,13 @@ University of Helsinki
 
 statistics = defaultdict(int)
 
-@lru_cache(maxsize=512)
-def get_signs(xlit):
-   
-    return ' '.join(
-        (sign for sign in util.unzip_xlit(xlit)[0] if sign)
-        )
-
-
-def reformat(sign):
-
-    if sign.upper() == sign:
-        return sign
-    elif sign.lower() == sign:
-        return ' '.join(c for c in sign if not c.isdigit())
-    else:
-        return sign
-
-
-def get_chars(xlit):
-
-    signs, delimiters = util.unzip_xlit(xlit)
-
-    delimiters = [f' {d} '.replace('{ ', '{').replace(' }', '}') for d in delimiters]
-    signs = [reformat(s) for s in signs]
-
-    #print(xlit, signs)
-
-    xlit_ = util.zip_xlit(signs, delimiters).lstrip().rstrip().replace('  ', ' ').replace('  ', ' ').replace('{+ ', '{+')
-
-        
-    return xlit_
-    #return ' '.join(list(xlit))
-
 
 def print_statistics():
     print('> Training data item counts:')
     for k, v in statistics.items():
         print('', v, k, sep='\t')
 
+        
 def make_training_data(filename):
     """ Build training data for POS-tagger and lemmatizer.
     The data is saved to `TRAIN_PATH`. Source files must be
@@ -74,6 +43,7 @@ def make_training_data(filename):
     o_fn = filename.split('/')[-1]
     prefix = o_fn.split('-')[0]
     data_type = o_fn.split('-')[-1].replace('.conllu', '')
+
     paths = ('./models/',
         f'./models/{prefix}/',
         f'./models/{prefix}/tagger/',
@@ -87,10 +57,6 @@ def make_training_data(filename):
             os.mkdir(path)
         except FileExistsError:
             pass
-
-    """ Build YAML-definitions for models """
-    base_yaml.make_lemmatizer_yaml(prefix, f'./models/{prefix}/')
-    base_yaml.make_tagger_yaml(prefix, f'./models/{prefix}/')
 
     """ Generate training data """
     tagger_path = f'./models/{prefix}/tagger/traindata/'
@@ -109,22 +75,43 @@ def make_training_data(filename):
         """ Build a stack of size 3 from words in the corpus to take
         adjacent words into account; each item in the stack consists of
         tuple (FORM, LEMMA, UPOS). Sources are split into signs. """
-        
-        stack = []
-        for word in conllutools.get_training_data(filename):
-            stack.append(word)
-            if len(stack) == 3:
-                if stack[1] != conllutools.EOU:
-                    signs = [get_signs(x[0]) for x in stack]
-                    tokens = [get_chars(x[0]) for x in stack]
-                    pos_src.write('{} << {} >> {}\n'.format(*tokens))
-                    pos_tgt.write(stack[1][2] + '\n')
-                    lem_src.write(f'{tokens[1]} PREV={stack[0][2]} UPOS={stack[1][2]} NEXT={stack[2][2]}\n')
-                    lem_tgt.write(f'{stack[1][1]}\n')
-                stack.pop(0)
+
+        for stack in conllutools.get_training_data2(filename):
+            if stack is None:
+                continue
+            
+            if stack == conllutools.EOU:
+                pos_src.write('<EOU>\n')
+                pos_tgt.write('<EOU>\n')
+                lem_src.write('<EOU>\n')
+                lem_tgt.write('<EOU>\n')
+                continue
+            
+            pos_src.write(preprocessing.to_tagger_input(stack))
+            pos_tgt.write(stack[1][2] + '\n')
+            lem_src.write(preprocessing.to_lemmatizer_input(stack))
+            lem_tgt.write(stack[1][1] + '\n')
             statistics[filename] += 1
 
+    
+    """ Build YAML-definitions for models. The network architecture
+    and its parameters follow (Kanerva, Ginter & Salakoski 2020),
+    i.e. TurkuNLP's Universal Lemmatizer where BabyLemmatizer 1.0 was
+    based on. """
 
+    if data_type == 'train':
+        
+        examples = statistics[filename]
+        steps_per_epoch = int(math.ceil(int(examples) / 64))
+        total_steps = int(examples * 0.15)
+        start_decay = int(math.ceil(total_steps /2))
+
+        hyper = base_yaml.set_hyper(examples, steps_per_epoch, total_steps, start_decay)
+        base_yaml.make_lemmatizer_yaml(prefix, f'./models/{prefix}/', hyper)
+        base_yaml.make_tagger_yaml(prefix, f'./models/{prefix}/', hyper)
+                        
+
+            
 def build_train_data(conllu_path='./conllu/'):
     """ Run this method to rebuild training data based on Conllu-file """
     filelist = (x for x in os.listdir(conllu_path) if x.endswith('.conllu'))
@@ -142,14 +129,14 @@ def train_models(*model_names):
                                  prefixes in your conllu files
     :type model_names            str """
 
-    python_path = '/projappl/clarin/onmt/OpenNMT/bin/'
-    onmt_path = './OpenNMT-py/onmt/bin/'
-
     for model in model_names:
         model_path = f'./models/{model}/'
         for yaml in (x for x in os.listdir(model_path) if x.endswith('.yaml')):
-            os.system(f'{python_path}python {onmt_path}build_vocab.py -config {model_path}{yaml} -n_sample -1 -num_threads 2')
-            os.system(f'{python_path}python {onmt_path}train.py -config {model_path}{yaml}')    
+            os.system(f'{python_path}python {onmt_path}build_vocab.py '\
+                      f'-config {model_path}{yaml} -n_sample -1 -num_threads 2')
+            os.system(f'{python_path}python {onmt_path}train.py '\
+                      f'-config {model_path}{yaml}')    
     
 build_train_data()
 train_models('lbtest1', 'lbtest2', 'lbtest3', 'lbtest4', 'lbtest5')
+#train_models('lbtest1')

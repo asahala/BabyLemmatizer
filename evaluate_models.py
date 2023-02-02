@@ -5,6 +5,9 @@ import re
 import os
 import math
 from collections import defaultdict
+#from preferences import python_path, onmt_path
+import model_api
+import conllutools as ct
 
 """ ===========================================================
 Evaluation pipeline for BabyLemmatizer 2
@@ -17,99 +20,6 @@ University of Helsinki
    Centre of Excellence for Ancient Near-Eastern Empires
 
 =========================================================== """
-
-""" Paths must end with '/'. I recommend creating a virtual
-environment (python-env) for OpenNMT with its required
-dependencies. """
-
-py_path = '/projappl/clarin/onmt/OpenNMT/bin/'
-onmt_path = './OpenNMT-py/onmt/bin/'
-
-
-def run_tagger(model): 
-    input_file = f'./models/{model}/tagger/traindata/test.src'
-    model_name = f'./models/{model}/tagger/model_step_35000.pt'
-    output_file = f'./models/{model}/eval/output_tagger.txt'
-    command = f"{py_path}python {onmt_path}translate.py -model {model_name} -src {input_file} -output {output_file} -gpu 0 -min_length 1"
-    os.system(command)
-
-
-def run_lemmatizer(model):
-    input_file = f'./models/{model}/eval/input_lemmatizer.txt'
-    model_name = f'./models/{model}/lemmatizer/model_step_35000.pt'
-    output_file = f'./models/{model}/eval/output_lemmatizer.txt'
-    command = f"{py_path}python {onmt_path}translate.py -model {model_name} -src {input_file} -output {output_file} -gpu 0 -min_length 1"
-    os.system(command)
-
-
-def merge_tags(model):
-    """ This function merges Tagger output with lemmatizer test data
-    to create input for lemmatizer evaluation """
-    
-    tagged = f'./models/{model}/eval/output_tagger.txt'
-    lemma_test = f'./models/{model}/lemmatizer/traindata/test.src'
-    output = f'./models/{model}/eval/input_lemmatizer.txt'
-
-    def filter_pos(string):
-        xlit = string.split(' PREV')[0]
-        return xlit
-    
-    with open(tagged, 'r', encoding='utf-8') as t_file,\
-         open(lemma_test, 'r', encoding='utf-8') as l_file,\
-         open(output, 'w', encoding='utf-8') as o_file:
-
-        lemmas = (filter_pos(x) for x in l_file.read().splitlines())
-        #tags = (f'UPOS={x}' for x in t_file.read().splitlines())
-
-
-        tag_segments = []
-
-        stack = ['<EOU>']
-        for tag in t_file.read().splitlines():
-            if tag == '<SEG>':
-                tag = '<EOU>'
-            stack.append(tag)
-            if len(stack) == 3:
-                #if stack[1] != '<EOU>':
-                tag_segments.append('PREV={} UPOS={} NEXT={}'.format(*stack))
-                stack.pop(0)
-
-        tag_segments.append('PREV={} UPOS={} NEXT=<EOU>'.format(*stack))
-        
-        for lemma, pos in zip(lemmas, tag_segments):
-            if lemma == '<SEG>':
-                o_file.write(lemma + '\n')
-            else:
-                o_file.write(f'{lemma} {pos}\n')
-            
-
-
-def _merge(tags, lemmas, output):
-    """ General file merger """
-    with open(tags, 'r', encoding='utf-8') as t_file,\
-         open(lemmas, 'r', encoding='utf-8') as l_file,\
-         open(output, 'w', encoding='utf-8') as o_file:
-
-        combined = zip(l_file.read().splitlines(),
-                       t_file.read().splitlines())
-        
-        for lemma, pos in combined:
-            o_file.write(f'{lemma}\t{pos}\n') 
-
-
-def merge_to_final(model):
-    """ This function merges Tagger and Lemmatizer output and
-    creates a gold standard based on test samples in the training
-    data """
-
-    _merge(f'./models/{model}/eval/output_tagger.txt',
-           f'./models/{model}/eval/output_lemmatizer.txt',
-           f'./models/{model}/eval/output_final.txt')
-
-    _merge(f'./models/{model}/tagger/traindata/test.tgt',
-           f'./models/{model}/lemmatizer/traindata/test.tgt',
-           f'./models/{model}/eval/gold.txt')
-
 
 def evaluate(model):
     tagger_res = f'./models/{model}/eval/output_tagger.txt'
@@ -130,7 +40,7 @@ def evaluate(model):
             
             combined = zip(pred.read().splitlines(), gold.read().splitlines())
 
-            for result in (p == g for p, g in combined if g != '<SEG>'):
+            for result in (p == g for p, g in combined if p != '<EOU>'):
                 if result:
                     correct += 1
                 else:
@@ -171,11 +81,7 @@ def cross_validation(results):
         print(model_type, round(average*100, 2), '\t'.join(str(round(x*100, 2)) + '%' for x in acc), f'±{conf_interval}%', sep='\t')      
     
 
-def make_conllu(model):
-
-    combined_res = f'./models/{model}/eval/output_final.txt'
-    conllu = f'./conllu/{model}-test.conllu'
-    lemmatized_conllu = f'./models/{model}/eval/output_final.conllu'
+def make_conllu(final_results, source_conllu, output_conllu):
 
     with open(combined_res, 'r', encoding='utf-8') as f:
         results = f.read().splitlines()
@@ -186,6 +92,7 @@ def make_conllu(model):
         for line in f.read().splitlines():
             if not line:
                 output.write(line + '\n')
+                results.pop(0)
             elif line.startswith('#'):
                 output.write(line + '\n')
             else:
@@ -197,7 +104,7 @@ def make_conllu(model):
                 output.write('\t'.join(line) + '\n')
 
                 
-def pipeline(*models):
+def pipeline(models, step):
     """ Run the whole evaluation pipeline for `models`
 
     :param models               model name
@@ -207,23 +114,49 @@ def pipeline(*models):
 
     results = defaultdict(dict)
 
-    
     for model in models:
+
         print(f'> Running model {model}')
-        run_tagger(model)
-        merge_tags(model)
-        run_lemmatizer(model)
-        merge_to_final(model)
+        
+        model_api.run_tagger(input_file = f'./models/{model}/tagger/traindata/test.src',
+                   model_name = f'./models/{model}/tagger/{step}',
+                   output_file = f'./models/{model}/eval/output_tagger.txt')
+        
+        model_api.merge_tags(tagged_file = f'./models/{model}/eval/output_tagger.txt',
+                   lemma_input = f'./models/{model}/lemmatizer/traindata/test.src',
+                   output_file = f'./models/{model}/eval/input_lemmatizer.txt')
+        
+        model_api.run_lemmatizer(input_file = f'./models/{model}/eval/input_lemmatizer.txt',
+                       model_name = f'./models/{model}/lemmatizer/{step}',
+                       output_file = f'./models/{model}/eval/output_lemmatizer.txt')
+
+        # Merge prediced results
+        model_api.merge_to_final(tags = f'./models/{model}/eval/output_tagger.txt',
+                                 lemmas = f'./models/{model}/eval/output_lemmatizer.txt',
+                                 output = f'./models/{model}/eval/output_final.txt')
+
+        # Make gold standard
+        model_api.merge_to_final(tags = f'./models/{model}/tagger/traindata/test.tgt',
+                                 lemmas = f'./models/{model}/lemmatizer/traindata/test.tgt',
+                                 output = f'./models/{model}/eval/gold.txt')
+        
         tagger_res, lemmatizer_res, combined_res = evaluate(model)
         results[model] = {'pos-tagger': tagger_res,
                           'lemmatizer': lemmatizer_res,
                           'combined  ': combined_res}
-        make_conllu(model)
-        
+
+        ct.make_conllu(
+            final_results = f'./models/{model}/eval/output_final.txt',
+            source_conllu = f'./conllu/{model}-test.conllu',
+            output_conllu = f'./models/{model}/eval/output_final.conllu')
+
+    print(f' ===== {step} ====')
     cross_validation(results)
     
+steps = [f for f in os.listdir(f'./models/lbtest1/tagger/') if f.endswith('.pt')]
 
-pipeline('lbtest1', 'lbtest2', 'lbtest3', 'lbtest4', 'lbtest5')
+for step in steps:
+    pipeline(['lbtest1'], step)#, 'lbtest2', 'lbtest3', 'lbtest4', 'lbtest5')
 #pipeline('lbtest1')
 #merge_tags('lbtest1')
 
