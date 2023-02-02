@@ -1,6 +1,10 @@
 # BabyLemmatizer 2.0
 State-of-the-art neural tagger and lemmatizer for Akkadian (and other cuneiform languages). ***This repository will be officially published and documented in late February 2023.***
 
+BabyLemmatizer 2.0 is fully based on OpenNMT, which makes it simple to use compared to the old BabyLemmatizer version that was dependent on TurkuNLP. At its current stage, BabyLemmatizer can be used for part-of-speech tagging and lemmatization of transliterated Akkadian texts. In addition, it can be trained for other cuneiform languages.
+
+BabyLemmatizer 2.0 features context-aware POS-tagger and lemmatizer, that combine strenghts of neural networks, and lightly statistical dictionary-based methods. The current version is able to reach ca. 97.40% accuracy in POS-tagging and 95.00% in lemmatization in a held-out test set. If you use BabyLemmatizer for annotating your data or training new models, please cite [Sahala et al. 2022](http://hdl.handle.net/10138/348412). An updated publication will be written in 2023 that describes this version of the system. 
+
 ## Requirements
 1. [OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)
 2. Python 3.6+
@@ -8,7 +12,7 @@ State-of-the-art neural tagger and lemmatizer for Akkadian (and other cuneiform 
 BabyLemmatizer 2 has been tested with Python 3.9 and OpenNMT-py 3.0.
 
 ## Setting BabyLemmatizer up
-The easiest way to get BabyLemmatizer 2 running is to create a Python 3.9 virtual environment for OpenNMT-py, this ensures that you have permanently all necessary requirements installed and they do not conflict with your other libaries. For example,
+The easiest way to get BabyLemmatizer 2.0 running is to create a Python 3.9 virtual environment for OpenNMT-py, this ensures that you have permanently all necessary requirements installed and they do not conflict with your other libaries. For example,
 
 1. ```python3.9 -m venv OpenNMT```
 2. ```source OpenNMT/bin/activate```
