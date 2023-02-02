@@ -8,7 +8,34 @@ Input data format must follow [Oracc conventions](http://oracc.museum.upenn.edu/
 
 My library [Cuneiformtools](https://docs.google.com/document/d/1kW9DnCpXGICJ_ttOCO182G2jivE7_knVOZP_v6vdNPw/) may be a useful library for making transliteration conversions. It is distributed as a part of BabyLemmatizer 2.0 (see [https://github.com/asahala/BabyLemmatizer/tree/main/cuneiformtools](cuneiformtools) folder. It offers, for example, a robust method for converting accented or numberic indexation into subsrcipts, eg. ```bí-dug4* -> bi₂-dug₄```.
 
-Currently BabyLemmatizer does not provide tools for converting ATF to CoNLL-u and backwards, or direct lemmatization of Oracc JSONs, but these feature will be added in the future.
+Currently BabyLemmatizer does not provide tools for converting ATF to CoNLL-u and backwards, or direct lemmatization of Oracc JSONs, but these feature will be added in the future. If you have your text in a UPL (unit-per-line) format, you can use the function ```wpl_to_conllu()``` in ```conllutools.py``` to add required fields. E.g.
+
+```>>> conllutools.wpl_to_conllu('my.wpl', 'my.conllu')```
+
+Will convert a line-per-line 
+
+```
+šum-ma a-wi-lum
+in DUMU a-wi-lim uh₂-ta-ap-pid
+in-šu u-hap-pa-du
+```
+
+into the following CoNLL-u that can be used with BabyLemmatizer:
+
+```
+1	šum-ma	_	_	_	empty	0	root	_	_
+2	a-wi-lum	_	_	_	empty	None	child	_	_
+
+1	in	_	_	_	empty	0	root	_	_
+2	DUMU	_	_	_	empty	None	child	_	_
+3	a-wi-lim	_	_	_	empty	None	child	_	_
+4	uh₂-ta-ap-pid	_	_	_	empty	None	child	_	_
+
+1	in-šu	_	_	_	empty	0	root	_	_
+2	u-hap-pa-du	_	_	_	empty	None	child	_	_
+
+```
+
 
 ## How does CoNLL-u look like?
 See official description of the format at [Universal Dependencies website](https://universaldependencies.org/format.html). In short, it is a word-per-line format closely related to TSV and VRT. Each segment (e.g. line, sentence, text) is separated by an empty line, and each line of text data consists of 10 tab-separated fields: ```ID, FORM, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC```. For our purposes ```UPOS``` and ```XPOS``` fields contain the same information, ```FEATS``` is always empty, ```HEAD``` and ```DEPREL``` indicate the first word as the segment as *root* and *0*, and the following words as *child* and *1*, ```DEPS``` field has and *_* and ```MISC``` contains whatever other information.
