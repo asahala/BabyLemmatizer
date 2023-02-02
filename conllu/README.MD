@@ -10,7 +10,10 @@ My library [Cuneiformtools](https://docs.google.com/document/d/1kW9DnCpXGICJ_ttO
 
 Currently BabyLemmatizer does not provide tools for converting ATF to CoNLL-U and backwards, or direct lemmatization of Oracc JSONs, but these feature will be added in the future. If you have your text in a unit-per-line format (this unit can be text, sentence or line), you can use the function ```wpl_to_conllu()``` in ```conllutools.py``` to add required fields. E.g.
 
-```>>> conllutools.wpl_to_conllu('my.txt', 'my.conllu')```
+```
+>>> import conllutools
+>>> conllutools.upl_to_conllu('my.txt', 'my.conllu')
+```
 
 Will convert a line-per-line text
 
