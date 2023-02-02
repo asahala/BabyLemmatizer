@@ -7,7 +7,7 @@ State-of-the-art neural tagger and lemmatizer for Akkadian (and other cuneiform 
 
 BabyLemmatizer 2 has been tested with Python 3.9 and OpenNMT-py 3.0.
 
-## Setting it up
+## Setting BabyLemmatizer up
 The easiest way to get BabyLemmatizer 2 running is to create a Python 3.9 virtual environment for OpenNMT-py, this ensures that you have permanently all necessary requirements installed and they do not conflict with your other libaries. For example,
 
 1. ```python3.9 -m venv OpenNMT```
@@ -15,12 +15,12 @@ The easiest way to get BabyLemmatizer 2 running is to create a Python 3.9 virtua
 3. ```pip install --upgrade pip```
 4. ```pip install OpenNMT-py```
 
-Then you need to edit ```preferences.py``` to add paths to the virtual environment and OpenNMT binaries. 
+Then you need to clone **BabyLemmatizer** reposotory and edit ```preferences.py``` to add paths to the virtual environment and OpenNMT binaries. 
 
 ```python_path = '/yourpath/OpenNMT/bin/'```
 ```onmt_path = '/yourpath/OpenNMT/lib/python3.9/site-packages/onmt/bin'``` 
 
-After this, everything should run.
+After this, you can run ```preferences.py``` and if lots of OpenNMT documentation prints on your screen, everything should be okay.
 
 ## Training models
 To train a new model, put your source files in the ```conllu``` folder. Then then proceed with the following steps using ```train_pipeline.py``` script:
