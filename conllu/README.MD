@@ -46,11 +46,11 @@ The important fields are ```FORM``` that contains *transliteration* and ```LEMMA
 ```
 1	ki-i	kī	PRP	PRP	empty	0	root	_	like
 2	iš-ku-nu	šakānu	V	V	empty	1	child	_	put
-3	{URU}an-at	Anat	SN	SN	empty	1	child	_	Anat
+3	{uru}an-at	Anat	SN	SN	empty	1	child	_	Anat
 
 1	ul-te-šib	wašābu	V	V	empty	0	root	_	sit (down)
-2	URU	ālu	N	N	empty	1	child	_	city
-3	{URU}an-at	Anat	SN	SN	empty	1	child	_	Anat
+2	uru	ālu	N	N	empty	1	child	_	city
+3	{uru}an-at	Anat	SN	SN	empty	1	child	_	Anat
 4	ki	kī	PRP	PRP	empty	1	child	_	like
 5	pa-na-a-ma	pāna	AV	AV	empty	1	child	_	formerly
 
