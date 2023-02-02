@@ -20,7 +20,7 @@ in DUMU a-wi-lim uh₂-ta-ap-pi-id
 in-šu u-hap-pa-du
 ```
 
-into the following CoNLL-U that can be used with BabyLemmatizer:
+into the following CoNLL-U that can be tagged and lemmatized with BabyLemmatizer:
 
 ```
 1	šum-ma	_	_	_	empty	0	root	_	_
@@ -35,6 +35,8 @@ into the following CoNLL-U that can be used with BabyLemmatizer:
 2	u-hap-pa-du	_	_	_	empty	None	child	_	_
 
 ```
+
+If you want to train new models, you need to populate the ```LEMMA, UPOS, XPOS``` fields with lemmatization and pos-tagging. See more information below.
 
 
 ## How does CoNLL-U look like?
