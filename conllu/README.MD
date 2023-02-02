@@ -8,11 +8,11 @@ Input data format must follow [Oracc conventions](http://oracc.museum.upenn.edu/
 
 My library [Cuneiformtools](https://docs.google.com/document/d/1kW9DnCpXGICJ_ttOCO182G2jivE7_knVOZP_v6vdNPw/) may be a useful library for making transliteration conversions. It is distributed as a part of BabyLemmatizer 2.0 (see [https://github.com/asahala/BabyLemmatizer/tree/main/cuneiformtools](cuneiformtools) folder. It offers, for example, a robust method for converting accented or numberic indexation into subsrcipts, eg. ```bí-dug4* -> bi₂-dug₄```.
 
-Currently BabyLemmatizer does not provide tools for converting ATF to CoNLL-U and backwards, or direct lemmatization of Oracc JSONs, but these feature will be added in the future. If you have your text in a UPL (unit-per-line) format, you can use the function ```wpl_to_conllu()``` in ```conllutools.py``` to add required fields. E.g.
+Currently BabyLemmatizer does not provide tools for converting ATF to CoNLL-U and backwards, or direct lemmatization of Oracc JSONs, but these feature will be added in the future. If you have your text in a unit-per-line format (this unit can be text, sentence or line), you can use the function ```wpl_to_conllu()``` in ```conllutools.py``` to add required fields. E.g.
 
-```>>> conllutools.wpl_to_conllu('my.wpl', 'my.conllu')```
+```>>> conllutools.wpl_to_conllu('my.txt', 'my.conllu')```
 
-Will convert a line-per-line 
+Will convert a line-per-line text
 
 ```
 šum-ma a-wi-lum
