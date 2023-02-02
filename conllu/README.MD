@@ -1,4 +1,4 @@
-# CoNLL-u files for training the models
+# CoNLL-U files for training the models
 The files must be named as follows ```modelname-type.conllu```, where *modelname* is an arbitrary name that describes your model, *type* is either ```train```, ```test``` or ```dev``` depending on the function of your dataset. For example: ```latebabylonian-train.conllu```, ```latebabylonian-dev.conllu``` and ```latebabylonian-test.conllu```. Avoid using any special characters in your model names, except for numbers and underscore.
 
 The standard practice is to use 80% of your training corpus as the train data, and split the remaining 20% into test and dev data.
@@ -8,7 +8,7 @@ Input data format must follow [Oracc conventions](http://oracc.museum.upenn.edu/
 
 My library [Cuneiformtools](https://docs.google.com/document/d/1kW9DnCpXGICJ_ttOCO182G2jivE7_knVOZP_v6vdNPw/) may be a useful library for making transliteration conversions. It is distributed as a part of BabyLemmatizer 2.0 (see [https://github.com/asahala/BabyLemmatizer/tree/main/cuneiformtools](cuneiformtools) folder. It offers, for example, a robust method for converting accented or numberic indexation into subsrcipts, eg. ```bí-dug4* -> bi₂-dug₄```.
 
-Currently BabyLemmatizer does not provide tools for converting ATF to CoNLL-u and backwards, or direct lemmatization of Oracc JSONs, but these feature will be added in the future. If you have your text in a UPL (unit-per-line) format, you can use the function ```wpl_to_conllu()``` in ```conllutools.py``` to add required fields. E.g.
+Currently BabyLemmatizer does not provide tools for converting ATF to CoNLL-U and backwards, or direct lemmatization of Oracc JSONs, but these feature will be added in the future. If you have your text in a UPL (unit-per-line) format, you can use the function ```wpl_to_conllu()``` in ```conllutools.py``` to add required fields. E.g.
 
 ```>>> conllutools.wpl_to_conllu('my.wpl', 'my.conllu')```
 
@@ -20,7 +20,7 @@ in DUMU a-wi-lim uh₂-ta-ap-pi-id
 in-šu u-hap-pa-du
 ```
 
-into the following CoNLL-u that can be used with BabyLemmatizer:
+into the following CoNLL-U that can be used with BabyLemmatizer:
 
 ```
 1	šum-ma	_	_	_	empty	0	root	_	_
@@ -37,7 +37,7 @@ into the following CoNLL-u that can be used with BabyLemmatizer:
 ```
 
 
-## How does CoNLL-u look like?
+## How does CoNLL-U look like?
 See official description of the format at [Universal Dependencies website](https://universaldependencies.org/format.html). In short, it is a word-per-line format closely related to TSV and VRT. Each segment (e.g. line, sentence, text) is separated by an empty line, and each line of text data consists of 10 tab-separated fields: ```ID, FORM, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC```. For our purposes ```UPOS``` and ```XPOS``` fields contain the same information, ```FEATS``` is always empty, ```HEAD``` and ```DEPREL``` indicate the first word as the segment as *root* and *0*, and the following words as *child* and *1*, ```DEPS``` field has and *_* and ```MISC``` contains whatever other information.
 
 The important fields are ```FORM``` that contains *transliteration* and ```LEMMA``` that contains the lemma. See example below. Conllu always wnends with and empty line.
