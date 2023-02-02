@@ -1,8 +1,11 @@
 import preprocessing
 
-""" BabyLemmatizer: Conll-u module                   asahala 2023
+""" BabyLemmatizer: Conll-u module
+
+asahala 2023
 
 """
+
 ID, FORM, LEMMA, UPOS, XPOS = 0, 1, 2, 3, 4
 FEATS, HEAD, DEPREL, DEPS, MISC = 5, 6, 7, 8, 9
 
@@ -95,3 +98,56 @@ def make_conllu(final_results, source_conllu, output_conllu):
                 line[3] = pos
                 line[4] = pos
                 output.write('\t'.join(line) + '\n')
+
+
+def wpl_to_conllu(wpl_file, output):
+    """ Convert word per line format into CoNLL-u
+
+    :param wpl_file            wpl file name
+    :param output              CoNNL-u file name
+
+    WPL file is a file that has exactly one word per line.
+    Segment, e.g. line or sentence boundaries are separated
+    with an empty line. E.g. if we split text by line, the
+    text
+
+    1. be-el bi-tim
+    2. LUGAL bi-tim
+
+    would look in WPL as
+
+    be-el
+    bi-tim
+
+    LUGAL
+    bi-tim
+
+    """
+
+    head = {1: 0}
+    deprel = {1: 'root'}
+
+    with open(wpl_file, 'r', encoding='utf-8') as f,\
+         open(output, 'w', encoding='utf-8') as o:
+
+        i = 1
+        last_line = ''
+        for line in f.read().splitlines():
+
+            n = head.get(i)
+            r = deprel.get(i, 'child')
+
+            if line:
+                o.write(f'{i}\t{line}\t_\t_\t_\tempty\t{n}\t{r}\t_\t_\n')
+            else:
+                i = 0
+                o.write('\n')
+            last_line = line
+            i += 1
+            
+        if not last_line:
+            o.write('\n')
+
+    print(f'> File converted to CoNLL-U and saved as {output}')
+
+
