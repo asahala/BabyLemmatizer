@@ -35,6 +35,7 @@ VOWEL = "aiueo"
 PIPE = "|"
 ALPHANUMERIC = ALPHA + NUMERIC
 BRACKETS = '[⸢⸣]'
+LACUNA_META = '<[⸢⸣]>!?'
 
 ALLNUMBERS = ''.join([j for i in zip(list(NUMERIC),
                                      list(INDEX)) for j in i])

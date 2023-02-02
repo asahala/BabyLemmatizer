@@ -1,6 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+""" CuneiformTools Utilities                      
+
+asahala 2021
+https://github.com/asahala/
+
+"""
+
 import sys
 import re
 from functools import lru_cache
