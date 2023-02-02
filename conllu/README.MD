@@ -16,7 +16,7 @@ Will convert a line-per-line
 
 ```
 šum-ma a-wi-lum
-in DUMU a-wi-lim uh₂-ta-ap-pid
+in DUMU a-wi-lim uh₂-ta-ap-pi-id
 in-šu u-hap-pa-du
 ```
 
@@ -29,7 +29,7 @@ into the following CoNLL-u that can be used with BabyLemmatizer:
 1	in	_	_	_	empty	0	root	_	_
 2	DUMU	_	_	_	empty	None	child	_	_
 3	a-wi-lim	_	_	_	empty	None	child	_	_
-4	uh₂-ta-ap-pid	_	_	_	empty	None	child	_	_
+4	uh₂-ta-ap-pi-id	_	_	_	empty	None	child	_	_
 
 1	in-šu	_	_	_	empty	0	root	_	_
 2	u-hap-pa-du	_	_	_	empty	None	child	_	_
