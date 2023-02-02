@@ -13,7 +13,7 @@ BabyLemmatizer 2.0 features context-aware POS-tagger and lemmatizer, that combin
 
 BabyLemmatizer 2.0 has been tested with Python 3.9 and OpenNMT-py 3.0.
 
-## Setting BabyLemmatizer up
+## Setting up BabyLemmatizer
 The easiest way to get BabyLemmatizer 2.0 running is to create a Python 3.9 virtual environment for OpenNMT-py, this ensures that you have permanently all necessary requirements installed and they do not conflict with your other libaries. For example,
 
 1. ```python3.9 -m venv OpenNMT```
