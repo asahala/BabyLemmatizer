@@ -7,6 +7,9 @@ BabyLemmatizer 2.0 is fully based on OpenNMT, which makes it simple to use compa
 
 BabyLemmatizer 2.0 features context-aware POS-tagger and lemmatizer, that combine strenghts of neural networks, and lightly statistical dictionary-based methods. The current version is able to reach 97.40% accuracy in POS-tagging and 95.00% in lemmatization in a held-out test set (Neo-Babylonian data). If you use BabyLemmatizer for annotating your data or training new models, please cite [Sahala et al. 2022](http://hdl.handle.net/10138/348412). An updated publication will be written in 2023 that describes this version of the system.
 
+## Performance
+...
+
 ## Requirements
 1. [OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)
 2. Python 3.6+
@@ -51,7 +54,7 @@ To train a new model, put your source files in the ```conllu``` folder. Then the
 
 See more information about the input format in the [conllu](https://github.com/asahala/BabyLemmatizer/tree/main/conllu) foder.
 
-## Evaluating models
+## Evaluating your models
 ...
 
 ## Citations
