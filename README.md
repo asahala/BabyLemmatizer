@@ -9,7 +9,7 @@ BabyLemmatizer 2.0 is fully based on OpenNMT, which makes it simpler to use than
 BabyLemmatizer 2.0 approaches POS-tagging and lemmatization as a Machine Translation task. It features context-aware POS-tagger and lemmatizer that combine strenghts of encoder-decoder neural networks, and (very slightly) statistical and heuristic dictionary-based methods to post-correct and score the reliability of the annotations.
 
 ### Performance
-Results of the 5-fold cross-validation of the first millennium Babylonian model trained with 500k examples split into 80/10/10.
+Results of the 5-fold cross-validation of the first millennium Babylonian models trained with 500k examples split into 80/10/10.
 
 |category|avg.|lbtest1|lbtest2|lbtest3|lbtest4|lbtest5|conf. int|
 |---|---|---|---|---|---|---|---|
