@@ -53,3 +53,8 @@ See more information about the input format in the [conllu](https://github.com/a
 
 ## Evaluating models
 ...
+
+## Upcoming features
+* Morphological analysis
+* Phonological transcription
+* Machine translation
