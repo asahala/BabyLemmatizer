@@ -5,9 +5,10 @@ State-of-the-art neural tagger and lemmatizer for Akkadian (and other cuneiform 
 
 BabyLemmatizer 2.0 is fully based on OpenNMT, which makes it simpler to use than the previous BabyLemmatizer version that was dependent on an outdated version of TurkuNLP with some problematic dependencies. At its current stage, BabyLemmatizer can be used for part-of-speech tagging and lemmatization of transliterated Akkadian texts. Unlike the old version, BabyLemmatizer 2.0 uses an unindexed character based representation for syllabic signs and sign-based tokenization for logograms, that maximize its capability to discriminate between predictable and suppletive grapheme to phoneme relations.
 
-BabyLemmatizer 2.0 approaches POS-tagging and lemmatization as a Machine Translation task. It features context-aware POS-tagger and lemmatizer that combine strenghts of encoder-decoder neural networks, and (very slightly) statistical and heuristic dictionary-based methods to post-correct and score the reliability of the annotations. The current version is able to reach 97.40% accuracy in POS-tagging and 95.00% in lemmatization in a held-out test set.
+### Brief description
+BabyLemmatizer 2.0 approaches POS-tagging and lemmatization as a Machine Translation task. It features context-aware POS-tagger and lemmatizer that combine strenghts of encoder-decoder neural networks, and (very slightly) statistical and heuristic dictionary-based methods to post-correct and score the reliability of the annotations.
 
-## Performance
+### Performance
 Results of the 5-fold cross-validation of the first millennium Babylonian model trained with 500k examples split into 80/10/10.
 
 |category|avg.|lbtest1|lbtest2|lbtest3|lbtest4|lbtest5|conf. int|
