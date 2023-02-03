@@ -187,5 +187,3 @@ def normalize_all(path):
         fn = os.path.join(path, file)
         normalize_conllu(fn)
 
-
-normalize_all('conllu')
