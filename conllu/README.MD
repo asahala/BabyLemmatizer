@@ -1,7 +1,7 @@
 # CoNLL-U files for training the models
 The files **must** be named as follows ```modelname-type.conllu```, where *modelname* is an arbitrary name that describes your model, *type* is either ```train```, ```test``` or ```dev``` depending on the function of your dataset. For example: ```latebabylonian-train.conllu```, ```latebabylonian-dev.conllu``` and ```latebabylonian-test.conllu```. Avoid using any special characters in your model names, excluding numbers and underscore.
 
-The standard practice is to use 80% of your training corpus as the train data, and split the remaining 20% into test and dev data.
+The standard practice is to use 80% of your training corpus as the train data, and split the remaining 20% into test and dev data. It is also useful to cross-validate your models.
 
 ## Input data format
 Input data format must follow [Oracc conventions](http://oracc.museum.upenn.edu/doc/help/languages/akkadian/akkadianstylesheet/index.html). If you have your transliteration in any other notation, you must convert it into Oracc notation.
