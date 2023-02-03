@@ -9,12 +9,11 @@ BabyLemmatizer 2.0 approaches POS-tagging and lemmatization as a Machine Transla
 
 ## Performance
 ...
-```
-                aver.   lbtest1 lbtest2 lbtest3 lbtest4 lbtest5 conf. int
-pos-tagger      97.42   97.40%  97.44%  97.33%  97.49%  97.46%  ±0.06%
-lemmatizer      94.75   94.55%  94.71%  94.71%  94.78%  95.01%  ±0.15%
-combined        94.62   94.36%  94.61%  94.62%  94.69%  94.81%  ±0.14%
-```
+|category|avg.|lbtest1|lbtest2|lbtest3|lbtest4|lbtest5|conf. int|
+|---|---|---|---|---|---|---|---|
+|pos-tagger|97.42|97.40%|97.44%|97.33%|97.49%|97.46%|±0.06%|
+|lemmatizer|94.75|94.55%|94.71%|94.71%|94.78%|95.01%|±0.15%|
+|combined|94.62|94.36%|94.61%|94.62%|94.69%|94.81%|±0.14%|
 
 ## Requirements
 1. [OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)
