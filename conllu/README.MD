@@ -27,15 +27,15 @@ into the following CoNLL-U that can be tagged and lemmatized with BabyLemmatizer
 
 ```
 1	šum-ma	_	_	_	empty	0	root	_	_
-2	a-wi-lum	_	_	_	empty	None	child	_	_
+2	a-wi-lum	_	_	_	empty	1	child	_	_
 
 1	in	_	_	_	empty	0	root	_	_
-2	DUMU	_	_	_	empty	None	child	_	_
-3	a-wi-lim	_	_	_	empty	None	child	_	_
-4	uh₂-ta-ap-pi-id	_	_	_	empty	None	child	_	_
+2	DUMU	_	_	_	empty	1	child	_	_
+3	a-wi-lim	_	_	_	empty	1	child	_	_
+4	uh₂-ta-ap-pid	_	_	_	empty	1	child	_	_
 
 1	in-šu	_	_	_	empty	0	root	_	_
-2	u-hap-pa-du	_	_	_	empty	None	child	_	_
+2	u-hap-pa-du	_	_	_	empty	1	child	_	_
 
 ```
 
