@@ -3,9 +3,9 @@
 # BabyLemmatizer 2.0
 State-of-the-art neural tagger and lemmatizer for Akkadian (and other cuneiform languages). ***This repository will be officially published and documented in late February 2023.***
 
-BabyLemmatizer 2.0 is fully based on OpenNMT, which makes it simple to use compared to the old BabyLemmatizer version that was dependent on an outdated version of TurkuNLP. At its current stage, BabyLemmatizer can be used for part-of-speech tagging and lemmatization of transliterated Akkadian texts. Unlike the old version, BabyLemmatizer 2.0 uses an unindexed character based representation for syllabic signs and sign-based tokenization for logograms, that maximize its capability to discriminate between predictable and suppletive grapheme to phoneme relations.
+BabyLemmatizer 2.0 is fully based on OpenNMT, which makes it simpler to use than to the old BabyLemmatizer version that was dependent on an outdated version of TurkuNLP with some problematic dependencies. At its current stage, BabyLemmatizer can be used for part-of-speech tagging and lemmatization of transliterated Akkadian texts. Unlike the old version, BabyLemmatizer 2.0 uses an unindexed character based representation for syllabic signs and sign-based tokenization for logograms, that maximize its capability to discriminate between predictable and suppletive grapheme to phoneme relations.
 
-BabyLemmatizer 2.0 features context-aware POS-tagger and lemmatizer, that combine strenghts of neural networks, and lightly statistical dictionary-based methods. The current version is able to reach 97.40% accuracy in POS-tagging and 95.00% in lemmatization in a held-out test set (Neo-Babylonian data). If you use BabyLemmatizer for annotating your data or training new models, please cite [Sahala et al. 2022](http://hdl.handle.net/10138/348412). An updated publication will be written in 2023 that describes this version of the system.
+BabyLemmatizer 2.0 approaces POS-tagging and lemmatization as a Machine Translation task. It features context-aware POS-tagger and lemmatizer that combine strenghts of encoder-decoder neural networks, and (very slightly) statistical and heuristic dictionary-based methods. The current version is able to reach 97.40% accuracy in POS-tagging and 95.00% in lemmatization in a held-out test set.
 
 ## Performance
 ...
@@ -58,7 +58,7 @@ See more information about the input format in the [conllu](https://github.com/a
 ...
 
 ## Citations
-If you use BabyLemmatizer, cite this paper and repository as long as this version will be officially described:
+If you use BabyLemmatizer for annotating your data or training new models, please cite this repository and [Sahala et al. 2022](http://hdl.handle.net/10138/348412). An updated publication will be written in 2023 that describes this version of the system.
 
 ```
 @inproceedings{sahala2022babylemmatizer,
