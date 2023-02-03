@@ -19,8 +19,8 @@ Will convert a line-per-line text
 
 ```
 šum-ma a-wi-lum
-in DUMU a-wi-lim uh₂-ta-ap-pi-id
-in-šu u-hap-pa-du
+in DUMU a-wi-lim uh₂-tap-pi-id
+in-šu u-ha-ap-pa-du
 ```
 
 into the following CoNLL-U that can be tagged and lemmatized with BabyLemmatizer:
@@ -32,10 +32,10 @@ into the following CoNLL-U that can be tagged and lemmatized with BabyLemmatizer
 1	in	_	_	_	empty	0	root	_	_
 2	DUMU	_	_	_	empty	1	child	_	_
 3	a-wi-lim	_	_	_	empty	1	child	_	_
-4	uh₂-ta-ap-pid	_	_	_	empty	1	child	_	_
+4	uh₂-tap-pi-id	_	_	_	empty	1	child	_	_
 
 1	in-šu	_	_	_	empty	0	root	_	_
-2	u-hap-pa-du	_	_	_	empty	1	child	_	_
+2	u-ha-ap-pa-du	_	_	_	empty	1	child	_	_
 
 ```
 
