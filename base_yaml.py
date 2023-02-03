@@ -1,3 +1,18 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+"""===========================================================
+Neural net parameter selector for BabyLemmatizer 2
+
+asahala 2023
+https://github.com/asahala
+
+University of Helsinki
+   Origins of Emesal Project
+   Centre of Excellence for Ancient Near-Eastern Empires
+
+==========================================================="""
+
 def write_yaml(filename, content):
     with open(filename, 'w') as f:
         f.write(content)
