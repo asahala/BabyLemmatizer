@@ -16,6 +16,10 @@ def uppercase_determinatives(xlit):
     return norm.unify_determinatives(xlit, lower=False)
 
 
+def unify_h(xlit):
+    return norm.unify_h(xlit)
+
+
 def remove_brackets(xlit):
     return ''.join(c for c in xlit if c not in LACUNA_METACHARS)
     

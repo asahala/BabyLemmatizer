@@ -7,7 +7,7 @@ import preprocessing as pp
 import model_api
 
 info = """===========================================================
-Lemmatizer pipeline for BabyLemmatizer 2
+Lemmatizer pipeline for BabyLemmatizer 2.0
 
 asahala 2023
 https://github.com/asahala
@@ -48,6 +48,7 @@ class Lemmatizer:
         self.line_count = 0
         self.segment_count = 1
         self.preprocess_input(input_file)
+
         
     def preprocess_input(self, filename):
         print('\n' + info + '\n')
@@ -66,6 +67,7 @@ class Lemmatizer:
                     self.line_count += 1
             io(f'Input file size: {self.line_count}'\
                f' words in {self.segment_count} segments.')
+
 
     def run_model(self, model_name):
         tagger_path = f'./models/{model_name}/tagger/model_step_35000.pt'

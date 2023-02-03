@@ -1,14 +1,23 @@
+import os
 import preprocessing
+import shutil
 
-""" BabyLemmatizer: Conll-u module
+"""===========================================================
+CoNLL-U i/o for BabyLemmatizer 2.0
 
 asahala 2023
+https://github.com/asahala
 
-"""
+University of Helsinki
+   Origins of Emesal Project
+   Centre of Excellence for Ancient Near-Eastern Empires
+
+==========================================================="""
 
 ID, FORM, LEMMA, UPOS, XPOS = 0, 1, 2, 3, 4
 FEATS, HEAD, DEPREL, DEPS, MISC = 5, 6, 7, 8, 9
 
+""" End-of-unit symbol """
 EOU = ('<EOU>', '<EOU>', '<EOU>')
 
 def read_conllu(filename):
@@ -16,8 +25,9 @@ def read_conllu(filename):
         for line in f.read().splitlines():
             yield line
 
+
 def get_override(filename):
-    
+    """ Parse override data from CoNLL-U file """
     yield EOU
     for line in read_conllu(filename):
         if line.startswith('#'):
@@ -29,6 +39,7 @@ def get_override(filename):
             yield EOU
 
 
+"""
 def get_lemmatizer_input(filename):
     """ """
 
@@ -40,13 +51,21 @@ def get_lemmatizer_input(filename):
             data = line.split('\t')
             yield data[FORM]
         else:
-            yield EOU[0]
-
-#make_training_data('../conllu_train/' + 'test.conllu')
+            yield EOU[0]"""
 
 
 def get_training_data2(filename, preprocess=None):
-    """ DOC """
+    """ Parses training data from CoNLL-U file
+    and preprocesses it
+
+    :param filename          CoNLL-U file to parse
+    :param preprocess        preprocessing pipeline
+
+    :type filename           str
+    :type preprocess         method that takes transliteration
+                             as an argument (one word)
+
+    """
 
     stack = []
     stack.append(EOU)
@@ -72,6 +91,13 @@ def get_training_data2(filename, preprocess=None):
 
 
 def make_conllu(final_results, source_conllu, output_conllu):
+    """ Merges annotations with existing CoNLL-U file
+
+    :param final_results        lemmatizer's final output file
+    :param source_conllu        original input CoNLL-U file
+    :param output_conllu        output CoNNL-U for annotations
+
+    """
 
     with open(final_results, 'r', encoding='utf-8') as f:
         results = f.read().splitlines()
@@ -124,3 +150,42 @@ def upl_to_conllu(upl_file, output):
             o.write('\n')
 
     print(f'> File converted to CoNLL-U and saved as {output}')
+
+
+def normalize_conllu(filename):
+
+    #if filename.endswith('.conllu'):
+    #    shutil.copy(filename, filename + '.backup')
+    #    print(f'> Created backup to {filename}.backup')
+
+    content = list(read_conllu(filename))
+
+    with open(filename, 'w', encoding='utf-8') as f:
+        for line in content:
+            if line:
+                line = line.split('\t')
+                orig = line[1]
+                orig2 = line[2]
+                line[1] = preprocessing.lowercase_determinatives(line[1])
+                line[1] = preprocessing.unify_h(line[1])
+                #if line[1] != orig:
+                #    print(orig + ' -> ' + line[1])
+                line[2] = preprocessing.unify_h(line[2])
+                #if line[2] != orig2:
+                #    print(orig2 + ' -> ' + line[2])
+                f.write('\t'.join(line) + '\n')
+            else:
+                f.write('\n')
+            
+
+def normalize_all(path):
+    """ Lowercases determinatives and unifies special h with h """
+
+    files = (x for x in os.listdir(path) if x.endswith('.conllu'))
+    for file in files:
+        print(f'> normalizing {file}')
+        fn = os.path.join(path, file)
+        normalize_conllu(fn)
+
+
+normalize_all('conllu')
