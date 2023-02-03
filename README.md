@@ -33,7 +33,7 @@ After this, you can run ```preferences.py``` and if lots of OpenNMT documentatio
 ## Using models
 To tag and lemmatize texts, you need to first convert it into a CoNLL-U format. See instructions in the [conllu](https://github.com/asahala/BabyLemmatizer/tree/main/conllu) folder.
 
-Use ```lemmatizer_pipeline.py``` to annotate your texts. If you have an emtpy CoNLL-U file in in the ```input``` folder named ```example.conllu``` and you want to tag and lemmatize using the first millennium Babylonian model ```lbtest1```, you can do it with two lines of code:
+Use ```lemmatizer_pipeline.py``` to annotate your texts. If you have an empty CoNLL-U file in in the ```input``` folder named ```example.conllu```, and you want to tag and lemmatize it using the first millennium Babylonian model ```lbtest1```, you can do it with two lines of code:
 
 ```
 l = Lemmatizer('./input/example.conllu') 
