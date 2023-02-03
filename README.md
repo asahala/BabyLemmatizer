@@ -30,6 +30,19 @@ onmt_path = '/yourpath/OpenNMT/lib/python3.9/site-packages/onmt/bin'
 
 After this, you can run ```preferences.py``` and if lots of OpenNMT documentation prints on your screen, everything should be okay.
 
+## Using models
+To tag and lemmatize texts, you need to first convert it into a CoNLL-U format. See instructions in the [conllu](https://github.com/asahala/BabyLemmatizer/tree/main/conllu) folder.
+
+Use ```lemmatizer_pipeline.py``` to annotate your texts. If you have an emtpy CoNLL-U file in in the ```input``` folder named ```example.conllu``` and you want to tag and lemmatize using the first millennium Babylonian model ```lbtest1```, you can do it with two lines of code:
+
+```
+l = Lemmatizer('./input/example.conllu') 
+l.run_model('lbtest1')
+```
+Lemmatization may take a while depending on your hardware. Your result will be saved as ```input/example_lemmatized.conllu```. 
+
+**Note:** prior to official publishing of this repository, post-processing is not done.
+
 ## Training models
 To train a new model, put your source files in the ```conllu``` folder. Then then proceed with the following steps using ```train_pipeline.py``` script:
 
@@ -38,5 +51,5 @@ To train a new model, put your source files in the ```conllu``` folder. Then the
 
 See more information about the input format in the [conllu](https://github.com/asahala/BabyLemmatizer/tree/main/conllu) foder.
 
-## Using models
+## Evaluating models
 ...
