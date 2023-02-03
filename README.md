@@ -79,3 +79,4 @@ In order of priority:
 * Direct Oracc ATF and JSON support
 * Morphological analysis
 * Server-side usage
+* Machine Translation
