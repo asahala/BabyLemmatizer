@@ -101,27 +101,17 @@ def make_conllu(final_results, source_conllu, output_conllu):
 
 
 def upl_to_conllu(upl_file, output):
-    """ Convert word per line format into CoNLL-u
+    """ Convert unit-per-line format into CoNLL-U
 
-    :param wpl_file            wpl file name
+    :param upl_file            upl file name
     :param output              CoNNL-u file name
 
-    WPL file is a file that has exactly one word per line.
-    Segment, e.g. line or sentence boundaries are separated
-    with an empty line. E.g. if we split text by line, the
-    text
+    Example of the input format (line-by-line):
 
-    1. be-el bi-tim
-    2. LUGAL bi-tim
-
-    would look in WPL as
-
-    be-el
-    bi-tim
-
-    LUGAL
-    bi-tim
-
+    šum-ma a-wi-lum
+    in DUMU a-wi-lim uh₂-ta-ap-pi-id
+    in-šu u-hap-pa-du
+ 
     """
 
     head = {1: '0'}
@@ -140,5 +130,3 @@ def upl_to_conllu(upl_file, output):
             o.write('\n')
 
     print(f'> File converted to CoNLL-U and saved as {output}')
-
-upl_to_conllu('aaa.txt', 'aaa2.conllu')
