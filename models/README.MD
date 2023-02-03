@@ -1,3 +1,3 @@
-# Models for BabyLemmatize 2.0
+# Models for BabyLemmatizer 2.0
 
 Download pretrained models from [...]
