@@ -100,7 +100,7 @@ def make_conllu(final_results, source_conllu, output_conllu):
                 output.write('\t'.join(line) + '\n')
 
 
-def wpl_to_conllu(wpl_file, output):
+def upl_to_conllu(upl_file, output):
     """ Convert word per line format into CoNLL-u
 
     :param wpl_file            wpl file name
@@ -127,27 +127,18 @@ def wpl_to_conllu(wpl_file, output):
     head = {1: 0}
     deprel = {1: 'root'}
 
-    with open(wpl_file, 'r', encoding='utf-8') as f,\
+    with open(upl_file, 'r', encoding='utf-8') as f,\
          open(output, 'w', encoding='utf-8') as o:
 
         i = 1
-        last_line = ''
         for line in f.read().splitlines():
-
-            n = head.get(i)
-            r = deprel.get(i, 'child')
-
-            if line:
-                o.write(f'{i}\t{line}\t_\t_\t_\tempty\t{n}\t{r}\t_\t_\n')
-            else:
-                i = 0
-                o.write('\n')
-            last_line = line
-            i += 1
-            
-        if not last_line:
+            for word in line.strip().split(' '):
+                n = head.get(i)
+                r = deprel.get(i, 'child')
+                o.write(f'{i}\t{word}\t_\t_\t_\tempty\t{n}\t{r}\t_\t_\n')
+                i += 1
+            i = 1
             o.write('\n')
 
     print(f'> File converted to CoNLL-U and saved as {output}')
-
 
