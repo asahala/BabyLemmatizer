@@ -124,21 +124,21 @@ def upl_to_conllu(upl_file, output):
 
     """
 
-    head = {1: 0}
+    head = {1: '0'}
     deprel = {1: 'root'}
 
     with open(upl_file, 'r', encoding='utf-8') as f,\
          open(output, 'w', encoding='utf-8') as o:
 
-        i = 1
         for line in f.read().splitlines():
-            for word in line.strip().split(' '):
-                n = head.get(i)
-                r = deprel.get(i, 'child')
-                o.write(f'{i}\t{word}\t_\t_\t_\tempty\t{n}\t{r}\t_\t_\n')
-                i += 1
             i = 1
+            for word in line.strip().split(' '):
+                hh = head.get(i, '1')
+                rr = deprel.get(i, 'child')
+                o.write(f'{i}\t{word}\t_\t_\t_\tempty\t{hh}\t{rr}\t_\t_\n')
+                i += 1
             o.write('\n')
 
     print(f'> File converted to CoNLL-U and saved as {output}')
 
+upl_to_conllu('aaa.txt', 'aaa2.conllu')
