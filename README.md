@@ -55,6 +55,10 @@ See more information about the input format in the [conllu](https://github.com/a
 ...
 
 ## Upcoming features
-* Morphological analysis
+In order of priority:
+
+* Pretrained models
 * Phonological transcription
-* Machine translation
+* Direct Oracc ATF and JSON support
+* Morphological analysis
+* Server-side usage
