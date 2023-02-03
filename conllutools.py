@@ -16,14 +16,8 @@ def read_conllu(filename):
         for line in f.read().splitlines():
             yield line
 
-def get_training_data(filename):
-    """ Builds training data for BabyLemmatizer. Output format
-    is a generator object consisting of tuples
-
-        (transliteration, lemma, part-of-speech)
-
-    Each unit of text is separated with end-of-unit symbol. """
-
+def get_override(filename):
+    
     yield EOU
     for line in read_conllu(filename):
         if line.startswith('#'):

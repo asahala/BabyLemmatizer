@@ -104,16 +104,18 @@ def make_conllu(final_results, source_conllu, output_conllu):
                 output.write('\t'.join(line) + '\n')
 
                 
-def pipeline(models, step):
+def pipeline(*models):
     """ Run the whole evaluation pipeline for `models`
 
     :param models               model name
     :type models                str
 
     """
-
+    
     results = defaultdict(dict)
 
+    step = 'model.pt'
+    
     for model in models:
 
         print(f'> Running model {model}')
@@ -147,16 +149,16 @@ def pipeline(models, step):
 
         ct.make_conllu(
             final_results = f'./models/{model}/eval/output_final.txt',
-            source_conllu = f'./conllu/{model}-test.conllu',
+            source_conllu = f'./models/{model}/conllu/test.conllu',
             output_conllu = f'./models/{model}/eval/output_final.conllu')
 
     print(f' ===== {step} ====')
     cross_validation(results)
     
-steps = [f for f in os.listdir(f'./models/lbtest1/tagger/') if f.endswith('.pt')]
+#steps = [f for f in os.listdir(f'./models/lbtest1/tagger/') if f.endswith('.pt')]
 
-for step in steps:
-    pipeline(['lbtest1'], step)#, 'lbtest2', 'lbtest3', 'lbtest4', 'lbtest5')
+#for step in steps:
+pipeline('lbtest1', 'lbtest2', 'lbtest3', 'lbtest4')
 #pipeline('lbtest1')
 #merge_tags('lbtest1')
 
