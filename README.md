@@ -54,6 +54,19 @@ See more information about the input format in the [conllu](https://github.com/a
 ## Evaluating models
 ...
 
+## Citations
+If you use BabyLemmatizer, cite this paper and repository as long as this version will be officially described:
+
+```
+@inproceedings{sahala2022babylemmatizer,
+  title={BabyLemmatizer: A Lemmatizer and POS-tagger for Akkadian},
+  author={Sahala, Aleksi and Alstola, Tero and Valk, Jonathan and Linden, Krister},
+  booktitle={CLARIN Annual Conference Proceedings, 2022},
+  year={2022},
+  organization={CLARIN ERIC}
+}
+```
+
 ## Upcoming features
 In order of priority:
 
