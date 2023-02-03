@@ -8,7 +8,7 @@ Input data format must follow [Oracc conventions](http://oracc.museum.upenn.edu/
 
 My library [Cuneiformtools](https://docs.google.com/document/d/1kW9DnCpXGICJ_ttOCO182G2jivE7_knVOZP_v6vdNPw/) may be useful for making transliteration conversions. It is distributed as a part of BabyLemmatizer 2.0 (see [cuneiformtools](https://github.com/asahala/BabyLemmatizer/tree/main/cuneiformtools) folder. It offers, for example, a robust method for converting accented and numeric indexation into subsrcipts, eg. ```énsi(|PA.TE.SI|) bí-dug4 -> ensi₂(|PA.TE.SI|) bi₂-dug₄```.
 
-Currently BabyLemmatizer does not provide tools for converting ATF to CoNLL-U and backwards, or direct lemmatization of Oracc JSONs, but these features will be added in the future. If you have your text in a unit-per-line format (this unit can be text, sentence or line), you can use the function ```wpl_to_conllu()``` in ```conllutools.py``` to add required fields. E.g.
+Currently BabyLemmatizer does not provide tools for converting ATF to CoNLL-U and backwards, or direct lemmatization of Oracc JSONs, but these features will be added in the future. If you have your text in a unit-per-line format (this unit can be text, sentence or line), you can use the function ```wpl_to_conllu()``` in ```conllutools.py``` to add required fields, if you make your own script in the BabyLemmatizer folder, E.g.
 
 ```
 >>> import conllutools
