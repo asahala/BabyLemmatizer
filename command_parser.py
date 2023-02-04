@@ -69,7 +69,7 @@ def parse_prefix(prefix, evaluate=False):
                     break
 
     if ask_prompt:
-        _overwrite_prompt(prefix, models)
+        overwrite_prompt(prefix, models)
 
     """ If models do not exist, check if train data exists and
     create model name lists """

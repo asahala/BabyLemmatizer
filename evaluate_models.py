@@ -120,7 +120,7 @@ def pipeline(*models):
     for model in models:
 
         print(f'> Running model {model}')
-        """
+
         model_api.run_tagger(input_file = f'./models/{model}/tagger/traindata/test.src',
                    model_name = f'./models/{model}/tagger/{step}',
                    output_file = f'./models/{model}/eval/output_tagger.txt')
@@ -142,7 +142,7 @@ def pipeline(*models):
         model_api.merge_to_final(tags = f'./models/{model}/tagger/traindata/test.tgt',
                                  lemmas = f'./models/{model}/lemmatizer/traindata/test.tgt',
                                  output = f'./models/{model}/eval/gold.txt')
-        """
+
         tagger_res, lemmatizer_res, combined_res = evaluate(model)
         results[model] = {'pos-tagger': tagger_res,
                           'lemmatizer': lemmatizer_res,

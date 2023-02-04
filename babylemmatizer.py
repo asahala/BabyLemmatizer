@@ -40,5 +40,5 @@ if __name__ == "__main__":
         train_pipeline.build_train_data(*models)
         train_pipeline.train_model(*models)
     elif args.evaluate:
-        models = parse_prefix(args.evaluate)
+        models = parse_prefix(args.evaluate, evaluate=True)
         evaluate_models.pipeline(*models)
