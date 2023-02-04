@@ -40,6 +40,23 @@ onmt_path = '/yourpath/OpenNMT/lib/python3.9/site-packages/onmt/bin'
 
 After this, you can run ```preferences.py``` and if lots of OpenNMT documentation prints on your screen, everything should be okay.
 
+## Command line use
+BabyLemmatizer can be used from the command line. This can be done with ```babylemmatizer.py``` command line API.
+
+### Parameters
+
+#### --build-data <arg>
+Builds training data from CoNLL-U files. Where ```arg``` must be a prefix used in your CoNNL-U data, e.g. the ```arg-train.conllu```, ```arg-dev.conllu```, and ```arg-test.conllu```. If you want to train several models for cross-validation, use ```arg*```. It will build data for all files that start with this prefix (e.g. prefixes ```arg1, arg2, ... argn```.
+
+#### --train-model <arg>
+Trains a model or models from the built data. Argument works the same way as above.
+
+#### --build-train <arg>
+Builds training data and trains the models. Argument works the same way as above.
+
+#### --evaluate <arg>
+Cross-evaluates trained models. Argument works the same way as above.
+
 ## Using models
 To tag and lemmatize texts, you need to first convert it into a CoNLL-U format. See instructions in the [conllu](https://github.com/asahala/BabyLemmatizer/tree/main/conllu) folder.
 
