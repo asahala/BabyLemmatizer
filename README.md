@@ -88,7 +88,7 @@ All these commands have one mandatory argument, which points to the data in your
 Some additional commands:
 
 ```
---normalize-conllu  <arg>            Attempts to normalize transliteration into Oracc format.
+--normalize-conllu            Attempts to normalize transliteration in all files in your conllu folder.
 ```
 
 
