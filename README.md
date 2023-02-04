@@ -50,7 +50,7 @@ BabyLemmatizer can be used from the command line. This can be done with ```babyl
 --evaluate <arg>                     Cross-validates your model or models
 ```
 
-All these commands have one mandatory argument, which points to the data in your ```conllu``` folder if you are building new data, or to your ```models``` folder if you are training or evaluating models. For example, when building data you can use. For example, to build data ant train model from files ```assyrian-train.conllu, assyrian-dev.conllu, assyrian-test.conllu``` can call BabyLemmatizer ```python babylemmatizer.py --build-train assyrian```. In case you want to train seveal models for cross-validation, you can have CoNLL-U train, dev and test sets prefixes ```assyrian0, assyrian1, ..., assyrian9``` and use the command ```python babylemmatizer.py --build-train assyrian*```. For cross-validating these models, use ```--evaluate assyrian*```.
+All these commands have one mandatory argument, which points to the data in your ```conllu``` folder if you are building new data, or to your ```models``` folder if you are training or evaluating models. For example, if you have CoNLL-U files ```assyrian-train.conllu, assyrian-dev.conllu, assyrian-test.conllu``` and want to build data and train models for them, you can call BabyLemmatizer ```python babylemmatizer.py --build-train assyrian```. In case you want to train several models for 10-fold cross-validation, you can have train/dev/test CoNLL-U files with prefixes ```assyrian0, assyrian1, ..., assyrian9``` and use the command ```python babylemmatizer.py --build-train assyrian*```. Similarly, to cross-validate these models after training, use ```python babylemmatizer.py --evaluate assyrian*```.
 
 
 ## Using models
