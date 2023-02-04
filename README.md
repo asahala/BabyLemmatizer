@@ -52,8 +52,9 @@ BabyLemmatizer can be used from the command line. This can be done with ```babyl
 
 All these commands have one mandatory argument, which points to the data in your ```conllu``` folder if you are building new data, or to your ```models``` folder if you are training or evaluating models. For example, if you have CoNLL-U files ```assyrian-train.conllu, assyrian-dev.conllu, assyrian-test.conllu``` and want to build data and train models for them, you can call BabyLemmatizer ```python babylemmatizer.py --build-train assyrian```. In case you want to train several models for 10-fold cross-validation, you can have train/dev/test CoNLL-U files with prefixes ```assyrian0, assyrian1, ..., assyrian9``` and use the command ```python babylemmatizer.py --build-train assyrian*```. Similarly, to cross-validate these models after training, use ```python babylemmatizer.py --evaluate assyrian*```.
 
+## Use in Python
 
-## Using models
+### Using models
 To tag and lemmatize texts, you need to first convert it into a CoNLL-U format. See instructions in the [conllu](https://github.com/asahala/BabyLemmatizer/tree/main/conllu) folder.
 
 Use ```lemmatizer_pipeline.py``` to annotate your texts. If you have an empty CoNLL-U file in in the ```input``` folder named ```example.conllu```, and you want to tag and lemmatize it using the first millennium Babylonian model ```lbtest1```, you can do it with two lines of code:
@@ -66,16 +67,16 @@ Lemmatization may take a while depending on your hardware. Your result will be s
 
 **Note:** prior to official publishing of this repository, post-processing is not done.
 
-## Training models
-To train a new model, put your source files in the ```conllu``` folder. Then then proceed with the following steps using ```train_pipeline.py``` script:
+### Training models
+To train a new model, put your source files in the ```conllu``` folder. Then then proceed with the following steps using ```train_pipeline.py``` script. Let's assume you have CoNLL-U train/dev/test files with prefixes ```elamite``` and ```assyrian```.
 
-1. Run method ```build_train_data()```. This method converts the data in the ```conllu``` folder into suitable format.
-2. Run method ```train_models()``` with arguments pointing to your model names in the ```conllu``` folder, for example ```train_models("assyrian", "babylonian")```.
+1. Run method ```build_train_data("elamite", "assyrian")```
+2. Run method ```train_model("elamite", "assyrian")```
 
 See more information about the input format in the [conllu](https://github.com/asahala/BabyLemmatizer/tree/main/conllu) foder.
 
-## Evaluating your models
-You can perform n-fold cross-validation of your models by using ```evaluate_models.py```. For example, to do a 5-fold cross-validation of your models, call the method ```pipeline(model1, model2, model3, model4, model5)```, where each argument points to the name of your model.
+### Evaluating your models
+You can perform n-fold cross-validation of your models by using ```evaluate_models.py```. For example, to evaluate the models trained on the step above, call the method ```pipeline("elamite", "assyrian")```.
 
 ## Citations
 If you use BabyLemmatizer for annotating your data or training new models, please cite this repository and [Sahala et al. 2022](http://hdl.handle.net/10138/348412). An updated publication will be written in 2023 that describes this version of the system.
