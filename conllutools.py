@@ -39,24 +39,9 @@ def get_override(filename):
             yield EOU
 
 
-"""
-def get_lemmatizer_input(filename):
-    """ """
-
-    yield EOU[0]
-    for line in read_conllu(filename):
-        if line.startswith('#'):
-            continue
-        if line:
-            data = line.split('\t')
-            yield data[FORM]
-        else:
-            yield EOU[0]"""
-
-
 def get_training_data2(filename, preprocess=None):
-    """ Parses training data from CoNLL-U file
-    and preprocesses it
+    """ Parse training data from CoNLL-U file
+    and preprocess it
 
     :param filename          CoNLL-U file to parse
     :param preprocess        preprocessing pipeline
@@ -91,7 +76,7 @@ def get_training_data2(filename, preprocess=None):
 
 
 def make_conllu(final_results, source_conllu, output_conllu):
-    """ Merges annotations with existing CoNLL-U file
+    """ Merge annotations with existing CoNLL-U file
 
     :param final_results        lemmatizer's final output file
     :param source_conllu        original input CoNLL-U file
@@ -152,27 +137,25 @@ def upl_to_conllu(upl_file, output):
     print(f'> File converted to CoNLL-U and saved as {output}')
 
 
-def normalize_conllu(filename):
-
-    #if filename.endswith('.conllu'):
-    #    shutil.copy(filename, filename + '.backup')
-    #    print(f'> Created backup to {filename}.backup')
+def normalize_conllu(filename, output_filename):
+    """ Normalizes CoNLL-U file transliteration and lemmatization """
 
     content = list(read_conllu(filename))
 
-    with open(filename, 'w', encoding='utf-8') as f:
+    with open(output_filename, 'w', encoding='utf-8') as f:
         for line in content:
             if line:
                 line = line.split('\t')
                 orig = line[1]
                 orig2 = line[2]
+                line[1] = line[1].replace('sz', 'š')
+                line[1] = line[1].replace('SZ', 'Š')
+                line[1] = line[1].replace('s,', 'ṣ')
+                line[1] = line[1].replace('t,', 'ṭ')
                 line[1] = preprocessing.lowercase_determinatives(line[1])
                 line[1] = preprocessing.unify_h(line[1])
-                #if line[1] != orig:
-                #    print(orig + ' -> ' + line[1])
+                line[1] = preprocessing.subscribe_indices(line[1])
                 line[2] = preprocessing.unify_h(line[2])
-                #if line[2] != orig2:
-                #    print(orig2 + ' -> ' + line[2])
                 f.write('\t'.join(line) + '\n')
             else:
                 f.write('\n')
@@ -181,9 +164,19 @@ def normalize_conllu(filename):
 def normalize_all(path):
     """ Lowercases determinatives and unifies special h with h """
 
+    try:
+        os.mkdir(os.path.join(path, 'normalized'))
+    except FileExistsError:
+        'huumori__huiskaus'
+        pass
+
     files = (x for x in os.listdir(path) if x.endswith('.conllu'))
     for file in files:
         print(f'> normalizing {file}')
         fn = os.path.join(path, file)
-        normalize_conllu(fn)
+        ofn = os.path.join(path, 'normalized', file)
+        normalize_conllu(fn, ofn)
 
+
+if __name__ == "__main__":
+    pass

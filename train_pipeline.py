@@ -48,7 +48,20 @@ def print_statistics():
     logger('> Training data item counts:')
     for k, v in statistics.items():
         logger(f'   {v}\t{k}')
-       
+
+
+def _rename_model(model_name, type_):
+    
+    def get_step(filename):
+        return (''.join(c for c in filename if c.isdigit()))
+        
+    path = os.path.join('models', model_name, type_)
+    step = sorted(get_step(x) for x in os.listdir(path) if x.endswith('.pt'))[-1]
+    
+    old_name = f'model_step_{int(step)}.pt'
+    new_name = 'model.pt'
+    os.rename(os.path.join(path, old_name), os.path.join(path, new_name))
+    print(f'> Model {old_name} --> {new_name}')
               
 def print_oov_rates():
 
@@ -274,6 +287,7 @@ def train_model(*models):
             print(f'> Run build_training_data({model}) before training.')
             sys.exit(0)
 
+
         model_path = os.path.join('models', model)
         for yaml in (x for x in os.listdir(model_path) if x.endswith('.yaml')):
             os.system(f'{python_path}python {onmt_path}build_vocab.py '\
@@ -282,9 +296,18 @@ def train_model(*models):
             os.system(f'{python_path}python {onmt_path}train.py '\
                       f'-config {model_path}/{yaml}')
 
+        _rename_model(model, 'lemmatizer')
+        _rename_model(model, 'tagger')
+
 
 if __name__ == "__main__":
-    prefix = 'lbtest4'
-    models = parse_prefix(prefix)
-    build_train_data(*models)
-    train_model('a', 'b')#*models)
+    #prefix = 'lbtest4'
+    #models = parse_prefix(prefix)
+    #build_train_data(*models)
+    #train_model('a', 'b')#*models)
+    pass
+
+#_rename_model('lbtest2', 'tagger')
+#_rename_model('lbtest2', 'lemmatizer')
+#_rename_model('lbtest1', 'tagger')
+#_rename_model('lbtest1', 'lemmatizer')

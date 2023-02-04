@@ -16,6 +16,13 @@ def uppercase_determinatives(xlit):
     return norm.unify_determinatives(xlit, lower=False)
 
 
+@lru_cache(maxsize=512)
+def subscribe_indices(xlit):
+    xlit = norm.digit_to_index(xlit)
+    xlit = norm.accent_to_index(xlit)
+    return xlit
+
+
 def unify_h(xlit):
     return norm.unify_h(xlit)
 

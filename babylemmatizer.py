@@ -4,6 +4,7 @@
 from argparse import ArgumentParser
 import train_pipeline
 import evaluate_models
+import conllutools
 from command_parser import parse_prefix
 
 """ ===========================================================
@@ -24,6 +25,7 @@ def get_args():
     ap.add_argument('--train-model', type=str)
     ap.add_argument('--build-data', type=str)
     ap.add_argument('--build-train', type=str)
+    ap.add_argument('--normalize-conllu', action='store_true')
     return ap.parse_args()
 
 if __name__ == "__main__":
@@ -42,3 +44,5 @@ if __name__ == "__main__":
     elif args.evaluate:
         models = parse_prefix(args.evaluate, evaluate=True)
         evaluate_models.pipeline(*models)
+    elif args.normalize_conllu:
+        conllutools.normalize_all('conllu')
