@@ -60,3 +60,6 @@ The important fields are ```FORM``` that contains *transliteration* and ```LEMMA
 5	pa-na-a-ma	pāna	AV	AV	_	1	child	_	formerly
 
 ```
+
+## Demo
+Extract ```lbtest1.tar.gz``` for some data to test training a model with.
