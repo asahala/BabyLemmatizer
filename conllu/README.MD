@@ -6,7 +6,11 @@ The standard practice is to use 80% of your training corpus as the train data, a
 ## Input data format
 Input data format must follow [Oracc conventions](http://oracc.museum.upenn.edu/doc/help/languages/akkadian/akkadianstylesheet/index.html). If you have your transliteration in any other notation, you must convert it into Oracc notation.
 
-My library [Cuneiformtools](https://docs.google.com/document/d/1kW9DnCpXGICJ_ttOCO182G2jivE7_knVOZP_v6vdNPw/) may be useful for making transliteration conversions. It is distributed as a part of BabyLemmatizer 2.0 (see [cuneiformtools](https://github.com/asahala/BabyLemmatizer/tree/main/cuneiformtools) folder. It offers, for example, a robust method for converting accented and numeric indexation into subsrcipts, eg. ```énsi(|PA.TE.SI|) bí-dug4 -> ensi₂(|PA.TE.SI|) bi₂-dug₄```.
+My library [Cuneiformtools](https://docs.google.com/document/d/1kW9DnCpXGICJ_ttOCO182G2jivE7_knVOZP_v6vdNPw/) may be useful for making transliteration conversions. It is distributed as a part of BabyLemmatizer 2.0 (see [cuneiformtools](https://github.com/asahala/BabyLemmatizer/tree/main/cuneiformtools) folder. You can run the normalization script on your conllu files as follows:
+
+```python babylemmatizer.py --normalize-conllu```
+
+It goes through all conllu files in the ```conllu``` folder and normalize them into ```conllu/normalized```. You can then delete the originals and replace them with normalized files.
 
 Currently BabyLemmatizer does not provide tools for converting ATF to CoNLL-U and backwards, or direct lemmatization of Oracc JSONs, but these features will be added in the future. If you have your text in a unit-per-line format (this unit can be text, sentence or line), you can use the function ```upl_to_conllu()``` in ```conllutools.py``` to add required fields, if you make your own script in the BabyLemmatizer folder, E.g.
 
