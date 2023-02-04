@@ -85,6 +85,12 @@ BabyLemmatizer can be used from the command line. This can be done with ```babyl
 
 All these commands have one mandatory argument, which points to the data in your ```conllu``` folder if you are building new data, or to your ```models``` folder if you are training or evaluating models. For example, if you have CoNLL-U files ```assyrian-train.conllu, assyrian-dev.conllu, assyrian-test.conllu``` and want to build data and train models for them, you can call BabyLemmatizer ```python babylemmatizer.py --build-train assyrian```. In case you want to train several models for 10-fold cross-validation, you can have train/dev/test CoNLL-U files with prefixes ```assyrian0, assyrian1, ..., assyrian9``` and use the command ```python babylemmatizer.py --build-train assyrian*```. Similarly, to cross-validate these models after training, use ```python babylemmatizer.py --evaluate assyrian*```.
 
+Some additional commands:
+
+```
+--normalize-conllu  <arg>            Normalizes CoNLL-U file transliterations, e.g. URU{KI} ḫa-àm-mu-ra-pí -> URU{ki} ha-am₃-mu-ra-pi₂
+```
+
 
 ## Citations
 If you use BabyLemmatizer for annotating your data or training new models, please cite this repository and [Sahala et al. 2022](http://hdl.handle.net/10138/348412). An updated publication will be written in 2023 that describes this version of the system.
