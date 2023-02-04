@@ -26,16 +26,16 @@ in-šu u-ha-ap-pa-du
 into the following CoNLL-U that can be tagged and lemmatized with BabyLemmatizer:
 
 ```
-1	šum-ma	_	_	_	empty	0	root	_	_
-2	a-wi-lum	_	_	_	empty	1	child	_	_
+1	šum-ma	_	_	_	_	0	root	_	_
+2	a-wi-lum	_	_	_	_	1	child	_	_
 
-1	in	_	_	_	empty	0	root	_	_
-2	DUMU	_	_	_	empty	1	child	_	_
-3	a-wi-lim	_	_	_	empty	1	child	_	_
-4	uh₂-tap-pi-id	_	_	_	empty	1	child	_	_
+1	in	_	_	_	_	0	root	_	_
+2	DUMU	_	_	_	_	1	child	_	_
+3	a-wi-lim	_	_	_	_	1	child	_	_
+4	uh₂-tap-pi-id	_	_	_	_	1	child	_	_
 
-1	in-šu	_	_	_	empty	0	root	_	_
-2	u-ha-ap-pa-du	_	_	_	empty	1	child	_	_
+1	in-šu	_	_	_	_	0	root	_	_
+2	u-ha-ap-pa-du	_	_	_	_	1	child	_	_
 
 ```
 
@@ -49,14 +49,14 @@ The important fields are ```FORM``` that contains *transliteration* and ```LEMMA
 
 
 ```
-1	ki-i	kī	PRP	PRP	empty	0	root	_	like
-2	iš-ku-nu	šakānu	V	V	empty	1	child	_	put
-3	{uru}an-at	Anat	SN	SN	empty	1	child	_	Anat
+1	ki-i	kī	PRP	PRP	_	0	root	_	like
+2	iš-ku-nu	šakānu	V	V	_	1	child	_	put
+3	{uru}an-at	Anat	SN	SN	_	1	child	_	Anat
 
-1	ul-te-šib	wašābu	V	V	empty	0	root	_	sit (down)
-2	uru	ālu	N	N	empty	1	child	_	city
-3	{uru}an-at	Anat	SN	SN	empty	1	child	_	Anat
-4	ki	kī	PRP	PRP	empty	1	child	_	like
-5	pa-na-a-ma	pāna	AV	AV	empty	1	child	_	formerly
+1	ul-te-šib	wašābu	V	V	_	0	root	_	sit (down)
+2	uru	ālu	N	N	_	1	child	_	city
+3	{uru}an-at	Anat	SN	SN	_	1	child	_	Anat
+4	ki	kī	PRP	PRP	_	1	child	_	like
+5	pa-na-a-ma	pāna	AV	AV	_	1	child	_	formerly
 
 ```
