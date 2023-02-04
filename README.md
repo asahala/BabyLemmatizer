@@ -43,19 +43,15 @@ After this, you can run ```preferences.py``` and if lots of OpenNMT documentatio
 ## Command line use
 BabyLemmatizer can be used from the command line. This can be done with ```babylemmatizer.py``` command line API.
 
-### Parameters
+```
+--build-data <arg>                   Builds data from CoNNL-U files in your conllu folder
+--train-model <arg>                  Trains a model or models for the built data
+--build-train <arg>                  Builds data and trains a model or models
+--evaluate <arg>                     Cross-validates your model or models
+```
 
-#### --build-data <arg>
-Builds training data from CoNLL-U files. Where ```arg``` must be a prefix used in your CoNNL-U data, e.g. the ```arg-train.conllu```, ```arg-dev.conllu```, and ```arg-test.conllu```. If you want to train several models for cross-validation, use ```arg*```. It will build data for all files that start with this prefix (e.g. prefixes ```arg1, arg2, ... argn```.
+All these commands have one mandatory argument, which points to the data in your ```conllu``` folder if you are building new data, or to your ```models``` folder if you are training or evaluating models. For example, when building data you can use. For example, to build data ant train model from files ```assyrian-train.conllu, assyrian-dev.conllu, assyrian-test.conllu``` can call BabyLemmatizer ```python babylemmatizer.py --build-train assyrian```. In case you want to train seveal models for cross-validation, you can have CoNLL-U train, dev and test sets prefixes ```assyrian0, assyrian1, ..., assyrian9``` and use the command ```python babylemmatizer.py --build-train assyrian*```. For cross-validating these models, use ```--evaluate assyrian*```.
 
-#### --train-model <arg>
-Trains a model or models from the built data. Argument works the same way as above.
-
-#### --build-train <arg>
-Builds training data and trains the models. Argument works the same way as above.
-
-#### --evaluate <arg>
-Cross-evaluates trained models. Argument works the same way as above.
 
 ## Using models
 To tag and lemmatize texts, you need to first convert it into a CoNLL-U format. See instructions in the [conllu](https://github.com/asahala/BabyLemmatizer/tree/main/conllu) folder.
