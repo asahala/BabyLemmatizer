@@ -155,7 +155,7 @@ def pipeline(*models):
 
         model_api.assign_confidence_scores(model)
 
-    print(f' ===== {step} ====')
+    print(f' ===== {step} =====')
     cross_validation(results)
     
 

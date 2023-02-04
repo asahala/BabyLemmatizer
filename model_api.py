@@ -15,16 +15,31 @@ University of Helsinki
 
 =========================================================== """
 
+def _rename_model(model_name, type_):
+    
+    def get_step(filename):
+        return int(''.join(c for c in filename if c.isdigit()))
+        
+    path = os.path.join('models', model_name, type_)
+    step = sorted(get_step(x) for x in os.listdir(path) if x.endswith('.pt'))[-1]
+
+    old_name = f'model_step_{step}.pt'
+    new_name = 'model.pt'
+    os.rename(os.path.join(path, old_name), os.path.join(path, new_name))
+
+    
 def run_tagger(input_file, model_name, output_file): 
     command = f"{python_path}python {onmt_path}translate.py -model"\
         f" {model_name} -src {input_file} -output {output_file} -gpu 0 -min_length 1"
     os.system(command)
-
+    _rename_model(model_name, 'tagger')
+    
 
 def run_lemmatizer(input_file, model_name, output_file):
     command = f"{python_path}python {onmt_path}translate.py -model"\
               f" {model_name} -src {input_file} -output {output_file} -gpu 0 -min_length 1"
     os.system(command)
+    _rename_model(model_name, 'lemmatizer')
 
 
 def merge_tags(tagged_file, lemma_input, output_file):
@@ -112,12 +127,4 @@ def assign_confidence_scores(model):
 
                 data[-1] = str(conf_score)
                 f.write('\t'.join(data) + '\n')
-            
-                    
-
-            
-            
-            
-        
-    
     
