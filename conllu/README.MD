@@ -45,7 +45,7 @@ If you want to train new models, you need to populate the ```LEMMA, UPOS, XPOS``
 ## How does CoNLL-U look like?
 See official description of the format at [Universal Dependencies website](https://universaldependencies.org/format.html). In short, it is a word-per-line format closely related to TSV and VRT. Each segment (e.g. line, sentence, text) is separated by an empty line, and each line of text data consists of 10 tab-separated fields: ```ID, FORM, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC```. For our purposes ```UPOS``` and ```XPOS``` fields contain the same information, ```FEATS``` is always empty, ```HEAD``` and ```DEPREL``` indicate the first word as the segment as *root* and *0*, and the following words as *child* and *1*, ```DEPS``` field has and *_* and ```MISC``` contains whatever other information.
 
-The important fields are ```FORM``` that contains *transliteration* and ```LEMMA``` that contains the lemma. See example below. Conllu always wnends with and empty line.
+The important fields are ```FORM``` that contains *transliteration* and ```LEMMA``` that contains the lemma. See example below. **CoNLL-U always ends with and empty line.**
 
 
 ```
