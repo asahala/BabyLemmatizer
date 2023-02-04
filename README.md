@@ -40,18 +40,6 @@ onmt_path = '/yourpath/OpenNMT/lib/python3.9/site-packages/onmt/bin'
 
 After this, you can run ```preferences.py``` and if lots of OpenNMT documentation prints on your screen, everything should be okay.
 
-## Command line use
-BabyLemmatizer can be used from the command line. This can be done with ```babylemmatizer.py``` command line API. The command line interface is purposefully simple and does not give user direct access to any additional parameters.
-
-```
---build-data  <arg>                  Builds data from CoNNL-U files in your conllu folder
---train-model <arg>                  Trains a model or models for the built data
---build-train <arg>                  Builds data and trains a model or models
---evaluate    <arg>                  Cross-validates your model or models
-```
-
-All these commands have one mandatory argument, which points to the data in your ```conllu``` folder if you are building new data, or to your ```models``` folder if you are training or evaluating models. For example, if you have CoNLL-U files ```assyrian-train.conllu, assyrian-dev.conllu, assyrian-test.conllu``` and want to build data and train models for them, you can call BabyLemmatizer ```python babylemmatizer.py --build-train assyrian```. In case you want to train several models for 10-fold cross-validation, you can have train/dev/test CoNLL-U files with prefixes ```assyrian0, assyrian1, ..., assyrian9``` and use the command ```python babylemmatizer.py --build-train assyrian*```. Similarly, to cross-validate these models after training, use ```python babylemmatizer.py --evaluate assyrian*```.
-
 ## Use in Python
 
 ### Using models
@@ -79,6 +67,24 @@ See more information about the input format in the [conllu](https://github.com/a
 
 ### Evaluating models
 You can perform n-fold cross-validation of your models by using ```evaluate_models.py```. For example, to evaluate five Elamite models, call the method ```pipeline("elamite1", "elamite2", "elamite3", "elamite4", "elamite5")```.
+
+All intermediate steps of evaluation are saved into ```models/model_name/eval/``` and the final lemmatization results are saved into ```output_final.conllu2``` in this folder.
+
+### Distributing models
+...
+
+## Command line use
+BabyLemmatizer can be used from the command line. This can be done with ```babylemmatizer.py``` command line API. The command line interface is purposefully simple and does not give user direct access to any additional parameters.
+
+```
+--build-data  <arg>                  Builds data from CoNNL-U files in your conllu folder
+--train-model <arg>                  Trains a model or models for the built data
+--build-train <arg>                  Builds data and trains a model or models
+--evaluate    <arg>                  Cross-validates your model or models
+```
+
+All these commands have one mandatory argument, which points to the data in your ```conllu``` folder if you are building new data, or to your ```models``` folder if you are training or evaluating models. For example, if you have CoNLL-U files ```assyrian-train.conllu, assyrian-dev.conllu, assyrian-test.conllu``` and want to build data and train models for them, you can call BabyLemmatizer ```python babylemmatizer.py --build-train assyrian```. In case you want to train several models for 10-fold cross-validation, you can have train/dev/test CoNLL-U files with prefixes ```assyrian0, assyrian1, ..., assyrian9``` and use the command ```python babylemmatizer.py --build-train assyrian*```. Similarly, to cross-validate these models after training, use ```python babylemmatizer.py --evaluate assyrian*```.
+
 
 ## Citations
 If you use BabyLemmatizer for annotating your data or training new models, please cite this repository and [Sahala et al. 2022](http://hdl.handle.net/10138/348412). An updated publication will be written in 2023 that describes this version of the system.
