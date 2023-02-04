@@ -88,7 +88,7 @@ All these commands have one mandatory argument, which points to the data in your
 Some additional commands:
 
 ```
---normalize-conllu  <arg>            Normalizes CoNLL-U file transliterations, e.g. URU{KI} ḫa-àm-mu-ra-pí -> URU{ki} ha-am₃-mu-ra-pi₂
+--normalize-conllu  <arg>            Attempts to normalize transliteration into Oracc format.
 ```
 
 
