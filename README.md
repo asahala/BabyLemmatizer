@@ -68,7 +68,7 @@ Lemmatization may take a while depending on your hardware. Your result will be s
 **Note:** prior to official publishing of this repository, post-processing is not done.
 
 ### Training models
-To train a new model, put your source files in the ```conllu``` folder. Then then proceed with the following steps using ```train_pipeline.py``` script. Let's assume you have CoNLL-U train/dev/test files with prefixes ```elamite``` and ```assyrian```. Train model with two lines of code:
+To train a new model, put your source files in the ```conllu``` folder. Then then proceed with the following steps using ```train_pipeline.py``` script. Let's assume you have CoNLL-U train/dev/test files with prefixes ```elamite``` and ```assyrian```. Train the models with two lines of code:
 
 ```
 build_train_data("elamite", "assyrian")
