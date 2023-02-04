@@ -2,10 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import math
 import shutil
+import re
 from collections import defaultdict
-from preferences import python_path, onmt_path
+from preferences import python_path, onmt_path, conllu_path
+from command_parser import parse_prefix, split_train_filename
 import preprocessing
 import conllutools
 import base_yaml
@@ -21,6 +24,9 @@ University of Helsinki
    Centre of Excellence for Ancient Near-Eastern Empires
 
 =========================================================== """
+
+hr = '=' * 20
+print(f'{hr} BabyParser 2.0 {hr}')
 
 statistics = defaultdict(int)
 counts = defaultdict(dict)
@@ -59,8 +65,10 @@ def print_oov_rates():
                 """ Make OOV dictionary and save it """
                 out_of_vocab = this - train
 
-                fn = f'{data_type}-types-oov.{word_type}'
-                with open(f'models/{model}/override/{fn}', 'w', encoding='utf-8') as f:
+                fn = f'models/{model}/override/'\
+                     f'{data_type}-types-oov.{word_type}'
+                
+                with open(fn, 'w', encoding='utf-8') as f:
                     for w in sorted(out_of_vocab):
                         freq = counts[model][data_type][word_type][w]
                         f.write(f'{w}\t{freq}\n')
@@ -83,11 +91,11 @@ def print_oov_rates():
                 oov_rel = round(100 * oov_abs / examples_this, 2)
                 stats[key] = (examples_this, oov_abs, oov_rel)
 
+        headings = ('CATEGORY', 'SIZE', 'OOV', 'OOV-%')
         logger('\n   ' + model + ' ' + '='*48)
-        logger('   {: <20} {:>7} {:>7} {:>7}'.format('CATEGORY', 'SIZE', 'OOV', 'OOV-%'))
+        logger('   {: <20} {:>7} {:>7} {:>7}'.format(*headings))
         for key, values in sorted(stats.items()):
-            logger('   {: <20} {:>7} {:>7} {:>7}'.format(key, *values))
-            
+            logger('   {: <20} {:>7} {:>7} {:>7}'.format(key, *values))           
            
 
 def make_override(prefix, data_type, filename):
@@ -136,12 +144,11 @@ def make_training_data(filename):
     prefix is arbitrary identifier and suffix `dev`, `test`,
     or `train` depending on which set the data belongs. """
 
-    logger(f'> Building training data from {filename}')
-
     """ Create required folder structures for the model """
-    o_fn = filename.split('/')[-1]
-    prefix = o_fn.split('-')[0]
-    data_type = o_fn.split('-')[-1].replace('.conllu', '')
+    orig_fn = os.path.split(filename)[-1]
+    prefix, data_type = split_train_filename(orig_fn)
+    
+    logger(f'\n> Building training data from {filename}')
 
     paths = ('models/',
         f'models/{prefix}/',
@@ -158,7 +165,6 @@ def make_training_data(filename):
             os.mkdir(path)
         except FileExistsError:
             pass
-
 
     shutil.copyfile(filename, f'models/{prefix}/conllu/{data_type}.conllu')    
 
@@ -220,33 +226,65 @@ def make_training_data(filename):
 
     make_override(prefix, data_type, filename)
 
-            
-def build_train_data(log_file='log.txt', conllu_path='conllu/'):
-    """ Run this method to rebuild training data based on Conllu-file """
-    filelist = (x for x in os.listdir(conllu_path) if x.endswith('.conllu'))
+
+def build_train_data(*models):
+    """ Build train data from CoNLL-U files
+
+    :param models         arbitrary number of model names that
+                          correspond to file prefixes in the conllu path
+
+    :type models          str
+
+    """
+
+    filelist = [x for x in os.listdir(conllu_path)
+                if x.endswith('.conllu') and x.startswith(tuple(models))]
+
+    if not filelist:
+        print(f'\n> Path "{conllu_path}" does not contain'\
+              ' files with given prefix')
+        sys.exit(0)
+    
     for filename in filelist:
-        make_training_data(conllu_path + filename)
+        make_training_data(os.path.join(conllu_path, filename))
+        
     print_statistics()
     print_oov_rates()
-    save_log(log_file)
+
+    if len(models) > 1:
+        prefix = ''.join(c for c in models[0] if not c.isdigit())
+    else:
+        prefix = models[0]
+        
+    save_log(f'{prefix}-build-log.txt')
 
 
-def train_models(*model_names):
+def train_model(*models):
     """ Run this method to train the models; this simply calls OpenNMT
     from the command line with required parameters to train basic
     models for raw tagging and lemmatization.
 
-    :param model_names           model names that correspond to
-                                 prefixes in your conllu files
-    :type model_names            str """
+    :param models         arbitrary number of model names that
+                          correspond to file prefixes in the conllu path
 
-    for model in model_names:
-        model_path = f'./models/{model}/'
+    :type models          str """
+
+    for model in models:
+        if model not in os.listdir('models'):
+            print(f'> Run build_training_data({model}) before training.')
+            sys.exit(0)
+
+        model_path = os.path.join('models', model)
         for yaml in (x for x in os.listdir(model_path) if x.endswith('.yaml')):
             os.system(f'{python_path}python {onmt_path}build_vocab.py '\
-                      f'-config {model_path}{yaml} -n_sample -1 -num_threads 2')
+                      f'-config {model_path}/{yaml} -n_sample -1 '\
+                      '-num_threads 2')
             os.system(f'{python_path}python {onmt_path}train.py '\
-                      f'-config {model_path}{yaml}')    
-    
-build_train_data()
-#train_models('lbtest1', 'lbtest2', 'lbtest3', 'lbtest4', 'lbtest5')
+                      f'-config {model_path}/{yaml}')
+
+
+if __name__ == "__main__":
+    prefix = 'lbtest4'
+    models = parse_prefix(prefix)
+    build_train_data(*models)
+    train_model('a', 'b')#*models)

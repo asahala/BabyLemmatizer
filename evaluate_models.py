@@ -6,8 +6,9 @@ import os
 import math
 from collections import defaultdict
 #from preferences import python_path, onmt_path
+from command_parser import parse_prefix
 import model_api
-import conllutools as ct
+import conllutools
 
 """ ===========================================================
 Evaluation pipeline for BabyLemmatizer 2
@@ -119,7 +120,7 @@ def pipeline(*models):
     for model in models:
 
         print(f'> Running model {model}')
-        
+        """
         model_api.run_tagger(input_file = f'./models/{model}/tagger/traindata/test.src',
                    model_name = f'./models/{model}/tagger/{step}',
                    output_file = f'./models/{model}/eval/output_tagger.txt')
@@ -141,28 +142,24 @@ def pipeline(*models):
         model_api.merge_to_final(tags = f'./models/{model}/tagger/traindata/test.tgt',
                                  lemmas = f'./models/{model}/lemmatizer/traindata/test.tgt',
                                  output = f'./models/{model}/eval/gold.txt')
-        
+        """
         tagger_res, lemmatizer_res, combined_res = evaluate(model)
         results[model] = {'pos-tagger': tagger_res,
                           'lemmatizer': lemmatizer_res,
-                          'combined  ': combined_res}
-
-        ct.make_conllu(
+                          'combined  ': combined_res}  
+        
+        conllutools.make_conllu(
             final_results = f'./models/{model}/eval/output_final.txt',
             source_conllu = f'./models/{model}/conllu/test.conllu',
             output_conllu = f'./models/{model}/eval/output_final.conllu')
 
+        model_api.assign_confidence_scores(model)
+
     print(f' ===== {step} ====')
     cross_validation(results)
     
-#steps = [f for f in os.listdir(f'./models/lbtest1/tagger/') if f.endswith('.pt')]
 
-#for step in steps:
-pipeline('lbtest1', 'lbtest2', 'lbtest3', 'lbtest4')
-#pipeline('lbtest1')
-#merge_tags('lbtest1')
-
-#data = {'lbtest1': {'pos-tagger': {'accuracy': 0.971, 'correct': 56266, 'incorrect': 1708, 'total': 57974}, 'lemmatizer': {'accuracy': 0.934, 'correct': 54167, 'incorrect': 3807, 'total': 57974}}, 'lbtest2': {'pos-tagger': {'accuracy': 0.971, 'correct': 55901, 'incorrect': 1667, 'total': 57568}, 'lemmatizer': {'accuracy': 0.938, 'correct': 53977, 'incorrect': 3591, 'total': 57568}}, 'lbtest3': {'pos-tagger': {'accuracy': 0.97, 'correct': 49777, 'incorrect': 1563, 'total': 51340}, 'lemmatizer': {'accuracy': 0.933, 'correct': 47904, 'incorrect': 3436, 'total': 51340}}, 'lbtest4': {'pos-tagger': {'accuracy': 0.971, 'correct': 49461, 'incorrect': 1490, 'total': 50951}, 'lemmatizer': {'accuracy': 0.932, 'correct': 47475, 'incorrect': 3476, 'total': 50951}}, 'lbtest5': {'pos-tagger': {'accuracy': 0.97, 'correct': 53050, 'incorrect': 1630, 'total': 54680}, 'lemmatizer': {'accuracy': 0.936, 'correct': 51178, 'incorrect': 3502, 'total': 54680}}}
-#cross_validation(data)
-
-#merge_to_final('lbtest1')
+if __name__ == "__main__":
+    prefix = 'lbtest1'
+    models = parse_prefix(prefix, evaluate=True)
+    pipeline(*models)

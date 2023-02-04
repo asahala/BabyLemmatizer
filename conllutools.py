@@ -145,7 +145,7 @@ def upl_to_conllu(upl_file, output):
             for word in line.strip().split(' '):
                 hh = head.get(i, '1')
                 rr = deprel.get(i, 'child')
-                o.write(f'{i}\t{word}\t_\t_\t_\tempty\t{hh}\t{rr}\t_\t_\n')
+                o.write(f'{i}\t{word}\t_\t_\t_\t_\t{hh}\t{rr}\t_\t_\n')
                 i += 1
             o.write('\n')
 
