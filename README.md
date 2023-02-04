@@ -109,9 +109,9 @@ If you use BabyLemmatizer for annotating your data or training new models, pleas
 In order of priority:
 
 * Pretrained models
-* Advanced command-line usage (tuning the neural net, customizing folders etc)
+* Advanced command-line use (tuning the neural net, customizing folders etc)
 * Phonological transcription
-* Direct Oracc ATF and JSON support
+* Direct Oracc ATF support
 * Morphological analysis
-* Server-side usage
+* Server-side use
 * Machine Translation
