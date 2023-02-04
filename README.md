@@ -75,7 +75,7 @@ To train a new model, put your source files in the ```conllu``` folder. Then the
 
 See more information about the input format in the [conllu](https://github.com/asahala/BabyLemmatizer/tree/main/conllu) foder.
 
-### Evaluating your models
+### Evaluating models
 You can perform n-fold cross-validation of your models by using ```evaluate_models.py```. For example, to evaluate the models trained on the step above, call the method ```pipeline("elamite", "assyrian")```.
 
 ## Citations
