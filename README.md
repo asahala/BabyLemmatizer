@@ -24,7 +24,7 @@ Results of the 5-fold cross-validation of the first millennium Babylonian models
 BabyLemmatizer 2.0 has been tested with Python 3.9 and OpenNMT-py 3.0.
 
 ## Setting up BabyLemmatizer
-The easiest way to get BabyLemmatizer 2.0 running is to create a Python 3.9 virtual environment for OpenNMT-py, this ensures that you have permanently all necessary requirements installed and they do not conflict with your other libaries. For example,
+The easiest way to get BabyLemmatizer 2.0 running is to create a Python 3.9 virtual environment for OpenNMT-py, this ensures that you have permanently all necessary requirements installed and they do not conflict with your other libaries. This is fairly simple:
 
 1. ```python3.9 -m venv OpenNMT```
 2. ```source OpenNMT/bin/activate```
