@@ -43,6 +43,8 @@ def reformat(sign):
 
 @lru_cache(maxsize=512)
 def get_chars(xlit):
+    if xlit == '_':
+        return xlit
     signs, delimiters = util.unzip_xlit(xlit)
     delimiters = [f' {d} '.replace('{ ', '{').replace(' }', '}') for d in delimiters]
     signs = [reformat(s) for s in signs]

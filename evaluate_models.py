@@ -22,6 +22,29 @@ University of Helsinki
 
 =========================================================== """
 
+## TODO: rewrite this crap
+
+def compare(source, target):
+    correct = 0
+    incorrect = 0
+    
+    with open(source, 'r', encoding='utf-8') as pred,\
+         open(target, 'r', encoding='utf-8') as gold:
+        
+        combined = zip(pred.read().splitlines(), gold.read().splitlines())
+
+        for result in (p == g for p, g in combined if p != '<EOU>'):
+            if result:
+                correct += 1
+            else:
+                incorrect +=1
+                   
+    return {'accuracy': correct/(correct+incorrect),
+            'correct': correct,
+            'incorrect': incorrect,
+            'total': correct+incorrect}
+
+
 def evaluate(model):
     tagger_res = f'./models/{model}/eval/output_tagger.txt'
     tagger_tgt = f'./models/{model}/tagger/traindata/test.tgt'
@@ -31,32 +54,11 @@ def evaluate(model):
 
     combined_res = f'./models/{model}/eval/output_final.txt'
     combined_tgt = f'./models/{model}/eval/gold.txt'
-    
-    def compare(source, target):
-        correct = 0
-        incorrect = 0
-        
-        with open(source, 'r', encoding='utf-8') as pred,\
-             open(target, 'r', encoding='utf-8') as gold:
-            
-            combined = zip(pred.read().splitlines(), gold.read().splitlines())
-
-            for result in (p == g for p, g in combined if p != '<EOU>'):
-                if result:
-                    correct += 1
-                else:
-                    incorrect +=1
-                       
-        return {'accuracy': correct/(correct+incorrect),
-                'correct': correct,
-                'incorrect': incorrect,
-                'total': correct+incorrect}
 
     tagger_results = compare(tagger_res, tagger_tgt)
     lemmatizer_results = compare(lemmatizer_res, lemmatizer_tgt)
     combined_results = compare(combined_res, combined_tgt)
-    #print(tagger_results)
-    #print(lemmatizer_results)
+    
     return tagger_results, lemmatizer_results, combined_results
 
 
@@ -104,7 +106,69 @@ def make_conllu(final_results, source_conllu, output_conllu):
                 line[4] = pos
                 output.write('\t'.join(line) + '\n')
 
-                
+
+def evaluate_oov(model):
+
+    oov_path = os.path.join('models', model, 'override', 'test-types-oov.xlit')
+    test_file = os.path.join('models', model, 'override', 'test.all')
+    combined_res = f'./models/{model}/eval/output_final.txt'
+    
+    oov = set()
+    with open(oov_path, 'r', encoding='utf-8') as f:
+        for word in f.read().splitlines():
+            oov.add(word.split('\t')[0])
+
+    gold = []
+    with open(test_file, 'r', encoding='utf-8') as f:
+        for line in f.read().splitlines():
+            if not line:
+                continue
+            if not line.startswith(conllutools.EOU[0]):
+                gold.append(line.split('\t'))
+
+    pred = []
+    with open(combined_res, 'r', encoding='utf-8') as f:
+        for line in f.read().splitlines():
+            if not line:
+                continue
+            if not line.startswith(conllutools.EOU[0]):
+                pred.append(line.split('\t'))
+
+
+    def compare2(cat):
+        combined = zip(pred, gold)
+
+        correct = 0
+        incorrect = 0
+        for p, g in combined:
+            
+            xlit = g[0]
+            if cat == 'tag':
+                pred_ = p[-1]                
+                gold_ = g[-1]
+            elif cat == 'lem':
+                pred_ = p[0]
+                gold_ = g[1]
+            elif cat == 'comb':
+                pred_ = p
+                gold_ = g[1:]
+            if xlit in oov:
+                if pred_ == gold_:
+                    correct += 1
+                else:
+                    incorrect += 1
+
+        return {'accuracy': correct/(correct+incorrect),
+                'correct': correct,
+                'incorrect': incorrect,
+                'total': correct+incorrect}
+    
+    tag_oov = compare2('tag')
+    lem_oov = compare2('lem')
+    comb_oov = compare2('comb')
+
+    return tag_oov, lem_oov, comb_oov
+    
 def pipeline(*models, cpu):
     """ Run the whole evaluation pipeline for `models`
 
@@ -120,7 +184,6 @@ def pipeline(*models, cpu):
     for model in models:
 
         print(f'> Running model {model}')
-
         model_api.run_tagger(input_file = f'./models/{model}/tagger/traindata/test.src',
                    model_name = f'./models/{model}/tagger/{step}',
                    output_file = f'./models/{model}/eval/output_tagger.txt',
@@ -134,7 +197,7 @@ def pipeline(*models, cpu):
                        model_name = f'./models/{model}/lemmatizer/{step}',
                        output_file = f'./models/{model}/eval/output_lemmatizer.txt',
                        cpu = cpu)
-
+        
         # Merge prediced results
         model_api.merge_to_final(tags = f'./models/{model}/eval/output_tagger.txt',
                                  lemmas = f'./models/{model}/eval/output_lemmatizer.txt',
@@ -146,9 +209,16 @@ def pipeline(*models, cpu):
                                  output = f'./models/{model}/eval/gold.txt')
 
         tagger_res, lemmatizer_res, combined_res = evaluate(model)
-        results[model] = {'pos-tagger': tagger_res,
-                          'lemmatizer': lemmatizer_res,
-                          'combined  ': combined_res}  
+
+        tag_oov, lem_oov, comb_oov = evaluate_oov(model)
+        
+        
+        results[model] = {'pos-tagger    ': tagger_res,
+                          'lemmatizer    ': lemmatizer_res,
+                          'combined      ': combined_res,
+                          'pos-tagger OOV': tag_oov,
+                          'lemmatizer OOV': lem_oov,
+                          'combined   OOV': comb_oov}
         
         conllutools.make_conllu(
             final_results = f'./models/{model}/eval/output_final.txt',
@@ -164,4 +234,4 @@ def pipeline(*models, cpu):
 if __name__ == "__main__":
     prefix = 'lbtest1'
     models = parse_prefix(prefix, evaluate=True)
-    pipeline(*models)
+    pipeline(*models, cpu=True)
