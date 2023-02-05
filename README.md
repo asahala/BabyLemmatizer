@@ -126,3 +126,6 @@ In order of priority:
 * Morphological analysis
 * Server-side use
 * Machine Translation
+
+## Bugs
+* log file prevents training
