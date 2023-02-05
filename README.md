@@ -31,7 +31,7 @@ The easiest way to get BabyLemmatizer 2.0 running is to create a Python 3.9 virt
 3. ```pip install --upgrade pip```
 4. ```pip install OpenNMT-py```
 
-Then you need to clone **BabyLemmatizer** reposotory and edit ```preferences.py``` to add paths to the virtual environment and OpenNMT binaries. 
+Then you need to clone **BabyLemmatizer** repository and edit ```preferences.py``` to add paths to the virtual environment and OpenNMT binaries. 
 
 ```
 python_path = '/yourpath/OpenNMT/bin/'
