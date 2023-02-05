@@ -10,7 +10,7 @@ My library [Cuneiformtools](https://docs.google.com/document/d/1kW9DnCpXGICJ_ttO
 
 ```python babylemmatizer.py --normalize-conllu```
 
-It goes through all conllu files in the ```conllu``` folder and normalize them into ```conllu/normalized```. You can then delete the originals and replace them with normalized files. 
+It goes through all conllu files in the ```conllu``` folder and normalize them into ```conllu/normalized```. You can then delete the originals and replace them with normalized files. This will change numeric/accented indexation into susbcript, lowercase determinatives following Oracc notation etc.
 
 Currently BabyLemmatizer does not provide tools for converting ATF to CoNLL-U and backwards, or direct lemmatization of Oracc JSONs, but these features will be added in the future. If you have your text in a unit-per-line format (this unit can be text, sentence or line), you can use the function ```upl_to_conllu()``` in ```conllutools.py``` to add required fields, if you make your own script in the BabyLemmatizer folder, E.g.
 
