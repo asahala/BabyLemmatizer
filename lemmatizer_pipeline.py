@@ -69,14 +69,15 @@ class Lemmatizer:
                f' words in {self.segment_count} segments.')
 
 
-    def run_model(self, model_name):
-        tagger_path = f'./models/{model_name}/tagger/model_step_35000.pt'
-        lemmatizer_path = f'./models/{model_name}/lemmatizer/model_step_35000.pt'
+    def run_model(self, model_name, cpu):
+        tagger_path = f'./models/{model_name}/tagger/model.pt'
+        lemmatizer_path = f'./models/{model_name}/lemmatizer/model.pt'
 
         io(f'Tagging {self.tagger_input} with {model_name}')
         model_api.run_tagger(self.tagger_input,
                              tagger_path,
-                             self.tagger_output)
+                             self.tagger_output,
+                             cpu)
 
         model_api.merge_tags(self.tagger_output,
                              self.word_forms,
@@ -85,7 +86,8 @@ class Lemmatizer:
         io(f'Lemmatizing {self.lemmatizer_input} with {model_name}')
         model_api.run_lemmatizer(self.lemmatizer_input,
                                  lemmatizer_path,
-                                 self.lemmatizer_output)
+                                 self.lemmatizer_output,
+                                 cpu)
        
 
         model_api.merge_to_final(self.tagger_output,
@@ -99,5 +101,13 @@ class Lemmatizer:
 
         io(f'Annotations saved to {final}')
         
-l = Lemmatizer('./input/example.conllu')
-l.run_model('lbtest1')
+
+if __name__ == "__main__":
+    """ Demo for lemmatization """
+    #l = Lemmatizer('./input/example.conllu')
+    #l.run_model('lbtest1')
+
+    pass
+
+
+

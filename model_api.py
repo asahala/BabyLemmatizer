@@ -14,16 +14,23 @@ University of Helsinki
    Centre of Excellence for Ancient Near-Eastern Empires
 
 =========================================================== """
-
-def run_tagger(input_file, model_name, output_file): 
-    command = f"{python_path}python {onmt_path}translate.py -model"\
-        f" {model_name} -src {input_file} -output {output_file} -gpu 0 -min_length 1"
-    os.system(command)
     
+def run_tagger(input_file, model_name, output_file, cpu=False):
+    gpu = ''
+    if not cpu:
+        gpu = '-gpu 0'
 
-def run_lemmatizer(input_file, model_name, output_file):
     command = f"{python_path}python {onmt_path}translate.py -model"\
-              f" {model_name} -src {input_file} -output {output_file} -gpu 0 -min_length 1"
+        f" {model_name} -src {input_file} -output {output_file} {gpu} -min_length 1"
+    os.system(command)
+
+
+def run_lemmatizer(input_file, model_name, output_file, cpu=False):
+    gpu = ''
+    if not cpu:
+        gpu = '-gpu 0'
+    command = f"{python_path}python {onmt_path}translate.py -model"\
+              f" {model_name} -src {input_file} -output {output_file} {gpu} -min_length 1"
     os.system(command)
 
 

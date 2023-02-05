@@ -5,6 +5,7 @@ from argparse import ArgumentParser
 import train_pipeline
 import evaluate_models
 import conllutools
+import lemmatizer_pipeline
 from command_parser import parse_prefix
 
 """ ===========================================================
@@ -21,11 +22,14 @@ University of Helsinki
 
 def get_args():
     ap = ArgumentParser()
+    ap.add_argument('filename')
     ap.add_argument('--evaluate', type=str)
     ap.add_argument('--train-model', type=str)
     ap.add_argument('--build-data', type=str)
     ap.add_argument('--build-train', type=str)
     ap.add_argument('--normalize-conllu', action='store_true')
+    ap.add_argument('--lemmatize', type=str)
+    ap.add_argument('--use-cpu', action='store_true')
     return ap.parse_args()
 
 if __name__ == "__main__":
@@ -46,3 +50,7 @@ if __name__ == "__main__":
         evaluate_models.pipeline(*models)
     elif args.normalize_conllu:
         conllutools.normalize_all('conllu')
+    elif args.lemmatize:
+        cpu = args.use_cpu
+        lemmatizer = lemmatizer_pipeline.Lemmatizer(args.filename)
+        lemmatizer.run_model(args.lemmatize, cpu)
