@@ -6,7 +6,16 @@ State-of-the-art neural tagger and lemmatizer for Akkadian (and other cuneiform 
 BabyLemmatizer 2.0 is fully based on OpenNMT, which makes it simpler to use than the previous BabyLemmatizer version that was dependent on an outdated version of TurkuNLP with some problematic dependencies. At its current stage, BabyLemmatizer can be used for part-of-speech tagging and lemmatization of transliterated Akkadian texts. Unlike the old version, BabyLemmatizer 2.0 uses an unindexed character based representation for syllabic signs and sign-based tokenization for logograms, that maximize its capability to discriminate between predictable and suppletive grapheme to phoneme relations.
 
 ### Brief description
-BabyLemmatizer 2.0 approaches POS-tagging and lemmatization as a Machine Translation task. It features context-aware POS-tagger and lemmatizer that combine strenghts of encoder-decoder neural networks, and (very slightly) statistical and heuristic dictionary-based methods to post-correct and score the reliability of the annotations.
+BabyLemmatizer 2.0 approaches POS-tagging and lemmatization as a Machine Translation task. It features context-aware POS-tagger and lemmatizer that combine strengths of encoder-decoder neural networks (i.e. predicting analyses for unseen word forms), and (very slightly) statistical and heuristic dictionary-based methods to post-correct and score the reliability of the annotations. BabyLemmatizer is useful for making Akkadian texts searchable and useable for other Natural Language Processing tasks, such as building [Word Embeddings](https://github.com/asahala/pmi-embeddings), as transliterated texts are practically impossible to use efficiently due to ortographic and morphological complexity of the language.
+
+|***Transliteration*** | ***Lemma*** | ***POS-tag*** |
+| --- | --- | --- |
+| IMIN{+et}	| sebe | NU |
+| a-di | adi | PRP |
+| IMIN{+et} | sebe | NU |
+| a-ra-an-šu | arnu | N |
+| pu-uṭ-ri | paṭāru | V |
+
 
 ### Performance
 Results of the 5-fold cross-validation of the first millennium Babylonian models trained with 500k examples split into 80/10/10.
