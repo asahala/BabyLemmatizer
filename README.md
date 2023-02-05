@@ -70,11 +70,20 @@ You can perform n-fold cross-validation of your models by using ```evaluate_mode
 
 All intermediate steps of evaluation are saved into ```models/model_name/eval/``` and the final lemmatization results are saved into ```output_final.conllu2``` in this folder.
 
-### Distributing models
-...
 
 ## Command line use
-BabyLemmatizer can be used from the command line. This can be done with ```babylemmatizer.py``` command line API. The command line interface is purposefully simple and does not give user direct access to any additional parameters.
+
+BabyParser 2.0 can be used directly from the command line.
+
+### Lemmatization
+To lemmatize unlemmatized corpus, run the following command:
+
+```python3 babylemmatizer.py corpus_file --lemmatize modelname```
+
+where ```corpus_file``` points to the CoNLL-U file you want to lemmatize and ```modelname``` to the model you want to use. Lemmatization is by default done on GPU, but if you don't have a CUDA cabable GPU, you can add parameter ```--use-cpu```.
+
+### Training and evaluation
+Training and evaluation can be done using ```babylemmatizer.py``` command line API. The command line interface is purposefully simple and does not give user direct access to any additional parameters.
 
 ```
 --build-data  <arg>                  Builds data from CoNNL-U files in your conllu folder
