@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 from preferences import conllu_path
 
 def split_train_filename(orig_fn):

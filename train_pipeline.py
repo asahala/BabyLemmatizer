@@ -258,7 +258,7 @@ def build_train_data(*models):
               ' files with given prefix')
         sys.exit(0)
     
-    for filename in filelist:
+    for filename in sorted(filelist):
         make_training_data(os.path.join(conllu_path, filename))
         
     print_statistics()
@@ -272,7 +272,7 @@ def build_train_data(*models):
     save_log(f'{prefix}-build-log.txt')
 
 
-def train_model(*models):
+def train_model(*models, cpu=False):
     """ Run this method to train the models; this simply calls OpenNMT
     from the command line with required parameters to train basic
     models for raw tagging and lemmatization.
@@ -282,19 +282,23 @@ def train_model(*models):
 
     :type models          str """
 
-    for model in models:
+    if cpu:
+        gpu = ''
+    else:
+        gpu = '-gpu_ranks 0 -world_size 1'
+
+    for model in sorted(models):
         if model not in os.listdir('models'):
             print(f'> Run build_training_data({model}) before training.')
             sys.exit(0)
-
 
         model_path = os.path.join('models', model)
         for yaml in (x for x in os.listdir(model_path) if x.endswith('.yaml')):
             os.system(f'{python_path}python {onmt_path}build_vocab.py '\
                       f'-config {model_path}/{yaml} -n_sample -1 '\
-                      '-num_threads 2')
+                      f'-num_threads 2')
             os.system(f'{python_path}python {onmt_path}train.py '\
-                      f'-config {model_path}/{yaml}')
+                      f'-config {model_path}/{yaml} {gpu}')
 
         _rename_model(model, 'lemmatizer')
         _rename_model(model, 'tagger')
@@ -307,7 +311,3 @@ if __name__ == "__main__":
     #train_model('a', 'b')#*models)
     pass
 
-#_rename_model('lbtest2', 'tagger')
-#_rename_model('lbtest2', 'lemmatizer')
-#_rename_model('lbtest1', 'tagger')
-#_rename_model('lbtest1', 'lemmatizer')

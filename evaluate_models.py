@@ -105,7 +105,7 @@ def make_conllu(final_results, source_conllu, output_conllu):
                 output.write('\t'.join(line) + '\n')
 
                 
-def pipeline(*models):
+def pipeline(*models, cpu):
     """ Run the whole evaluation pipeline for `models`
 
     :param models               model name
@@ -123,7 +123,8 @@ def pipeline(*models):
 
         model_api.run_tagger(input_file = f'./models/{model}/tagger/traindata/test.src',
                    model_name = f'./models/{model}/tagger/{step}',
-                   output_file = f'./models/{model}/eval/output_tagger.txt')
+                   output_file = f'./models/{model}/eval/output_tagger.txt',
+                   cpu = cpu)
         
         model_api.merge_tags(tagged_file = f'./models/{model}/eval/output_tagger.txt',
                    lemma_input = f'./models/{model}/lemmatizer/traindata/test.src',
@@ -131,7 +132,8 @@ def pipeline(*models):
         
         model_api.run_lemmatizer(input_file = f'./models/{model}/eval/input_lemmatizer.txt',
                        model_name = f'./models/{model}/lemmatizer/{step}',
-                       output_file = f'./models/{model}/eval/output_lemmatizer.txt')
+                       output_file = f'./models/{model}/eval/output_lemmatizer.txt',
+                       cpu = cpu)
 
         # Merge prediced results
         model_api.merge_to_final(tags = f'./models/{model}/eval/output_tagger.txt',

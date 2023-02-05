@@ -57,8 +57,8 @@ data:
 #tgt_vocab: models/{prefix}/lemmatizer/vocab.tgt
 
 # Train on a single GPU
-world_size: 1
-gpu_ranks: [0]
+#world_size: 1
+#gpu_ranks: [0]
 
 #####
 
@@ -90,8 +90,8 @@ data:
 #tgt_vocab: models/{prefix}/tagger/vocab.tgt
 
 # Train on a single GPU
-world_size: 1
-gpu_ranks: [0]
+#world_size: 1
+#gpu_ranks: [0]
 
 #####
 
