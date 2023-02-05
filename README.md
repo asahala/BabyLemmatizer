@@ -42,14 +42,14 @@ After this, you can run ```preferences.py``` and if lots of OpenNMT documentatio
 
 ## Use in Python
 
-### Using models
+### Lemmatization
 To tag and lemmatize texts, you need to first convert it into a CoNLL-U format. See instructions in the [conllu](https://github.com/asahala/BabyLemmatizer/tree/main/conllu) folder.
 
 Use ```lemmatizer_pipeline.py``` to annotate your texts. If you have an empty CoNLL-U file in in the ```input``` folder named ```example.conllu```, and you want to tag and lemmatize it using the first millennium Babylonian model ```lbtest1```, you can do it with two lines of code:
 
 ```
 l = Lemmatizer('./input/example.conllu') 
-l.run_model('lbtest1')
+l.run_model('lbtest1', cpu=True) # assuming that you want to use CPU instead of GPU
 ```
 Lemmatization may take a while depending on your hardware. Your result will be saved as ```input/example_lemmatized.conllu```. 
 
