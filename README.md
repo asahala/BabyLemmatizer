@@ -66,7 +66,7 @@ train_model("elamite", "assyrian")
 See more information about the input format in the [conllu](https://github.com/asahala/BabyLemmatizer/tree/main/conllu) foder.
 
 ### Evaluating models
-You can perform n-fold cross-validation of your models by using ```evaluate_models.py```. For example, to evaluate five Elamite models, call the method ```pipeline("elamite1", "elamite2", "elamite3", "elamite4", "elamite5")```.
+You can perform n-fold cross-validation of your models by using ```evaluate_models.py```. For example, to evaluate five Elamite models using CPU, call the method ```pipeline("elamite1", "elamite2", "elamite3", "elamite4", "elamite5", cpu=True)```.
 
 All intermediate steps of evaluation are saved into ```models/model_name/eval/``` and the final lemmatization results are saved into ```output_final.conllu2``` in this folder.
 
