@@ -87,7 +87,7 @@ BabyParser 2.0 can be used directly from the command line.
 ### Lemmatization
 To lemmatize unlemmatized corpus, run the following command:
 
-```python3 babylemmatizer.py --filename corpus_file --lemmatize modelname```
+```python3 babylemmatizer.py --filename corpus_file --lemmatize=modelname```
 
 where ```corpus_file``` points to the CoNLL-U file you want to lemmatize and ```modelname``` to the model you want to use. Lemmatization is by default done on GPU, but if you don't have a CUDA cabable GPU, you can add parameter ```--use-cpu```.
 
@@ -95,13 +95,13 @@ where ```corpus_file``` points to the CoNLL-U file you want to lemmatize and ```
 Training and evaluation can be done using ```babylemmatizer.py``` command line API. The command line interface is purposefully simple and does not give user direct access to any additional parameters.
 
 ```
---build-data  <arg>                  Builds data from CoNNL-U files in your conllu folder
---train-model <arg>                  Trains a model or models for the built data
---build-train <arg>                  Builds data and trains a model or models
---evaluate    <arg>                  Cross-validates your model or models
+--build=<arg>                  Builds data from CoNNL-U files in your conllu folder
+--train=<arg>                  Trains a model or models for the built data
+--build-train=<arg>            Builds data and trains a model or models
+--evaluate=<arg>               Cross-validates your model or models
 ```
 
-All these commands have one mandatory argument, which points to the data in your ```conllu``` folder if you are building new data, or to your ```models``` folder if you are training or evaluating models. For example, if you have CoNLL-U files ```assyrian-train.conllu, assyrian-dev.conllu, assyrian-test.conllu``` and want to build data and train models for them, you can call BabyLemmatizer ```python babylemmatizer.py --build-train assyrian```. In case you want to train several models for 10-fold cross-validation, you can have train/dev/test CoNLL-U files with prefixes ```assyrian0, assyrian1, ..., assyrian9``` and use the command ```python babylemmatizer.py --build-train assyrian*```. Similarly, to cross-validate these models after training, use ```python babylemmatizer.py --evaluate assyrian*```.
+All these commands have one mandatory argument, which points to the data in your ```conllu``` folder if you are building new data, or to your ```models``` folder if you are training or evaluating models. For example, if you have CoNLL-U files ```assyrian-train.conllu, assyrian-dev.conllu, assyrian-test.conllu``` and want to build data and train models for them, you can call BabyLemmatizer ```python babylemmatizer.py --build-train=assyrian```. In case you want to train several models for 10-fold cross-validation, you can have train/dev/test CoNLL-U files with prefixes ```assyrian0, assyrian1, ..., assyrian9``` and use the command ```python babylemmatizer.py --build-train assyrian*```. Similarly, to cross-validate these models after training, use ```python babylemmatizer.py --evaluate assyrian*```.
 
 ***Note:*** If you want to use CPU instead of GPU (i.e. if you get a CUDA error), use parameter ```--use-cpu``` in addition with parameters ```--train-model, --build-train``` and ```--evaluate```.
 
