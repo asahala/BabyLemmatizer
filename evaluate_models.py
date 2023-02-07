@@ -23,49 +23,102 @@ University of Helsinki
 
 =========================================================== """
 
-def cross_validation(results):
-    """ Calculate confidence interval for n-fold cross-validation """
+def cross_validation(results, oov_rates):
+    """ Calculate confidence interval for n-fold 
+    cross-validation
+
+    :param results        result dict from evaluation()
+    :param oov_rates      oov rate dict from evaluation()
+
+    :type results         dict
+    :type oov_rates       dict  """
+
     
+    def get_conf_interval(n, acc):
+        """ Calculate confidence interval
+
+        :param n          number of samples
+        :param acc        list of results
+
+        :type n           int
+        :type acc         [float, ...]  """
+
+        avg = sum(acc) / len(acc)
+        dev = ((x - avg)**2 for x in acc)
+        var = sum(dev) / max((n-1), 1)
+        std_dev = math.sqrt(var)
+
+        return round(1.96 * (std_dev / math.sqrt(n)) * 100, 2)
+
+    
+    def mark_max_value(values):
+        """ Mark highest value in list with following ^ """
+        if len(values) == 1:
+            yield ' ' + values[0]
+        else:
+            high = max(format(float(x), '.2f') for x in values)
+            low = min(format(float(x), '.2f') for x in values)
+            for v in values:
+                if v == high:
+                    yield f'▲{v}'
+                elif v == low:
+                    yield f'▽{v}'
+                else:
+                    yield f' {v}'
+
+    """ Define number of samples """
     n = len(results)
     vf = defaultdict(list)
 
-    print(' '*16, 'aver.', '\t'.join(results), 'conf. int', sep='\t')
-    
+    """ Container for data for CSV output """
+    csv = []
+
+    """ Heading for the models to be evaluated """
+    keys = [f' MODEL{e}' for e, x in enumerate(results)]
+    print('\n')
+    print('COMPONENT', 'AVG', 'CI', '\t'.join(keys), sep='\t')
+    csv.append(';'.join(
+        ('#component', 'confidence_interval',
+         'average', ';'.join(keys))))
+
+    """ Collect accuracies for each evaluation category
+    for each model from result dict """
     for model, data in results.items():
         for model_type, res in data.items():
             vf[model_type].append(res['accuracy'])
-            
+
+    """ Pretty-print results and calculate confidence
+    interval for n-fold cross-validation """
     for model_type, acc in vf.items():
+        ci = get_conf_interval(n, acc)       
         average = sum(acc) / len(acc)
-        deviation = [(x-average)**2 for x in acc]
-        variance = sum(deviation) / max((n-1), 1)
-        std_deviation = math.sqrt(variance)
-        conf_interval = round(1.96 * (std_deviation / math.sqrt(n)) * 100, 2)
+        _avg_acc = format(round(average*100, 2), '.2f')
+        _model_acc = [format(round(100*x, 2), '.2f') for x in acc]
+        _conf_interval = format(ci, '.2f')
+        print(model_type,
+              _avg_acc,
+              f'±{_conf_interval}',
+              '\t'.join(mark_max_value(_model_acc)),
+              sep='\t')      
 
-        print(model_type, round(average*100, 2), '\t'.join(str(round(x*100, 2)) for x in acc), f'±{conf_interval}', sep='\t')      
+        csv.append(';'.join((model_type, _avg_acc, _conf_interval, ';'.join(_model_acc))))
+
+    """ Pretty print OOV rates for each model """
+    _avg_oov = format(round(100 * sum(oov_rates.values()) / len(oov_rates), 2), '.2f')
+    _model_oov = [format(round(100*y, 2), '.2f') for x, y in sorted(oov_rates.items())]
+    _conf_interval = format(ci, '.2f')
     
-
-def make_conllu(final_results, source_conllu, output_conllu):
-
-    with open(combined_res, 'r', encoding='utf-8') as f:
-        results = f.read().splitlines()
+    divlen = 26 + (len(_model_oov)+2)*7  
+    print('-'*divlen)
+    print('OOV input rate',
+          _avg_oov,
+          '    ',
+          '\t'.join(mark_max_value(_model_oov)),
+          sep='\t')
     
-    with open(conllu, 'r', encoding='utf-8') as f,\
-         open(lemmatized_conllu, 'w', encoding='utf-8') as output:
-
-        for line in f.read().splitlines():
-            if not line:
-                output.write(line + '\n')
-                results.pop(0)
-            elif line.startswith('#'):
-                output.write(line + '\n')
-            else:
-                line = line.split('\t')
-                lemma, pos = results.pop(0).split('\t')
-                line[2] = lemma
-                line[3] = pos
-                line[4] = pos
-                output.write('\t'.join(line) + '\n')
+    print('\n')
+    
+    ## TODO: Save CSV file
 
 
 def evaluate(predictions, gold_standard, model):
@@ -74,13 +127,28 @@ def evaluate(predictions, gold_standard, model):
 
     :param predictions          prediction CoNLL-U file path
     :param gold                 gold CoNLL-U file path
-    :param model                model name """
+    :param model                model name 
+
+    Returns a dictionary of the following structure:
+
+    {eval_category1:
+       {accuracy:  float,
+        correct:   float,
+        incorrect: float,
+        total:     float},
+     eval_category2:
+       {...},
+     ...}                                                    
+
+    """
 
     def norm_key(key):
+        return key
         if len(key) < 16:
             key = key + ' '*(16 - len(key))
         return key
 
+    """ Collect predictions and gold standard """
     pred = conllutools.read_conllu(predictions, only_data=True)
     gold = conllutools.read_conllu(gold_standard, only_data=True)
 
@@ -91,21 +159,23 @@ def evaluate(predictions, gold_standard, model):
         for word in f.read().splitlines():
             oov.add(word.split('\t')[0])
 
+    """ Initialize containers for results """
     results = defaultdict(int)
     results_oov = defaultdict(int)
     total = 0
     total_oov = 0
 
-    """ Comparator """
+    """ Compare predictions to gold standard """
     for p, g in zip(pred, gold):
         xlit, p_lemma, p_pos = p.split('\t')[conllutools.FORM:conllutools.UPOS+1]
         g_lemma, g_pos = g.split('\t')[conllutools.LEMMA:conllutools.UPOS+1]
 
         """ Build evaluation pairs for different categories """
-        eval_data = {'tagger': (p_pos, g_pos),
-                     'lemmatizer': (p_lemma, g_lemma),
-                     'combined': (f'{p_lemma} {p_pos}', f'{g_lemma} {g_pos}')} 
+        eval_data = {'POS-tagger': (p_pos, g_pos),
+                     'Lemmatizer': (p_lemma, g_lemma),
+                     'Combined  ': (f'{p_lemma} {p_pos}', f'{g_lemma} {g_pos}')} 
 
+        """ Compare OOV inputs and all inputs """
         for category, pair in eval_data.items():
             if xlit in oov:
                 if pair[0] == pair[1]:
@@ -119,6 +189,7 @@ def evaluate(predictions, gold_standard, model):
         if xlit in oov:
             total_oov += 1
 
+    """ Merge all results into a single dictionary """
     output = defaultdict(dict)
     for category, correct in results.items():
         category = norm_key(category)
@@ -133,7 +204,11 @@ def evaluate(predictions, gold_standard, model):
                             'correct': correct,
                             'incorrect': total_oov-correct,
                             'total': total_oov}
-    return output
+
+    """ Calculate OOV rate """
+    oov_rate = output['Lemmatizer OOV']['total']/output['Lemmatizer']['total']
+        
+    return output, oov_rate
         
     
 def pipeline(*models, cpu):
@@ -146,7 +221,8 @@ def pipeline(*models, cpu):
     
     results = defaultdict(dict)
     R = defaultdict(dict)
-
+    OOV = defaultdict(int)
+    
     step = 'model.pt'
     
     for model in models:
@@ -167,18 +243,17 @@ def pipeline(*models, cpu):
                        model_name = f'./models/{model}/lemmatizer/{step}',
                        output_file = f'./models/{model}/eval/output_lemmatizer.txt',
                        cpu = cpu)
-
         """
-        
-        # Merge prediced results
+
+        """ Merge prediced results """
         model_api.merge_to_final(tags = f'./models/{model}/eval/output_tagger.txt',
                                  lemmas = f'./models/{model}/eval/output_lemmatizer.txt',
                                  output = f'./models/{model}/eval/output_final.txt')
 
-        # Make gold standard
-        model_api.merge_to_final(tags = f'./models/{model}/tagger/traindata/test.tgt',
-                                 lemmas = f'./models/{model}/lemmatizer/traindata/test.tgt',
-                                 output = f'./models/{model}/eval/gold.txt')
+        #""" Make gold standard """
+        #model_api.merge_to_final(tags = f'./models/{model}/tagger/traindata/test.tgt',
+        #                         lemmas = f'./models/{model}/lemmatizer/traindata/test.tgt',
+        #                         output = f'./models/{model}/eval/gold.txt')
         
         conllutools.make_conllu(
             final_results = f'./models/{model}/eval/output_final.txt',
@@ -186,14 +261,13 @@ def pipeline(*models, cpu):
             output_conllu = f'./models/{model}/eval/output_final.conllu')
 
 
-        R[model] = evaluate(predictions = f'./models/{model}/eval/output_final.conllu',
-                            gold_standard = f'./models/{model}/conllu/test.conllu',
-                            model = model)
+        R[model], OOV[model] = evaluate(predictions = f'./models/{model}/eval/output_final.conllu',
+                               gold_standard = f'./models/{model}/conllu/test.conllu',
+                               model = model)
 
         model_api.assign_confidence_scores(model)
 
-    print(f' ===== {step} =====')
-    cross_validation(R)
+    cross_validation(R, OOV)
     
 
 if __name__ == "__main__":
