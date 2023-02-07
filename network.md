@@ -38,3 +38,9 @@ Following Kanerva et al. 2021:
 )
 
 ```
+
+## Example xlit, input, output sequence
+
+```ab₂-{+ba}BA.BA₂{ba} --> a b - {+ b a } BA . BA₂ { BA } --> abba ``` 
+
+
