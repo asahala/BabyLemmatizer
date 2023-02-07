@@ -138,4 +138,5 @@ In order of priority:
 * Machine Translation
 
 ## Bugs
+* Determinative encoding is broken
 * If user forgets = between parameter and argument in command line use, things go wrong
