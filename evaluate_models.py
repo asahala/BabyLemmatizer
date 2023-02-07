@@ -229,7 +229,6 @@ def pipeline(*models, cpu):
 
         print(f'> Running model {model}')
 
-        """
         model_api.run_tagger(input_file = f'./models/{model}/tagger/traindata/test.src',
                    model_name = f'./models/{model}/tagger/{step}',
                    output_file = f'./models/{model}/eval/output_tagger.txt',
@@ -243,7 +242,6 @@ def pipeline(*models, cpu):
                        model_name = f'./models/{model}/lemmatizer/{step}',
                        output_file = f'./models/{model}/eval/output_lemmatizer.txt',
                        cpu = cpu)
-        """
 
         """ Merge prediced results """
         model_api.merge_to_final(tags = f'./models/{model}/eval/output_tagger.txt',
