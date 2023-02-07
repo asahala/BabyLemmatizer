@@ -51,7 +51,7 @@ def parse_prefix(prefix, evaluate=False):
         models = [f for f in os.listdir('models') if f.startswith(prefix[:-1])]
     else:
         models = [f for f in os.listdir('models') if f == prefix]
-
+        
     """ Do not prompt if used for evaluation """
     if evaluate:
         return models

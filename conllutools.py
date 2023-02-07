@@ -20,10 +20,15 @@ FEATS, HEAD, DEPREL, DEPS, MISC = 5, 6, 7, 8, 9
 """ End-of-unit symbol """
 EOU = ('<EOU>', '<EOU>', '<EOU>')
 
-def read_conllu(filename):
+def read_conllu(filename, only_data=False):
     with open(filename, 'r', encoding='utf-8') as f:
         for line in f.read().splitlines():
-            yield line
+            if not only_data:
+                yield line
+            else:
+                if line:
+                    if not line.startswith('#'):
+                        yield line
 
 
 def get_override(filename):

@@ -26,7 +26,7 @@ University of Helsinki
 =========================================================== """
 
 hr = '=' * 20
-print(f'{hr} BabyParser 2.0 {hr}')
+print(f'{hr} BabyLemmatizer 2.0 {hr}')
 
 statistics = defaultdict(int)
 counts = defaultdict(dict)
@@ -56,7 +56,8 @@ def _rename_model(model_name, type_):
         return (''.join(c for c in filename if c.isdigit()))
         
     path = os.path.join('models', model_name, type_)
-    step = sorted(get_step(x) for x in os.listdir(path) if x.endswith('.pt'))[-1]
+    step = sorted(get_step(x) for x in os.listdir(path)
+                  if x.endswith('.pt') and x != 'model.pt')[-1]
     
     old_name = f'model_step_{int(step)}.pt'
     new_name = 'model.pt'
@@ -150,7 +151,7 @@ def make_override(prefix, data_type, filename):
         counts[prefix][data_type] = stats
 
 
-def make_training_data(filename):
+def _make_training_data(filename):
     """ Build training data for POS-tagger and lemmatizer.
     The data is saved to `TRAIN_PATH`. Source files must be
     in CONLL-U format and named PREFIX-SUFFIX.conllu, where
@@ -259,17 +260,18 @@ def build_train_data(*models):
         sys.exit(0)
     
     for filename in sorted(filelist):
-        make_training_data(os.path.join(conllu_path, filename))
+        _make_training_data(os.path.join(conllu_path, filename))
         
     print_statistics()
     print_oov_rates()
 
+    """ Get model prefix by removing digits """
     if len(models) > 1:
         prefix = ''.join(c for c in models[0] if not c.isdigit())
     else:
         prefix = models[0]
         
-    save_log(f'{prefix}-build-log.txt')
+    save_log(f'build-log-{prefix}.txt')
 
 
 def train_model(*models, cpu=False):
@@ -305,9 +307,9 @@ def train_model(*models, cpu=False):
 
 
 if __name__ == "__main__":
-    #prefix = 'lbtest4'
-    #models = parse_prefix(prefix)
-    #build_train_data(*models)
+    prefix = 'urartian0'
+    models = parse_prefix(prefix)
+    build_train_data(*models)
     #train_model('a', 'b')#*models)
     pass
 

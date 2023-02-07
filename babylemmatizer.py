@@ -24,8 +24,8 @@ def get_args():
     ap = ArgumentParser()
     ap.add_argument('--filename', type=str)
     ap.add_argument('--evaluate', type=str)
-    ap.add_argument('--train-model', type=str)
-    ap.add_argument('--build-data', type=str)
+    ap.add_argument('--train', type=str)
+    ap.add_argument('--build', type=str)
     ap.add_argument('--build-train', type=str)
     ap.add_argument('--normalize-conllu', action='store_true')
     ap.add_argument('--lemmatize', type=str)
@@ -35,11 +35,11 @@ def get_args():
 if __name__ == "__main__":
     args = get_args()
 
-    if args.train_model:
-        models = parse_prefix(args.train_model)
+    if args.train:
+        models = parse_prefix(args.train)
         train_pipeline.train_model(*models, cpu=args.use_cpu)
-    elif args.build_data:
-        models = parse_prefix(args.build_data)
+    elif args.build:
+        models = parse_prefix(args.build)
         train_pipeline.build_train_data(*models)
     elif args.build_train:
         models = parse_prefix(args.build_train)
@@ -53,4 +53,5 @@ if __name__ == "__main__":
     elif args.lemmatize:
         cpu = args.use_cpu
         lemmatizer = lemmatizer_pipeline.Lemmatizer(args.filename)
-        lemmatizer.run_model(args.lemmatize, cpu)
+        model = args.lemmatize
+        lemmatizer.run_model(model, cpu)

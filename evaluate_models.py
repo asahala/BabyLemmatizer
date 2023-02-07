@@ -4,6 +4,7 @@
 import re
 import os
 import math
+import copy
 from collections import defaultdict
 #from preferences import python_path, onmt_path
 from command_parser import parse_prefix
@@ -22,53 +23,13 @@ University of Helsinki
 
 =========================================================== """
 
-## TODO: rewrite this crap
-
-def compare(source, target):
-    correct = 0
-    incorrect = 0
-    
-    with open(source, 'r', encoding='utf-8') as pred,\
-         open(target, 'r', encoding='utf-8') as gold:
-        
-        combined = zip(pred.read().splitlines(), gold.read().splitlines())
-
-        for result in (p == g for p, g in combined if p != '<EOU>'):
-            if result:
-                correct += 1
-            else:
-                incorrect +=1
-                   
-    return {'accuracy': correct/(correct+incorrect),
-            'correct': correct,
-            'incorrect': incorrect,
-            'total': correct+incorrect}
-
-
-def evaluate(model):
-    tagger_res = f'./models/{model}/eval/output_tagger.txt'
-    tagger_tgt = f'./models/{model}/tagger/traindata/test.tgt'
-
-    lemmatizer_res = f'./models/{model}/eval/output_lemmatizer.txt'
-    lemmatizer_tgt = f'./models/{model}/lemmatizer/traindata/test.tgt'
-
-    combined_res = f'./models/{model}/eval/output_final.txt'
-    combined_tgt = f'./models/{model}/eval/gold.txt'
-
-    tagger_results = compare(tagger_res, tagger_tgt)
-    lemmatizer_results = compare(lemmatizer_res, lemmatizer_tgt)
-    combined_results = compare(combined_res, combined_tgt)
-    
-    return tagger_results, lemmatizer_results, combined_results
-
-
 def cross_validation(results):
     """ Calculate confidence interval for n-fold cross-validation """
     
     n = len(results)
     vf = defaultdict(list)
 
-    print(' '*10, 'aver.', '\t'.join(results), 'conf. int', sep='\t')
+    print(' '*16, 'aver.', '\t'.join(results), 'conf. int', sep='\t')
     
     for model, data in results.items():
         for model_type, res in data.items():
@@ -81,7 +42,7 @@ def cross_validation(results):
         std_deviation = math.sqrt(variance)
         conf_interval = round(1.96 * (std_deviation / math.sqrt(n)) * 100, 2)
 
-        print(model_type, round(average*100, 2), '\t'.join(str(round(x*100, 2)) + '%' for x in acc), f'±{conf_interval}%', sep='\t')      
+        print(model_type, round(average*100, 2), '\t'.join(str(round(x*100, 2)) for x in acc), f'±{conf_interval}', sep='\t')      
     
 
 def make_conllu(final_results, source_conllu, output_conllu):
@@ -107,67 +68,73 @@ def make_conllu(final_results, source_conllu, output_conllu):
                 output.write('\t'.join(line) + '\n')
 
 
-def evaluate_oov(model):
+def evaluate(predictions, gold_standard, model):
+    """ Model evaluator. Returns dictionary of results in various
+    categories.
 
+    :param predictions          prediction CoNLL-U file path
+    :param gold                 gold CoNLL-U file path
+    :param model                model name """
+
+    def norm_key(key):
+        if len(key) < 16:
+            key = key + ' '*(16 - len(key))
+        return key
+
+    pred = conllutools.read_conllu(predictions, only_data=True)
+    gold = conllutools.read_conllu(gold_standard, only_data=True)
+
+    """ Read OOV transliterations """
     oov_path = os.path.join('models', model, 'override', 'test-types-oov.xlit')
-    test_file = os.path.join('models', model, 'override', 'test.all')
-    combined_res = f'./models/{model}/eval/output_final.txt'
-    
     oov = set()
     with open(oov_path, 'r', encoding='utf-8') as f:
         for word in f.read().splitlines():
             oov.add(word.split('\t')[0])
 
-    gold = []
-    with open(test_file, 'r', encoding='utf-8') as f:
-        for line in f.read().splitlines():
-            if not line:
-                continue
-            if not line.startswith(conllutools.EOU[0]):
-                gold.append(line.split('\t'))
+    results = defaultdict(int)
+    results_oov = defaultdict(int)
+    total = 0
+    total_oov = 0
 
-    pred = []
-    with open(combined_res, 'r', encoding='utf-8') as f:
-        for line in f.read().splitlines():
-            if not line:
-                continue
-            if not line.startswith(conllutools.EOU[0]):
-                pred.append(line.split('\t'))
+    """ Comparator """
+    for p, g in zip(pred, gold):
+        xlit, p_lemma, p_pos = p.split('\t')[conllutools.FORM:conllutools.UPOS+1]
+        g_lemma, g_pos = g.split('\t')[conllutools.LEMMA:conllutools.UPOS+1]
 
+        """ Build evaluation pairs for different categories """
+        eval_data = {'tagger': (p_pos, g_pos),
+                     'lemmatizer': (p_lemma, g_lemma),
+                     'combined': (f'{p_lemma} {p_pos}', f'{g_lemma} {g_pos}')} 
 
-    def compare2(cat):
-        combined = zip(pred, gold)
-
-        correct = 0
-        incorrect = 0
-        for p, g in combined:
-            
-            xlit = g[0]
-            if cat == 'tag':
-                pred_ = p[-1]                
-                gold_ = g[-1]
-            elif cat == 'lem':
-                pred_ = p[0]
-                gold_ = g[1]
-            elif cat == 'comb':
-                pred_ = p
-                gold_ = g[1:]
+        for category, pair in eval_data.items():
             if xlit in oov:
-                if pred_ == gold_:
-                    correct += 1
-                else:
-                    incorrect += 1
+                if pair[0] == pair[1]:
+                    results_oov[category] += 1
+                
+            if pair[0] == pair[1]:
+                results[category] += 1
 
-        return {'accuracy': correct/(correct+incorrect),
-                'correct': correct,
-                'incorrect': incorrect,
-                'total': correct+incorrect}
-    
-    tag_oov = compare2('tag')
-    lem_oov = compare2('lem')
-    comb_oov = compare2('comb')
+        """ Calculate totals """
+        total += 1
+        if xlit in oov:
+            total_oov += 1
 
-    return tag_oov, lem_oov, comb_oov
+    output = defaultdict(dict)
+    for category, correct in results.items():
+        category = norm_key(category)
+        output[category] = {'accuracy': correct/total,
+                            'correct': correct,
+                            'incorrect': total-correct,
+                            'total': total}
+        
+    for category, correct in results_oov.items():
+        category = norm_key(category + ' OOV')
+        output[category] = {'accuracy': correct/total_oov,
+                            'correct': correct,
+                            'incorrect': total_oov-correct,
+                            'total': total_oov}
+    return output
+        
     
 def pipeline(*models, cpu):
     """ Run the whole evaluation pipeline for `models`
@@ -178,12 +145,15 @@ def pipeline(*models, cpu):
     """
     
     results = defaultdict(dict)
+    R = defaultdict(dict)
 
     step = 'model.pt'
     
     for model in models:
 
         print(f'> Running model {model}')
+
+        """
         model_api.run_tagger(input_file = f'./models/{model}/tagger/traindata/test.src',
                    model_name = f'./models/{model}/tagger/{step}',
                    output_file = f'./models/{model}/eval/output_tagger.txt',
@@ -197,6 +167,8 @@ def pipeline(*models, cpu):
                        model_name = f'./models/{model}/lemmatizer/{step}',
                        output_file = f'./models/{model}/eval/output_lemmatizer.txt',
                        cpu = cpu)
+
+        """
         
         # Merge prediced results
         model_api.merge_to_final(tags = f'./models/{model}/eval/output_tagger.txt',
@@ -207,28 +179,21 @@ def pipeline(*models, cpu):
         model_api.merge_to_final(tags = f'./models/{model}/tagger/traindata/test.tgt',
                                  lemmas = f'./models/{model}/lemmatizer/traindata/test.tgt',
                                  output = f'./models/{model}/eval/gold.txt')
-
-        tagger_res, lemmatizer_res, combined_res = evaluate(model)
-
-        tag_oov, lem_oov, comb_oov = evaluate_oov(model)
-        
-        
-        results[model] = {'pos-tagger    ': tagger_res,
-                          'lemmatizer    ': lemmatizer_res,
-                          'combined      ': combined_res,
-                          'pos-tagger OOV': tag_oov,
-                          'lemmatizer OOV': lem_oov,
-                          'combined   OOV': comb_oov}
         
         conllutools.make_conllu(
             final_results = f'./models/{model}/eval/output_final.txt',
             source_conllu = f'./models/{model}/conllu/test.conllu',
             output_conllu = f'./models/{model}/eval/output_final.conllu')
 
+
+        R[model] = evaluate(predictions = f'./models/{model}/eval/output_final.conllu',
+                            gold_standard = f'./models/{model}/conllu/test.conllu',
+                            model = model)
+
         model_api.assign_confidence_scores(model)
 
     print(f' ===== {step} =====')
-    cross_validation(results)
+    cross_validation(R)
     
 
 if __name__ == "__main__":
