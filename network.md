@@ -39,8 +39,14 @@ Following Kanerva et al. 2021:
 
 ```
 
-## Example xlit, input, output sequence
+## Tagger sequences
 
-```ab₂-{+ba}BA.BA₂{ba} --> a b - {+ b a } BA . BA₂ { BA } --> abba ``` 
+Original: ```ZU₂.LUM.MA {lu₂}mu-kin-ni {m}{d}AG-URU₃-šu₂```
+Tagger input: ```ZU₂ . LUM . MA << {LU₂} m u - k i n - n i >> {m} {d} AG - URU₃ - š u```
+Tagger output: ```N```
 
+## Lemmatizer sequences (token-based)
+Original: ```ZU₂.LUM.MA {lu₂}mu-kin-ni {m}{d}AG-URU₃-šu₂```
+Lemmatizer input: ```{LU₂} m u - k i n - n i PREV=N UPOS=N NEXT=PN```
+Lemmatizer output: ```mukinnu```
 
