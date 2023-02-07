@@ -1,3 +1,6 @@
+## Network Architecture
+Following Kanerva et al. 2021:
+
 ```
  NMTModel(
   (encoder): RNNEncoder(
