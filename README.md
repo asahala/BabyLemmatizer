@@ -16,7 +16,7 @@ BabyLemmatizer 2.0 approaches POS-tagging and lemmatization as a Machine Transla
 | a-ra-an-šu | arnu | N |
 | pu-uṭ-ri | paṭāru | V |
 
-For now, outputs are not encoded as sequences, but as tokens to prevent the system from generating OOV lemmata. See the network architecture [here](network.txt)
+For now, outputs are not encoded as sequences, but as tokens to prevent the system from generating OOV lemmata. See the network architecture [here](network.md)
 
 ### Performance
 Results of the 5-fold cross-validation of the first millennium Babylonian models trained with 500k examples split into 80/10/10. Output: token.
