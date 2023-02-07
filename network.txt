@@ -33,4 +33,5 @@
   )
   (generator): Linear(in_features=500, out_features=32, bias=True)
 )
+
 ```
