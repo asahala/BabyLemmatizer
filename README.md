@@ -137,4 +137,4 @@ In order of priority:
 * Machine Translation
 
 ## Bugs
-* log file prevents training
+* If user forgets = between parameter and argument in command line use, things go wrong
