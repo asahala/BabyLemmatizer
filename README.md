@@ -106,11 +106,7 @@ Results of the 5-fold cross-validation of the first millennium Babylonian models
 
 ***Output: token***
 
-|category|avg.|lbtest1|lbtest2|lbtest3|lbtest4|lbtest5|conf. int|
-|---|---|---|---|---|---|---|---|
-|tagger|**97.42%**|97.40%|97.44%|97.33%|97.49%|97.46%|±0.06%|
-|lemmatizer|**94.75%**|94.55%|94.71%|94.71%|94.78%|95.01%|±0.15%|
-|tagger+lemmatizer|**94.62%**|94.36%|94.61%|94.62%|94.69%|94.81%|±0.14%|
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/lbtest-eval-token.png)
 
 ***Output: character sequence***
 
