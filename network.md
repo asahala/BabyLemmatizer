@@ -40,7 +40,7 @@ Following Kanerva et al. 2021:
 ```
 
 ## Tagger sequences
-Tagger inputs are encoded as 3-grams tokenized into signs: logograms are represented as tokens and syllabograms as character sequences.
+Tagger inputs are encoded as 3-grams tokenized into signs: logograms are represented as indexed tokens and syllabograms as unindexed character sequences.
 
 Original: ```ZU₂.LUM.MA {lu₂}mu-kin-ni {m}{d}AG-URU₃-šu₂```
 
