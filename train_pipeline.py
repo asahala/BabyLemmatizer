@@ -25,6 +25,7 @@ University of Helsinki
 
 =========================================================== """
 
+
 hr = '=' * 20
 print(f'{hr} BabyLemmatizer 2.0 {hr}')
 
@@ -63,9 +64,11 @@ def _rename_model(model_name, type_):
     new_name = 'model.pt'
     os.rename(os.path.join(path, old_name), os.path.join(path, new_name))
     print(f'> Model {old_name} --> {new_name}')
-              
-def print_oov_rates():
 
+    
+def print_oov_rates():
+    ## TODO: Rewrite this crap
+    ## just do it in a single file
     for model in counts:
         stats = {}
         for data_type in ('dev', 'test'):
@@ -114,6 +117,7 @@ def print_oov_rates():
 
 def make_override(prefix, data_type, filename):
     """ Setup override """
+    
     fn = f'models/{prefix}/override/{data_type}.all'
     fnl = f'models/{prefix}/override/{data_type}-types.lem'
     fnx = f'models/{prefix}/override/{data_type}-types.xlit'
@@ -164,15 +168,19 @@ def _make_training_data(filename):
     
     logger(f'\n> Building training data from {filename}')
 
-    paths = ('models/',
-        f'models/{prefix}/',
-        f'models/{prefix}/tagger/',
-        f'models/{prefix}/lemmatizer/',
-        f'models/{prefix}/tagger/traindata/',
-        f'models/{prefix}/lemmatizer/traindata/',
-        f'models/{prefix}/eval/',
-        f'models/{prefix}/override/',
-        f'models/{prefix}/conllu/')
+    ## TODO: define somewhere else globally
+    ## or this will get really confusing at some point
+    """ Define model path structure """
+    paths = (
+        'models',
+        os.path.join('models', prefix),
+        os.path.join('models', prefix, 'tagger'),
+        os.path.join('models', prefix, 'lemmatizer'),
+        os.path.join('models', prefix, 'tagger', 'traindata'),
+        os.path.join('models', prefix, 'lemmatizer', 'traindata'),
+        os.path.join('models', prefix, 'eval'),
+        os.path.join('models', prefix, 'override'),
+        os.path.join('models', prefix, 'conllu'))
 
     for path in paths:
         try:
@@ -180,19 +188,26 @@ def _make_training_data(filename):
         except FileExistsError:
             pass
 
-    shutil.copyfile(filename, f'models/{prefix}/conllu/{data_type}.conllu')    
+    """ Save CoNLL-U to model for reproducibility """
+    shutil.copyfile(
+        filename,
+        os.path.join('models', prefix, 'conllu', f'{data_type}.conllu'))    
 
     """ Generate training data """
-    tagger_path = f'models/{prefix}/tagger/traindata/'
-    lemmatizer_path = f'models/{prefix}/lemmatizer/traindata/'
+    tagger_path = os.path.join(
+        'models', prefix, 'tagger', 'traindata')
+    lemmatizer_path = os.path.join(
+        'models', prefix, 'lemmatizer', 'traindata')
 
-    pos_src_fn = f'{tagger_path}{data_type}.src'
-    pos_tgt_fn = f'{tagger_path}{data_type}.tgt'
-    lem_src_fn = f'{lemmatizer_path}{data_type}.src'
-    lem_tgt_fn = f'{lemmatizer_path}{data_type}.tgt'
+    """ Define target and source files for NN-training data """
+    pos_src_fn = os.path.join(tagger_path, f'{data_type}.src')
+    pos_tgt_fn = os.path.join(tagger_path, f'{data_type}.tgt')
+    lem_src_fn = os.path.join(lemmatizer_path, f'{data_type}.src')
+    lem_tgt_fn = os.path.join(lemmatizer_path, f'{data_type}.tgt')
 
     logger('   + Building tagger and lemmatizer training sets')
 
+    EOU = conllutools.EOU[0]
     with open(pos_src_fn, 'w', encoding='utf-8') as pos_src,\
          open(pos_tgt_fn, 'w', encoding='utf-8') as pos_tgt,\
          open(lem_src_fn, 'w', encoding='utf-8') as lem_src,\
@@ -205,18 +220,19 @@ def _make_training_data(filename):
         for stack in conllutools.get_training_data2(filename):
             if stack is None:
                 continue
-            
-            if stack == conllutools.EOU:
-                pos_src.write('<EOU>\n')
-                pos_tgt.write('<EOU>\n')
-                lem_src.write('<EOU>\n')
-                lem_tgt.write('<EOU>\n')
+
+            if stack == EOU:
+                pos_src.write(f'{EOU}\n')
+                pos_tgt.write(f'{EOU}\n')
+                lem_src.write(f'{EOU}\n')
+                lem_tgt.write(f'{EOU}\n')
                 continue
-            
+
+            """ Define source and target format for train data """
             pos_src.write(preprocessing.to_tagger_input(stack))
             pos_tgt.write(stack[1][2] + '\n')
             lem_src.write(preprocessing.to_lemmatizer_input(stack))
-            lem_tgt.write(stack[1][1] + '\n')
+            lem_tgt.write(' '.join(list(stack[1][1])) + '\n')
             statistics[filename] += 1
 
     
@@ -233,24 +249,36 @@ def _make_training_data(filename):
         total_steps = int(examples * 0.15)
         start_decay = int(math.ceil(total_steps /2))
 
-        hyper = base_yaml.set_hyper(examples, steps_per_epoch,
-                                    total_steps, start_decay)
-        base_yaml.make_lemmatizer_yaml(prefix, f'./models/{prefix}/', hyper)
-        base_yaml.make_tagger_yaml(prefix, f'./models/{prefix}/', hyper)
+        hyper = base_yaml.set_hyper(
+            examples,
+            steps_per_epoch,
+            total_steps,
+            start_decay)
+
+        base_yaml.make_lemmatizer_yaml(
+            prefix,
+            os.path.join('models', prefix),
+            hyper)
+
+        base_yaml.make_tagger_yaml(
+            prefix,
+            os.path.join('models', prefix),
+            hyper)
 
     make_override(prefix, data_type, filename)
 
 
-def build_train_data(*models):
-    """ Build train data from CoNLL-U files
+def build_train_data(*models, conllu_path=conllu_path):
+    """ Build train data from CoNLL-U files in the given
+    folder.
 
     :param models         arbitrary number of model names that
                           correspond to file prefixes in the conllu path
+    :param conllu_path    location of CoNLL-U files
 
     :type models          str
-
-    """
-
+    :type models          str                        """
+    
     filelist = [x for x in os.listdir(conllu_path)
                 if x.endswith('.conllu') and x.startswith(tuple(models))]
 

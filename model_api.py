@@ -58,7 +58,8 @@ def merge_tags(tagged_file, lemma_input, output_file):
                 tag_segments.append('PREV={} UPOS={} NEXT={}'.format(*stack))
                 stack.pop(0)
 
-        tag_segments.append('PREV={} UPOS={} NEXT={}'.format(*stack, ct.EOU[0]))
+        tag_segments.append(
+            'PREV={} UPOS={} NEXT={}'.format(*stack, ct.EOU[0]))
         
         for lemma, pos in zip(lemmas, tag_segments):
             if lemma == ct.EOU[0]:
@@ -77,6 +78,7 @@ def merge_to_final(tags, lemmas, output):
                        t_file.read().splitlines())
 
         for lemma, pos in combined:
+            lemma = ''.join(lemma.split(' '))
             o_file.write(f'{lemma}\t{pos}\n')
 
         o_file.write('\n')
@@ -85,41 +87,4 @@ def merge_to_final(tags, lemmas, output):
 def file_to_set(filename):
     with open(filename, 'r', encoding='utf-8') as f:
         return set(x.split('\t')[0] for x in f.read().splitlines())
-
-
-def assign_confidence_scores(model):
-
-    def is_logogram(xlit):
-        return xlit.lower() != xlit
-            
-    results = ct.read_conllu(
-        f'./models/{model}/eval/output_final.conllu')
-    oov_lem = f'./models/{model}/override/test-types-oov.lem'
-    oov_xlit = f'./models/{model}/override/test-types-oov.xlit'
-    output = f'./models/{model}/eval/output_final.conllu2'
-
-    oov_lem = file_to_set(oov_lem)
-    oov_xlit = file_to_set(oov_xlit)
-
-    with open(output, 'w', encoding='utf-8') as f:
-        for line in results:
-            if line.startswith('#'):
-                f.write(line + '\n')
-            if not line:
-                f.write('\n')
-            else:
-                data = line.split('\t')
-
-                conf_score = 3.0
-                
-                if f'{data[2]} {data[3]}' in oov_lem:
-                    conf_score = 2.0
-                if data[1] in oov_xlit:
-                    if is_logogram(data[1]):
-                        conf_score = 0.0
-                    else:
-                        conf_score = 1.0
-
-                data[-1] = str(conf_score)
-                f.write('\t'.join(data) + '\n')
     

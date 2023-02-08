@@ -6,8 +6,8 @@ import os
 import math
 import copy
 from collections import defaultdict
-#from preferences import python_path, onmt_path
 from command_parser import parse_prefix
+from postcorrect import pipeline as PP
 import model_api
 import conllutools
 
@@ -74,8 +74,7 @@ def cross_validation(results, oov_rates):
     csv = []
 
     """ Heading for the models to be evaluated """
-    keys = [f' MODEL{e}' for e, x in enumerate(results)]
-    print('\n')
+    keys = [f' MODEL{e}' for e, x in enumerate(results, start=1)]
     print('COMPONENT', 'AVG', 'CI', '\t'.join(keys), sep='\t')
     csv.append(';'.join(
         ('#component', 'confidence_interval',
@@ -101,11 +100,17 @@ def cross_validation(results, oov_rates):
               '\t'.join(mark_max_value(_model_acc)),
               sep='\t')      
 
-        csv.append(';'.join((model_type, _avg_acc, _conf_interval, ';'.join(_model_acc))))
+        csv.append(';'.join(
+            (model_type,
+             _avg_acc,
+             _conf_interval,
+             ';'.join(_model_acc))))
 
     """ Pretty print OOV rates for each model """
-    _avg_oov = format(round(100 * sum(oov_rates.values()) / len(oov_rates), 2), '.2f')
-    _model_oov = [format(round(100*y, 2), '.2f') for x, y in sorted(oov_rates.items())]
+    _avg_oov = format(round(100 * sum(oov_rates.values())\
+                            / len(oov_rates), 2), '.2f')
+    _model_oov = [format(round(100*y, 2), '.2f')
+                  for x, y in sorted(oov_rates.items())]
     _conf_interval = format(ci, '.2f')
     
     divlen = 26 + (len(_model_oov)+2)*7  
@@ -121,7 +126,7 @@ def cross_validation(results, oov_rates):
     ## TODO: Save CSV file
 
 
-def evaluate(predictions, gold_standard, model):
+def evaluate(predictions, gold_standard, model, model_path):
     """ Model evaluator. Returns dictionary of results in various
     categories.
 
@@ -153,7 +158,7 @@ def evaluate(predictions, gold_standard, model):
     gold = conllutools.read_conllu(gold_standard, only_data=True)
 
     """ Read OOV transliterations """
-    oov_path = os.path.join('models', model, 'override', 'test-types-oov.xlit')
+    oov_path = os.path.join(model_path, 'override', 'test-types-oov.xlit')
     oov = set()
     with open(oov_path, 'r', encoding='utf-8') as f:
         for word in f.read().splitlines():
@@ -167,13 +172,16 @@ def evaluate(predictions, gold_standard, model):
 
     """ Compare predictions to gold standard """
     for p, g in zip(pred, gold):
-        xlit, p_lemma, p_pos = p.split('\t')[conllutools.FORM:conllutools.UPOS+1]
-        g_lemma, g_pos = g.split('\t')[conllutools.LEMMA:conllutools.UPOS+1]
+        s_index = conllutools.FORM
+        e_index = conllutools.UPOS+1
+        xlit, p_lemma, p_pos = p.split('\t')[s_index:e_index]
+        g_lemma, g_pos = g.split('\t')[s_index+1:e_index]
 
         """ Build evaluation pairs for different categories """
-        eval_data = {'POS-tagger': (p_pos, g_pos),
-                     'Lemmatizer': (p_lemma, g_lemma),
-                     'Combined  ': (f'{p_lemma} {p_pos}', f'{g_lemma} {g_pos}')} 
+        eval_data = {
+            'POS-tagger': (p_pos, g_pos),
+            'Lemmatizer': (p_lemma, g_lemma),
+            'Combined  ': (f'{p_lemma} {p_pos}', f'{g_lemma} {g_pos}')} 
 
         """ Compare OOV inputs and all inputs """
         for category, pair in eval_data.items():
@@ -211,64 +219,108 @@ def evaluate(predictions, gold_standard, model):
     return output, oov_rate
         
     
-def pipeline(*models, cpu):
+def pipeline(*models, cpu=False, fast=False):
     """ Run the whole evaluation pipeline for `models`
 
-    :param models               model name
-    :type models                str
+    :param models        model name
+    :param cpu           run on CPU instead of GPU
+    :param no_run        do not rerun tagger/lemmatizer
+       
+    :type models         str
+    :type cpu            bool
+    :type no_run         bool
 
     """
     
     results = defaultdict(dict)
     R = defaultdict(dict)
+    R_post = defaultdict(dict)
     OOV = defaultdict(int)
+    OOV_post = defaultdict(int)
     
     step = 'model.pt'
     
     for model in models:
 
-        print(f'> Running model {model}')
+        """ Paths """
+        model_path = os.path.join('models', model)
+        eval_path = os.path.join(model_path, 'eval')
+        tagger_path = os.path.join(model_path, 'tagger')
+        lemmatizer_path = os.path.join(model_path, 'lemmatizer')
 
-        model_api.run_tagger(input_file = f'./models/{model}/tagger/traindata/test.src',
-                   model_name = f'./models/{model}/tagger/{step}',
-                   output_file = f'./models/{model}/eval/output_tagger.txt',
-                   cpu = cpu)
-        
-        model_api.merge_tags(tagged_file = f'./models/{model}/eval/output_tagger.txt',
-                   lemma_input = f'./models/{model}/lemmatizer/traindata/test.src',
-                   output_file = f'./models/{model}/eval/input_lemmatizer.txt')
-        
-        model_api.run_lemmatizer(input_file = f'./models/{model}/eval/input_lemmatizer.txt',
-                       model_name = f'./models/{model}/lemmatizer/{step}',
-                       output_file = f'./models/{model}/eval/output_lemmatizer.txt',
-                       cpu = cpu)
+        """ Intermediate files """
+        tagger_output = 'output_tagger.txt'
+        lemmatizer_input = 'input_lemmatizer.txt'
+        lemmatizer_output = 'output_lemmatizer.txt'
+        final_output = 'output_final.txt'
 
+        """ Ignore fast evaluation if it has not been run before """
+        eval_files = set(os.listdir(eval_path))
+        if tagger_output not in eval_files\
+           or lemmatizer_output not in eval_files:
+            print('> Ignoring --evaluate-fast:'\
+                  ' tagger/lemmatizer outputs not found')
+            fast = False
+
+        if not fast:
+            print(f'> Running model {model}')
+            """ Run tagger """
+            model_api.run_tagger(
+                input_file = os.path.join(tagger_path, 'traindata', 'test.src'),
+                model_name = os.path.join(tagger_path, step),
+                output_file = os.path.join(eval_path, tagger_output),
+                cpu = cpu)
+
+            """ Merge tagger results to lemmatizer input """
+            model_api.merge_tags(
+                tagged_file = os.path.join(eval_path, tagger_output),
+                lemma_input = os.path.join(lemmatizer_path, 'traindata', 'test.src'),
+                output_file = os.path.join(eval_path, lemmatizer_input))
+
+            """ Run lemmatizer """
+            model_api.run_lemmatizer(
+                input_file = os.path.join(eval_path, lemmatizer_input),
+                model_name = os.path.join(lemmatizer_path, step),
+                output_file = os.path.join(eval_path, lemmatizer_output),
+                cpu = cpu)
+            
         """ Merge prediced results """
-        model_api.merge_to_final(tags = f'./models/{model}/eval/output_tagger.txt',
-                                 lemmas = f'./models/{model}/eval/output_lemmatizer.txt',
-                                 output = f'./models/{model}/eval/output_final.txt')
+        model_api.merge_to_final(
+            tags = os.path.join(eval_path, tagger_output),
+            lemmas = os.path.join(eval_path, lemmatizer_output),
+            output = os.path.join(eval_path, final_output))
 
-        #""" Make gold standard """
-        #model_api.merge_to_final(tags = f'./models/{model}/tagger/traindata/test.tgt',
-        #                         lemmas = f'./models/{model}/lemmatizer/traindata/test.tgt',
-        #                         output = f'./models/{model}/eval/gold.txt')
-        
+        """ Write neural net results to conllu """
         conllutools.make_conllu(
-            final_results = f'./models/{model}/eval/output_final.txt',
-            source_conllu = f'./models/{model}/conllu/test.conllu',
-            output_conllu = f'./models/{model}/eval/output_final.conllu')
+            final_results = os.path.join(eval_path, final_output),
+            source_conllu = os.path.join(model_path, 'conllu', 'test.conllu'),
+            output_conllu = os.path.join(eval_path, 'output_final.conllu'))
 
+        """ Neural net evaluation """
+        R[model], OOV[model] = evaluate(
+            predictions = os.path.join(eval_path, 'output_final.conllu'),
+            gold_standard = os.path.join(model_path, 'conllu', 'test.conllu'),
+            model = model,
+            model_path = model_path)
 
-        R[model], OOV[model] = evaluate(predictions = f'./models/{model}/eval/output_final.conllu',
-                               gold_standard = f'./models/{model}/conllu/test.conllu',
-                               model = model)
+        """ Run post-processing using BabyLemmatizer 1.0"""
+        PP.eval_test(model)
 
-        model_api.assign_confidence_scores(model)
+        """ Post-processor evaluation """
+        R_post[model], OOV_post[model] = evaluate(
+            predictions = os.path.join(eval_path, 'output_final.conllu.final'),
+            gold_standard = os.path.join(model_path, 'conllu', 'test.conllu'),
+            model = model,
+            model_path = model_path)
+                
 
+    print('\nNeural Net Evaluation') 
     cross_validation(R, OOV)
-    
+    print('\nPost-correct Evaluation')
+    cross_validation(R_post, OOV_post)
 
 if __name__ == "__main__":
-    prefix = 'lbtest1'
-    models = parse_prefix(prefix, evaluate=True)
-    pipeline(*models, cpu=True)
+    #prefix = 'lbtest1'
+    #models = parse_prefix(prefix, evaluate=True)
+    #pipeline(*models, cpu=True)
+    pass
