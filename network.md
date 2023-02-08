@@ -40,6 +40,7 @@ Following Kanerva et al. 2021:
 ```
 
 ## Tagger sequences
+Tagger inputs are encoded as 3-grams tokenized into signs: logograms are represented as tokens and syllabograms as character sequences.
 
 Original: ```ZU₂.LUM.MA {lu₂}mu-kin-ni {m}{d}AG-URU₃-šu₂```
 
@@ -48,6 +49,8 @@ Tagger input: ```ZU₂ . LUM . MA << {LU₂} m u - k i n - n i >> {m} {d} AG - U
 Tagger output: ```N```
 
 ## Lemmatizer sequences (token-based)
+Lemmatizer inputs are encoded as single word forms tokenized as above, with adjacent POS tags for context disambiguation.
+
 Original: ```ZU₂.LUM.MA {lu₂}mu-kin-ni {m}{d}AG-URU₃-šu₂```
 
 Lemmatizer input: ```{LU₂} m u - k i n - n i PREV=N UPOS=N NEXT=PN```
