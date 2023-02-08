@@ -25,6 +25,11 @@ Results of the 5-fold cross-validation of the first millennium Babylonian models
 |lemmatizer|**94.75%**|94.55%|94.71%|94.71%|94.78%|95.01%|±0.15%|
 |tagger+lemmatizer|**94.62%**|94.36%|94.61%|94.62%|94.69%|94.81%|±0.14%|
 
+Output: character sequence
+
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/lbtest-eval.png)
+
+
 # Requirements
 1. [OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)
 2. Python 3.6+
