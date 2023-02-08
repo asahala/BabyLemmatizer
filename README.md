@@ -6,7 +6,7 @@ State-of-the-art neural tagger and lemmatizer for Akkadian (and other cuneiform 
 BabyLemmatizer 2.0 is fully based on OpenNMT, which makes it simpler to use than the previous BabyLemmatizer version that was dependent on an outdated version of TurkuNLP with some problematic dependencies. At its current stage, BabyLemmatizer can be used for part-of-speech tagging and lemmatization of transliterated Akkadian texts. Unlike the old version, BabyLemmatizer 2.0 uses an unindexed character based representation for syllabic signs and sign-based tokenization for logograms, that maximize its capability to discriminate between predictable and suppletive grapheme to phoneme relations. For network architecture and encoding of the input sequences, see [this description](network.md).
 
 ### Brief description
-BabyLemmatizer 2.0 approaches POS-tagging and lemmatization as a Machine Translation task. It features context-aware POS-tagger and lemmatizer that combine strengths of encoder-decoder neural networks (i.e. predicting analyses for unseen word forms), and (very slightly) statistical and heuristic dictionary-based methods to post-correct and score the reliability of the annotations. BabyLemmatizer is useful for making Akkadian texts searchable and useable for other Natural Language Processing tasks, such as building [Word Embeddings](https://github.com/asahala/pmi-embeddings), as transliterated texts are practically impossible to use efficiently due to ortographic and morphological complexity of the language.
+BabyLemmatizer 2.0 approaches POS-tagging and lemmatization as a Machine Translation task. It features context-aware POS-tagger and lemmatizer that combine strengths of encoder-decoder neural networks (i.e. predicting analyses for unseen word forms), and (very slightly) statistical and heuristic dictionary-based methods to post-correct and score the reliability of the annotations. BabyLemmatizer is useful for making Akkadian texts searchable and useable for other Natural Language Processing tasks, such as building [Word Embeddings](https://github.com/asahala/pmi-embeddings), as transliterated texts are practically impossible to use efficiently due to orthographic and morphological complexity of the language.
 
 |***Transliteration*** | ***Lemma*** | ***POS-tag*** |
 | --- | --- | --- |
@@ -32,28 +32,28 @@ Results of the 5-fold cross-validation of the first millennium Babylonian models
 BabyLemmatizer 2.0 has been tested with Python 3.9 and OpenNMT-py 3.0.
 
 # Setting up BabyLemmatizer
-The easiest way to get BabyLemmatizer 2.0 running is to create a Python 3.9 virtual environment for OpenNMT-py, this ensures that you have permanently all necessary requirements installed and they do not conflict with your other libaries. This is fairly simple:
+The easiest way to get BabyLemmatizer 2.0 running is to create a Python 3.9 virtual environment for OpenNMT-py. This ensures that you have permanently all necessary requirements installed and they do not conflict with your other libraries. This is fairly simple to do:
 
 1. ```python3.9 -m venv OpenNMT```
 2. ```source OpenNMT/bin/activate```
 3. ```pip install --upgrade pip```
 4. ```pip install OpenNMT-py```
 
-Then you need to clone **BabyLemmatizer** repository and edit ```preferences.py``` to add paths to the virtual environment and OpenNMT binaries. 
+Then you need to clone the **BabyLemmatizer** repository and edit ```preferences.py``` to add paths to the virtual environment and OpenNMT binaries. 
 
 ```
 python_path = '/yourpath/OpenNMT/bin/'
 onmt_path = '/yourpath/OpenNMT/lib/python3.9/site-packages/onmt/bin'
 ``` 
 
-After this, you can run ```preferences.py``` and if lots of OpenNMT documentation prints on your screen, everything should be okay.
+Now you can run ```preferences.py``` and if lots of OpenNMT documentation prints on your screen, everything should be okay.
 
 # Use in Python
 
 ### Lemmatization
 To tag and lemmatize texts, you need to first convert it into a CoNLL-U format. See instructions in the [conllu](https://github.com/asahala/BabyLemmatizer/tree/main/conllu) folder.
 
-Use ```lemmatizer_pipeline.py``` to annotate your texts. If you have an empty CoNLL-U file in in the ```input``` folder named ```example.conllu```, and you want to tag and lemmatize it using the first millennium Babylonian model ```lbtest1```, you can do it with two lines of code:
+Use ```lemmatizer_pipeline.py``` to annotate your texts. If you have an empty CoNLL-U file in the ```input``` folder named ```example.conllu```, and you want to tag and lemmatize it using the first millennium Babylonian model ```lbtest1```, you can do it with two lines of code:
 
 ```
 l = Lemmatizer('./input/example.conllu') 
@@ -88,7 +88,7 @@ To lemmatize unlemmatized corpus, run the following command:
 
 ```python3 babylemmatizer.py --filename corpus_file --lemmatize=modelname```
 
-where ```corpus_file``` points to the CoNLL-U file you want to lemmatize and ```modelname``` to the model you want to use. Lemmatization is by default done on GPU, but if you don't have a CUDA cabable GPU, you can add parameter ```--use-cpu```.
+where ```corpus_file``` points to the CoNLL-U file you want to lemmatize and ```modelname``` to the model you want to use. Lemmatization is by default done on GPU, but if you don't have a CUDA capable GPU, you can add parameter ```--use-cpu```.
 
 ### Training and evaluation
 Training and evaluation can be done using ```babylemmatizer.py``` command line API. The command line interface is purposefully simple and does not give user direct access to any additional parameters.
