@@ -102,7 +102,7 @@ Some additional commands:
 ```
 
 # Performance
-Results of the 5-fold cross-validation of the first millennium Babylonian models trained with 500k examples split into 80/10/10. Evaluation has been done before and after the post-processing, for the whole data sets and out-of-vocabulary items only.
+Results of the 5-fold cross-validation of the first millennium Babylonian models trained with 500k examples split into 80/10/10. Evaluation has been done before and after the post-processing, for the whole data sets and out-of-vocabulary items only. Both evaluations use the exactly same POS-tagger model. With token-based output, the model based on output tokens achieves 93.99% accuracy before post-corrections and 94.23% after the post-corrections (i.e. both, the lemma and the POS-tag are predicted correctly). The model with character sequence output performs slightly better, achieving 94.22% before and 94.48% after post-corrections. 
 
 ***Output: token***
 
