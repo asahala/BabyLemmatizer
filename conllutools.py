@@ -1,6 +1,7 @@
 import os
 import preprocessing
 import shutil
+from collections import defaultdict
 
 """===========================================================
 CoNLL-U i/o for BabyLemmatizer 2.0
@@ -22,7 +23,8 @@ EOU = ('<EOU>', '<EOU>', '<EOU>')
 
 def read_conllu(filename, only_data=False):
     with open(filename, 'r', encoding='utf-8') as f:
-        for line in f.read().splitlines():
+        for line in f:
+            line = line.rstrip()
             if not only_data:
                 yield line
             else:
@@ -110,6 +112,76 @@ def make_conllu(final_results, source_conllu, output_conllu):
                 output.write('\t'.join(line) + '\n')
 
 
+def _n_fold_split(data, n):
+    """ Split dataset into n-fold train/test sets
+
+    :param n          number of splits
+    :param data       dataset
+    :type n           int
+    :type data        list of es text objects
+
+    """
+    
+    train_data = defaultdict(list)
+    test_data = defaultdict(list)
+    dev_data = defaultdict(list)
+
+    if n == 1:
+        return {0: data}, {0: data}, {0: data}
+   
+    for e, entry in enumerate(data):
+        for split in range(0, n):
+
+            devsplit = split+1
+            if devsplit == n:
+                devsplit = 0
+                
+            if e % n == split:
+                test_data[split].append(entry)
+            elif e % n == devsplit:
+                dev_data[split].append(entry)
+            else:
+                train_data[split].append(entry)
+
+    return train_data, test_data, dev_data
+
+
+def split_training_data(source, n):
+    """ Splits conllu into n-fold sets """
+
+    # TODO: other split types
+
+    def iterate():
+        text = []
+        for x in read_conllu(source):
+            text.append(x)
+            if not x:
+                yield text
+                text = []
+
+    chunks = iterate()
+    train, test, dev = _n_fold_split(chunks, n)
+
+    datasets = (('train', train),
+                ('test', test),
+                ('dev', dev))
+
+    path, fn = os.path.split(source)
+    fn, ext = fn.split('.')
+
+
+    for k in range(0, n):
+        prefix = f'{fn}{k+1}'
+        for suffix, dataset in datasets:
+            source_fn = os.path.join(path, f'{prefix}-{suffix}.{ext}')
+            print(f'> Processing {source_fn}')
+            with open(source_fn, 'w', encoding='utf-8') as f:
+                for unit in dataset[k]:
+                    for line in unit:
+                        f.write(line + '\n')
+
+
+
 def upl_to_conllu(upl_file, output):
     """ Convert unit-per-line format into CoNLL-U
 
@@ -184,4 +256,4 @@ def normalize_all(path):
 
 
 if __name__ == "__main__":
-    pass
+    pass#split_training_data('conllu/source.conllu', 5)
