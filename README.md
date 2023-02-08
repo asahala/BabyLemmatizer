@@ -16,20 +16,6 @@ BabyLemmatizer 2.0 approaches POS-tagging and lemmatization as a Machine Transla
 | a-ra-an-šu | arnu | N |
 | pu-uṭ-ri | paṭāru | V |
 
-### Performance
-Results of the 5-fold cross-validation of the first millennium Babylonian models trained with 500k examples split into 80/10/10. Output: token.
-
-|category|avg.|lbtest1|lbtest2|lbtest3|lbtest4|lbtest5|conf. int|
-|---|---|---|---|---|---|---|---|
-|tagger|**97.42%**|97.40%|97.44%|97.33%|97.49%|97.46%|±0.06%|
-|lemmatizer|**94.75%**|94.55%|94.71%|94.71%|94.78%|95.01%|±0.15%|
-|tagger+lemmatizer|**94.62%**|94.36%|94.61%|94.62%|94.69%|94.81%|±0.14%|
-
-Output: character sequence
-
-![alt text](https://www.mv.helsinki.fi/home/asahala/img/lbtest-eval.png)
-
-
 # Requirements
 1. [OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)
 2. Python 3.6+
@@ -114,6 +100,21 @@ Some additional commands:
 ```
 --normalize-conllu            Attempts to normalize transliteration in all files in your conllu folder.
 ```
+
+# Performance
+Results of the 5-fold cross-validation of the first millennium Babylonian models trained with 500k examples split into 80/10/10. Evaluation has been done before and after the post-processing, for the whole data sets and out-of-vocabulary items only.
+
+***Output: token***
+
+|category|avg.|lbtest1|lbtest2|lbtest3|lbtest4|lbtest5|conf. int|
+|---|---|---|---|---|---|---|---|
+|tagger|**97.42%**|97.40%|97.44%|97.33%|97.49%|97.46%|±0.06%|
+|lemmatizer|**94.75%**|94.55%|94.71%|94.71%|94.78%|95.01%|±0.15%|
+|tagger+lemmatizer|**94.62%**|94.36%|94.61%|94.62%|94.69%|94.81%|±0.14%|
+
+***Output: character sequence***
+
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/lbtest-eval.png)
 
 
 # Citations
