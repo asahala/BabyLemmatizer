@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import re
 from cuneiformtools import util, norm, alphabet
 from functools import lru_cache
 
@@ -45,10 +46,15 @@ def reformat(sign):
 def get_chars(xlit):
     if xlit == '_':
         return xlit
+    xlit = uppercase_determinatives(xlit)
     signs, delimiters = util.unzip_xlit(xlit)
     delimiters = [f' {d} '.replace('{ ', '{').replace(' }', '}') for d in delimiters]
     signs = [reformat(s) for s in signs]
-    xlit_ = util.zip_xlit(signs, delimiters).lstrip().rstrip().replace('  ', ' ').replace('  ', ' ').replace('{+ ', '{+')       
+    xlit_ = util.zip_xlit(signs, delimiters)\
+            .lstrip()\
+            .rstrip()
+    xlit_ = re.sub('(\{\+)(.+?)(\})', r'\1 \2 \3', xlit_)
+    xlit_ = re.sub(' +', ' ', xlit_)
     return xlit_    
  
 
