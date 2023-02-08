@@ -25,13 +25,13 @@ Results of the 5-fold cross-validation of the first millennium Babylonian models
 |lemmatizer|**94.75%**|94.55%|94.71%|94.71%|94.78%|95.01%|±0.15%|
 |tagger+lemmatizer|**94.62%**|94.36%|94.61%|94.62%|94.69%|94.81%|±0.14%|
 
-## Requirements
+# Requirements
 1. [OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)
 2. Python 3.6+
 
 BabyLemmatizer 2.0 has been tested with Python 3.9 and OpenNMT-py 3.0.
 
-## Setting up BabyLemmatizer
+# Setting up BabyLemmatizer
 The easiest way to get BabyLemmatizer 2.0 running is to create a Python 3.9 virtual environment for OpenNMT-py, this ensures that you have permanently all necessary requirements installed and they do not conflict with your other libaries. This is fairly simple:
 
 1. ```python3.9 -m venv OpenNMT```
@@ -48,7 +48,7 @@ onmt_path = '/yourpath/OpenNMT/lib/python3.9/site-packages/onmt/bin'
 
 After this, you can run ```preferences.py``` and if lots of OpenNMT documentation prints on your screen, everything should be okay.
 
-## Use in Python
+# Use in Python
 
 ### Lemmatization
 To tag and lemmatize texts, you need to first convert it into a CoNLL-U format. See instructions in the [conllu](https://github.com/asahala/BabyLemmatizer/tree/main/conllu) folder.
@@ -79,7 +79,7 @@ You can perform n-fold cross-validation of your models by using ```evaluate_mode
 All intermediate steps of evaluation are saved into ```models/model_name/eval/``` and the final lemmatization results are saved into ```output_final.conllu2``` in this folder.
 
 
-## Command line use
+# Command line use
 
 BabyParser 2.0 can be used directly from the command line.
 
@@ -111,7 +111,7 @@ Some additional commands:
 ```
 
 
-## Citations
+# Citations
 If you use BabyLemmatizer for annotating your data or training new models, please cite this repository and [Sahala et al. 2022](http://hdl.handle.net/10138/348412). An updated publication will be written in 2023 that describes this version of the system.
 
 ```
