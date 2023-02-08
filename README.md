@@ -124,7 +124,7 @@ If you use BabyLemmatizer for annotating your data or training new models, pleas
 }
 ```
 
-## Upcoming features
+# Upcoming features
 In order of priority:
 
 * Pretrained models
@@ -135,6 +135,6 @@ In order of priority:
 * Server-side use
 * Machine Translation
 
-## Bugs
+# Bugs
 * Determinative encoding is broken
 * If user forgets = between parameter and argument in command line use, things go wrong
