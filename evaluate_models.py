@@ -244,7 +244,7 @@ def pipeline(*models, cpu=False, fast=False):
     for model in models:
 
         """ Paths """
-        model_path = os.path.join(Path.models, model)
+        model_path = os.path.join(Paths.models, model)
         eval_path = os.path.join(model_path, 'eval')
         tagger_path = os.path.join(model_path, 'tagger')
         lemmatizer_path = os.path.join(model_path, 'lemmatizer')
