@@ -64,6 +64,9 @@ The important fields are ```FORM``` that contains *transliteration* and ```LEMMA
 5	pa-na-a-ma	pāna	AV	AV	_	1	child	_	formerly
 
 ```
+# Creating training sets
+
+You can create n-fold splits from a single CoNLLU-U file for training models by using the ```split_training_data()``` method in  ```conllutools.py```.  For example ```conllutools.split_training_data(source='mypath/source.conllu', n=10)``` splits the data into 80/10/10 train/dev/test sets and saves them into the same folder.
 
 ## Demo
 Extract ```lbtest1.tar.gz``` for some data to test training a model with.
