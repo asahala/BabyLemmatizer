@@ -8,6 +8,7 @@ import copy
 from collections import defaultdict
 from command_parser import parse_prefix
 from postcorrect import pipeline as PP
+from preferences import Paths
 import model_api
 import conllutools
 
@@ -243,7 +244,7 @@ def pipeline(*models, cpu=False, fast=False):
     for model in models:
 
         """ Paths """
-        model_path = os.path.join('models', model)
+        model_path = os.path.join(Path.models, model)
         eval_path = os.path.join(model_path, 'eval')
         tagger_path = os.path.join(model_path, 'tagger')
         lemmatizer_path = os.path.join(model_path, 'lemmatizer')
@@ -304,7 +305,7 @@ def pipeline(*models, cpu=False, fast=False):
             model_path = model_path)
 
         """ Run post-processing using BabyLemmatizer 1.0"""
-        PP.eval_test(model)
+        PP.eval_test(model, Paths.models)
 
         """ Post-processor evaluation """
         R_post[model], OOV_post[model] = evaluate(

@@ -5,6 +5,7 @@ import os
 import conllutools as ct
 import preprocessing as pp
 import model_api
+from preferences import Paths
 
 info = """===========================================================
 Lemmatizer pipeline for BabyLemmatizer 2.0
@@ -70,8 +71,11 @@ class Lemmatizer:
 
 
     def run_model(self, model_name, cpu):
-        tagger_path = f'./models/{model_name}/tagger/model.pt'
-        lemmatizer_path = f'./models/{model_name}/lemmatizer/model.pt'
+        tagger_path = os.path.join(
+            Paths.models, model_name, 'tagger', 'model.pt')
+        lemmatizer_path = os.path.join(
+            Paths.models, model_name, 'lemmatizer', 'model.pt')
+        
 
         io(f'Tagging {self.tagger_input} with {model_name}')
         model_api.run_tagger(self.tagger_input,

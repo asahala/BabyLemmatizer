@@ -7,7 +7,7 @@ import math
 import shutil
 import re
 from collections import defaultdict
-from preferences import python_path, onmt_path, conllu_path
+from preferences import python_path, onmt_path, Paths
 from command_parser import parse_prefix, split_train_filename
 import preprocessing
 import conllutools
@@ -56,7 +56,7 @@ def _rename_model(model_name, type_):
     def get_step(filename):
         return (''.join(c for c in filename if c.isdigit()))
         
-    path = os.path.join('models', model_name, type_)
+    path = os.path.join(Paths.models, model_name, type_)
     step = sorted(get_step(x) for x in os.listdir(path)
                   if x.endswith('.pt') and x != 'model.pt')[-1]
     
@@ -82,8 +82,8 @@ def print_oov_rates():
                 """ Make OOV dictionary and save it """
                 out_of_vocab = this - train
 
-                fn = f'models/{model}/override/'\
-                     f'{data_type}-types-oov.{word_type}'
+                fn = os.path.join(Paths.models, model, 'override',
+                     f'{data_type}-types-oov.{word_type}')
                 
                 with open(fn, 'w', encoding='utf-8') as f:
                     for w in sorted(out_of_vocab):
@@ -118,9 +118,12 @@ def print_oov_rates():
 def make_override(prefix, data_type, filename):
     """ Setup override """
     
-    fn = f'models/{prefix}/override/{data_type}.all'
-    fnl = f'models/{prefix}/override/{data_type}-types.lem'
-    fnx = f'models/{prefix}/override/{data_type}-types.xlit'
+    fn = os.path.join(
+        Paths.models, prefix, 'override', f'{data_type}.all')
+    fnl = os.path.join(
+        Paths.models, prefix, 'override', f'{data_type}-types.lem')
+    fnx = os.path.join(
+        Paths.models, prefix, 'override', f'{data_type}-types.xlit')
     lemma_dict = defaultdict(int)
     xlit_dict = defaultdict(int)
 
@@ -168,19 +171,17 @@ def _make_training_data(filename):
     
     logger(f'\n> Building training data from {filename}')
 
-    ## TODO: define somewhere else globally
-    ## or this will get really confusing at some point
     """ Define model path structure """
     paths = (
-        'models',
-        os.path.join('models', prefix),
-        os.path.join('models', prefix, 'tagger'),
-        os.path.join('models', prefix, 'lemmatizer'),
-        os.path.join('models', prefix, 'tagger', 'traindata'),
-        os.path.join('models', prefix, 'lemmatizer', 'traindata'),
-        os.path.join('models', prefix, 'eval'),
-        os.path.join('models', prefix, 'override'),
-        os.path.join('models', prefix, 'conllu'))
+        Paths.models,
+        os.path.join(Paths.models, prefix),
+        os.path.join(Paths.models, prefix, 'tagger'),
+        os.path.join(Paths.models, prefix, 'lemmatizer'),
+        os.path.join(Paths.models, prefix, 'tagger', 'traindata'),
+        os.path.join(Paths.models, prefix, 'lemmatizer', 'traindata'),
+        os.path.join(Paths.models, prefix, 'eval'),
+        os.path.join(Paths.models, prefix, 'override'),
+        os.path.join(Paths.models, prefix, 'conllu'))
 
     for path in paths:
         try:
@@ -191,13 +192,13 @@ def _make_training_data(filename):
     """ Save CoNLL-U to model for reproducibility """
     shutil.copyfile(
         filename,
-        os.path.join('models', prefix, 'conllu', f'{data_type}.conllu'))    
+        os.path.join(Paths.models, prefix, 'conllu', f'{data_type}.conllu'))   
 
     """ Generate training data """
     tagger_path = os.path.join(
-        'models', prefix, 'tagger', 'traindata')
+        Paths.models, prefix, 'tagger', 'traindata')
     lemmatizer_path = os.path.join(
-        'models', prefix, 'lemmatizer', 'traindata')
+        Paths.models, prefix, 'lemmatizer', 'traindata')
 
     """ Define target and source files for NN-training data """
     pos_src_fn = os.path.join(tagger_path, f'{data_type}.src')
@@ -256,19 +257,15 @@ def _make_training_data(filename):
             start_decay)
 
         base_yaml.make_lemmatizer_yaml(
-            prefix,
-            os.path.join('models', prefix),
-            hyper)
+            prefix, hyper)
 
         base_yaml.make_tagger_yaml(
-            prefix,
-            os.path.join('models', prefix),
-            hyper)
+            prefix, hyper)
 
     make_override(prefix, data_type, filename)
 
 
-def build_train_data(*models, conllu_path=conllu_path):
+def build_train_data(*models):
     """ Build train data from CoNLL-U files in the given
     folder.
 
@@ -279,16 +276,16 @@ def build_train_data(*models, conllu_path=conllu_path):
     :type models          str
     :type models          str                        """
     
-    filelist = [x for x in os.listdir(conllu_path)
+    filelist = [x for x in os.listdir(Paths.conllu)
                 if x.endswith('.conllu') and x.startswith(tuple(models))]
 
     if not filelist:
-        print(f'\n> Path "{conllu_path}" does not contain'\
+        print(f'\n> Path "{Path.conllu}" does not contain'\
               ' files with given prefix')
         sys.exit(0)
     
     for filename in sorted(filelist):
-        _make_training_data(os.path.join(conllu_path, filename))
+        _make_training_data(os.path.join(Paths.conllu, filename))
         
     print_statistics()
     print_oov_rates()
@@ -318,18 +315,18 @@ def train_model(*models, cpu=False):
         gpu = '-gpu_ranks 0 -world_size 1'
 
     for model in sorted(models):
-        if model not in os.listdir('models'):
+        if model not in os.listdir(Paths.models):
             print(f'> Run build_training_data({model}) before training.')
             sys.exit(0)
 
-        model_path = os.path.join('models', model)
+        model_path = os.path.join(Paths.models, model)
         for yaml in (x for x in os.listdir(model_path) if x.endswith('.yaml')):
             os.system(f'{python_path}python {onmt_path}build_vocab.py '\
                       f'-config {model_path}/{yaml} -n_sample -1 '\
                       f'-num_threads 2')
             os.system(f'{python_path}python {onmt_path}train.py '\
                       f'-config {model_path}/{yaml} {gpu}')
-
+            pass
         _rename_model(model, 'lemmatizer')
         _rename_model(model, 'tagger')
 

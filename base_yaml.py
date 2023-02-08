@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import os
+from preferences import Paths
+
 """===========================================================
 Neural net parameter selector for BabyLemmatizer 2
 
@@ -36,25 +39,25 @@ start_decay_steps: {start_decay}
 decay_steps: {decay_steps}"""
     
 
-def make_lemmatizer_yaml(prefix, MODEL_PATH, hyper):
+def make_lemmatizer_yaml(prefix, hyper):
     lemmatizer =\
-f"""save_data: models/{prefix}/lemmatizer/model
-src_vocab: models/{prefix}/lemmatizer/vocab.src
-tgt_vocab: models/{prefix}/lemmatizer/vocab.tgt
+f"""save_data: {Paths.models}/{prefix}/lemmatizer/model
+src_vocab: {Paths.models}/{prefix}/lemmatizer/vocab.src
+tgt_vocab: {Paths.models}/{prefix}/lemmatizer/vocab.tgt
 overwrite: True
 
 # Corpus opts:
 data:
     corpus_1:
-        path_src: models/{prefix}/lemmatizer/traindata/train.src
-        path_tgt: models/{prefix}/lemmatizer/traindata/train.tgt
+        path_src: {Paths.models}/{prefix}/lemmatizer/traindata/train.src
+        path_tgt: {Paths.models}/{prefix}/lemmatizer/traindata/train.tgt
     valid:
-        path_src: models/{prefix}/lemmatizer/traindata/dev.src
-        path_tgt: models/{prefix}/lemmatizer/traindata/dev.tgt
+        path_src: {Paths.models}/{prefix}/lemmatizer/traindata/dev.src
+        path_tgt: {Paths.models}/{prefix}/lemmatizer/traindata/dev.tgt
 
 # Vocabulary files that were just created
-#src_vocab: models/{prefix}/lemmatizer/vocab.src
-#tgt_vocab: models/{prefix}/lemmatizer/vocab.tgt
+#src_vocab: {Paths.models}/{prefix}/lemmatizer/vocab.src
+#tgt_vocab: {Paths.models}/{prefix}/lemmatizer/vocab.tgt
 
 # Train on a single GPU
 #world_size: 1
@@ -63,31 +66,31 @@ data:
 #####
 
 # Where to save the checkpoints
-save_model: models/{prefix}/lemmatizer/model
+save_model: {Paths.models}/{prefix}/lemmatizer/model
 {hyper}
 """
 
-    write_yaml(MODEL_PATH + 'lemmatizer.yaml', lemmatizer)
+    write_yaml(os.path.join(Paths.models, prefix, 'lemmatizer.yaml'), lemmatizer)
 
-def make_tagger_yaml(prefix, MODEL_PATH, hyper):
+def make_tagger_yaml(prefix, hyper):
     tagger =\
-f"""save_data: models/{prefix}/tagger/model
-src_vocab: models/{prefix}/tagger/vocab.src
-tgt_vocab: models/{prefix}/tagger/vocab.tgt
+f"""save_data: {Paths.models}/{prefix}/tagger/model
+src_vocab: {Paths.models}/{prefix}/tagger/vocab.src
+tgt_vocab: {Paths.models}/{prefix}/tagger/vocab.tgt
 overwrite: True
 
 # Corpus opts:
 data:
     corpus_1:
-        path_src: models/{prefix}/tagger/traindata/train.src
-        path_tgt: models/{prefix}/tagger/traindata/train.tgt
+        path_src: {Paths.models}/{prefix}/tagger/traindata/train.src
+        path_tgt: {Paths.models}/{prefix}/tagger/traindata/train.tgt
     valid:
-        path_src: models/{prefix}/tagger/traindata/dev.src
-        path_tgt: models/{prefix}/tagger/traindata/dev.tgt
+        path_src: {Paths.models}/{prefix}/tagger/traindata/dev.src
+        path_tgt: {Paths.models}/{prefix}/tagger/traindata/dev.tgt
 
 # Vocabulary files that were just created
-#src_vocab: models/{prefix}/tagger/vocab.src
-#tgt_vocab: models/{prefix}/tagger/vocab.tgt
+#src_vocab: {Paths.models}/{prefix}/tagger/vocab.src
+#tgt_vocab: {Paths.models}/{prefix}/tagger/vocab.tgt
 
 # Train on a single GPU
 #world_size: 1
@@ -96,11 +99,11 @@ data:
 #####
 
 # Where to save the checkpoints
-save_model: models/{prefix}/tagger/model
+save_model: {Paths.models}/{prefix}/tagger/model
 {hyper}
 """
 
-    write_yaml(MODEL_PATH + 'tagger.yaml', tagger)
+    write_yaml(os.path.join(Paths.models, prefix, 'tagger.yaml'), tagger)
 
 """
 save_checkpoint_steps: 35000

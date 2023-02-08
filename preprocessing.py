@@ -5,6 +5,8 @@ import re
 from cuneiformtools import util, norm, alphabet
 from functools import lru_cache
 
+""" BabyLemmatizer 2.0 Preprocessor """
+
 LACUNA_METACHARS = frozenset(alphabet.LACUNA_META)
 
 @lru_cache(maxsize=256)

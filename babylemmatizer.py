@@ -7,7 +7,7 @@ import evaluate_models
 import conllutools
 import lemmatizer_pipeline
 from command_parser import parse_prefix
-from preferences import conllu_path
+from preferences import Paths
 
 """ ===========================================================
 BabyLemmatizer 2.0
@@ -29,9 +29,11 @@ def get_args():
     ap.add_argument(
         '--evaluate', type=str)
     ap.add_argument(
-        '--evaluate-fast', type=str)
-    ap.add_argument(
         '--conllu-path', type=str)
+    ap.add_argument(
+        '--model-path', type=str)
+    ap.add_argument(
+        '--evaluate-fast', type=str)
     ap.add_argument(
         '--train', type=str)
     ap.add_argument(
@@ -52,8 +54,10 @@ if __name__ == "__main__":
 
     """ Optional args """
     if args.conllu_path:
-        conllu_path = args.conllu_path
-
+        Paths.conllu = args.conllu_path
+    if args.model_path:
+        Paths.models = args.model_path
+        
     """ Complementary mandatory args """
     if args.train:
         models = parse_prefix(args.train)
@@ -62,11 +66,11 @@ if __name__ == "__main__":
     elif args.build:
         models = parse_prefix(args.build)
         train_pipeline.build_train_data(
-            *models, conllu_path=conllu_path)
+            *models)
     elif args.build_train:
         models = parse_prefix(args.build_train)
         train_pipeline.build_train_data(
-            *models, conllu_path=conllu_path)
+            *models)
         train_pipeline.train_model(
             *models, cpu=args.use_cpu)
     elif args.evaluate:
