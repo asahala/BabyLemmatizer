@@ -130,6 +130,7 @@ In order of priority:
 * Pretrained models
 * Advanced command-line use (tuning the neural net, customizing folders etc)
 * Phonological transcription
+* Named-entity recognition
 * Direct Oracc ATF support
 * Morphological analysis
 * Server-side use
