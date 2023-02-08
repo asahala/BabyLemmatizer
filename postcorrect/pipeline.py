@@ -1,4 +1,5 @@
 import re
+import os
 #import postcorrect.vrt_to_conllu as vrt2conllu
 import postcorrect.minimize as minimize
 import postcorrect.unminimize as unminimize
@@ -233,15 +234,16 @@ def eval_lbtest(prefix):
                         override=override_, disambiguate=disamb)
 
 
-def eval_test(prefix):
+def eval_test(prefix, model_path):
 
     override_ = True
     disamb = True
 
     print(f'## {prefix}')
-    evaluate_unseen(f'./models/{prefix}/eval/output_final.conllu',
-                        f'./models/{prefix}/conllu/test.conllu',
-                        f'./models/{prefix}/conllu/train.conllu',
+    evaluate_unseen(
+        os.path.join(model_path, prefix, 'eval', 'output_final.conllu'),
+        os.path.join(model_path, prefix, 'conllu', 'test.conllu'),
+        os.path.join(model_path, prefix, 'conllu', 'train.conllu'),
                         override=override_, disambiguate=disamb)
        
       
