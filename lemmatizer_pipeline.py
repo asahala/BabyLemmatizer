@@ -6,6 +6,8 @@ import conllutools as ct
 import preprocessing as pp
 import model_api
 from preferences import Paths
+import postcorrect.lemmatize_raw as pl
+import postcorrect.lemmatizer as PL
 
 info = """===========================================================
 Lemmatizer pipeline for BabyLemmatizer 2.0
@@ -30,15 +32,16 @@ class Lemmatizer:
         f, e = file_.split('.')
 
         #fn = os.path.join(path, f)
-        
-        step_path = os.path.join(path + '/steps')
+
+        """ Path for saving intermediate files """
+        step_path = os.path.join(path, 'steps')
+
         try:
             os.mkdir(step_path)
         except FileExistsError:
             pass
         
         fn = os.path.join(step_path, f)
-        
         self.source_file = input_file
         self.word_forms = fn + '.forms'
         self.tagger_input = fn + '.tag_src'
@@ -76,41 +79,55 @@ class Lemmatizer:
         lemmatizer_path = os.path.join(
             Paths.models, model_name, 'lemmatizer', 'model.pt')
         
-
+        '''
+        """ Run tagger on input """
         io(f'Tagging {self.tagger_input} with {model_name}')
         model_api.run_tagger(self.tagger_input,
                              tagger_path,
                              self.tagger_output,
                              cpu)
 
+        """ Merge tags to make lemmatizer input """
         model_api.merge_tags(self.tagger_output,
                              self.word_forms,
                              self.lemmatizer_input)
 
+        """ Run lemmatizer """
         io(f'Lemmatizing {self.lemmatizer_input} with {model_name}')
         model_api.run_lemmatizer(self.lemmatizer_input,
                                  lemmatizer_path,
                                  self.lemmatizer_output,
                                  cpu)
-       
-
+        '''
+        """ Merge all results """
         model_api.merge_to_final(self.tagger_output,
                                  self.lemmatizer_output,
                                  self.final_output)
 
-        final = self.source_file.replace('.conllu', '_lemmatized.conllu')
+        """ Make CoNLL-U for neural net results """
+        final = self.source_file.replace('.conllu', '_nn.conllu')
         ct.make_conllu(self.final_output,
                        self.source_file,
                        final)
 
+        """ Post-process """
         io(f'Annotations saved to {final}')
-        
 
+        train_data = os.path.join(
+            Paths.models,
+            model_name,
+            'conllu',
+            'train.conllu')
+
+        pl.lemmatize_unseen(
+            lemmatizer_output = final,
+            master = train_data
+        )
+        
 if __name__ == "__main__":
     """ Demo for lemmatization """
     #l = Lemmatizer('./input/example.conllu')
     #l.run_model('lbtest1')
-
     pass
 
 

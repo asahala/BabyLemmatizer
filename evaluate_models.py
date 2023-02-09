@@ -9,6 +9,7 @@ from collections import defaultdict
 from command_parser import parse_prefix
 from postcorrect import pipeline as PP
 from preferences import Paths
+import postprocess
 import model_api
 import conllutools
 
@@ -304,8 +305,18 @@ def pipeline(*models, cpu=False, fast=False):
             model = model,
             model_path = model_path)
 
-        """ Run post-processing using BabyLemmatizer 1.0"""
-        PP.eval_test(model, Paths.models)
+        """ Run post-processing """
+        #PP.eval_test(model, Paths.models)
+        P = postprocess.Postprocessor(
+            filename = os.path.join(eval_path, 'output_final.conllu'),
+            model_name = model)
+        P.fill_unambiguous(threshold = 0.9)
+
+        conllutools.make_conllu(
+            final_results = P.last_step,
+            source_conllu = os.path.join(model_path, 'conllu', 'test.conllu'),
+            output_conllu = os.path.join(eval_path, 'output_final.conllu.final'))
+                
 
         """ Post-processor evaluation """
         R_post[model], OOV_post[model] = evaluate(

@@ -88,17 +88,22 @@ def make_conllu(final_results, source_conllu, output_conllu):
     :param output_conllu        output CoNNL-U for annotations
 
     """
-
-    with open(final_results, 'r', encoding='utf-8') as f:
-        results = f.read().splitlines()
-
+    only_data = False
+    if isinstance(final_results, str):
+        with open(final_results, 'r', encoding='utf-8') as f:
+            results = f.read().splitlines()
+    else:
+        only_data = True
+        results = [f'{line[2]}\t{line[3]}' for line, score in final_results]
+        
     with open(source_conllu, 'r', encoding='utf-8') as f,\
          open(output_conllu, 'w', encoding='utf-8') as output:
 
         for line in f.read().splitlines():
             if not line:
                 output.write(line + '\n')
-                results.pop(0)
+                if not only_data:
+                    results.pop(0)
             elif line.startswith('#'):
                 output.write(line + '\n')
             else:
