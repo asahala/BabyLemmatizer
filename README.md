@@ -93,8 +93,8 @@ GENERAL COMMANDS (use only one)
 
 PATH AND OPTIONS
 --use-cpu                      Use CPU instead of GPU (read more below)
---conllu-path                  Path where to read CoNLL-U files
---model-path                   Path where to save/read models  
+--conllu-path=<arg>            Path where to read CoNLL-U files
+--model-path=<arg>             Path where to save/read models  
 ```
 
 All these commands have one mandatory argument, which points to the data in your ```conllu``` folder if you are building new data, or to your ```models``` folder if you are training or evaluating models. For example, if you have CoNLL-U files ```assyrian-train.conllu, assyrian-dev.conllu, assyrian-test.conllu``` and want to build data and train models for them, you can call BabyLemmatizer ```python babylemmatizer.py --build-train=assyrian```. In case you want to train several models for n-fold cross-validation, you can have train/dev/test CoNLL-U files with prefixes followed by numbers, e.g. with n=10 ```assyrian0, assyrian1, ..., assyrian9``` and use the command ```python babylemmatizer.py --build-train=assyrian*```. Similarly, to cross-validate these models after training, use ```python babylemmatizer.py --evaluate=assyrian*```.
