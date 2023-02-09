@@ -85,15 +85,21 @@ where ```corpus_file``` points to the CoNLL-U file you want to lemmatize and ```
 Training and evaluation can be done using ```babylemmatizer.py``` command line API. The command line interface is purposefully simple and does not give user direct access to any additional parameters.
 
 ```
+GENERAL COMMANDS (use only one)
 --build=<arg>                  Builds data from CoNNL-U files in your conllu folder
 --train=<arg>                  Trains a model or models for the built data
 --build-train=<arg>            Builds data and trains a model or models
 --evaluate=<arg>               Cross-validates your model or models
+
+PATH AND OPTIONS
+--use-cpu                      Use CPU instead of GPU (read more below)
+--conllu-path                  Path where to read CoNLL-U files
+--model-path                   Path where to save/read models  
 ```
 
 All these commands have one mandatory argument, which points to the data in your ```conllu``` folder if you are building new data, or to your ```models``` folder if you are training or evaluating models. For example, if you have CoNLL-U files ```assyrian-train.conllu, assyrian-dev.conllu, assyrian-test.conllu``` and want to build data and train models for them, you can call BabyLemmatizer ```python babylemmatizer.py --build-train=assyrian```. In case you want to train several models for n-fold cross-validation, you can have train/dev/test CoNLL-U files with prefixes followed by numbers, e.g. with n=10 ```assyrian0, assyrian1, ..., assyrian9``` and use the command ```python babylemmatizer.py --build-train=assyrian*```. Similarly, to cross-validate these models after training, use ```python babylemmatizer.py --evaluate=assyrian*```.
 
-***Note:*** If you want to use CPU instead of GPU (i.e. if you get a CUDA error), use parameter ```--use-cpu``` in addition with parameters ```--train, --build-train``` and ```--evaluate```.
+***Using CPU:*** If you want to use CPU instead of GPU (i.e. if you get a CUDA error), use parameter ```--use-cpu``` in addition with parameters ```--train, --build-train``` and ```--evaluate```. Note that training models with CPU is extremely slow and may take several days depending on your training data size. However, you can lemmatize new texts using CPU without too much waiting.
 
 Some additional commands:
 
