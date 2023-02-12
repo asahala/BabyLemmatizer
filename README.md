@@ -159,3 +159,8 @@ In order of priority:
 * normalize function for conlluplus
 * data splitter for conlluplus
 
+If willpower
+
+* tag confusion matrix
+* tag-wise evaluation
+* category-wise evaluation (logo/logosyll/syll)
