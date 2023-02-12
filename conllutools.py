@@ -16,13 +16,16 @@ University of Helsinki
 
 ID, FORM, LEMMA, UPOS, XPOS = 0, 1, 2, 3, 4
 FEATS, HEAD, DEPREL, DEPS, MISC = 5, 6, 7, 8, 9
+ENG, NORM, CONTEXT, SCORE = 10, 11, 12, 13
 
 """ End-of-unit symbol """
 EOU = ('<EOU>', '<EOU>', '<EOU>')
 
+
 def read_conllu(filename, only_data=False):
     with open(filename, 'r', encoding='utf-8') as f:
-        for line in f.read().splitlines():
+        for line in f:
+            line = line[:-1]
             if not only_data:
                 yield line
             else:
@@ -30,7 +33,57 @@ def read_conllu(filename, only_data=False):
                     if not line.startswith('#'):
                         yield line
 
+                        
+def write_conllu(filename, content):
+    with open(filename, 'w', encoding='utf-8') as f:
+        for c in content:
+            f.write(c + '\n')
 
+                        
+def get_contexts(data, context=1):
+    """ Return POS contexts for each word in
+    the CoNLL-U file
+
+    :param context      context window size 
+    :type context       int """
+    
+    tag_sequence = list('<' * context)
+    first = True
+    window = context + 1 + context
+    for fields in read_conllu(data, only_data=True):
+        fields = fields.split('\t')
+        if fields[ID] == '1':
+            if not first:
+                tag_sequence.extend(list('>'*context))
+                tag_sequence.extend(list('<'*context))
+                tag_sequence.append(fields[UPOS])
+            else:
+                tag_sequence.append(fields[UPOS])
+                first = False
+        else:
+            tag_sequence.append(fields[UPOS])
+    tag_sequence.extend(list('>'*context))
+
+    for e, tag in enumerate(tag_sequence):
+        if tag not in '><':
+            yield 'P={}|T={}|N={}'.format(*tag_sequence[e-context:e-context+window])
+
+
+def add_fields(source_file, values, index):
+    for line in read_conllu(source_file):
+        if line.startswith('#'):
+            yield line
+        elif not line:
+            yield line
+        else:
+            data = line.split('\t')            
+            if index >= len(data):
+               data.extend(list('_'*(1+index-len(data))))
+            
+            data[index] = next(values)
+            yield '\t'.join(data)
+
+            
 def get_override(filename):
     """ Parse override data from CoNLL-U file """
     yield EOU
@@ -79,7 +132,7 @@ def get_training_data2(filename, preprocess=None):
 
             stack.pop(0)
 
-
+            
 def make_conllu(final_results, source_conllu, output_conllu):
     """ Merge annotations with existing CoNLL-U file
 
@@ -94,7 +147,7 @@ def make_conllu(final_results, source_conllu, output_conllu):
             results = f.read().splitlines()
     else:
         only_data = True
-        results = [f'{line[2]}\t{line[3]}' for line, score in final_results]
+        results = [f'{line[2]}\t{line[3]}' for line in final_results]
         
     with open(source_conllu, 'r', encoding='utf-8') as f,\
          open(output_conllu, 'w', encoding='utf-8') as output:

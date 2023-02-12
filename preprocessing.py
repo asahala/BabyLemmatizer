@@ -43,6 +43,10 @@ def reformat(sign):
     else:
         return sign
 
+@lru_cache(maxsize=512)
+def get_chars_lemma(lemma):
+    return ' '.join(list(lemma))
+
 
 @lru_cache(maxsize=512)
 def get_chars(xlit):

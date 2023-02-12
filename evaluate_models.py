@@ -12,6 +12,7 @@ from preferences import Paths
 import postprocess
 import model_api
 import conllutools
+import conlluplus
 
 """ ===========================================================
 Evaluation pipeline for BabyLemmatizer 2
@@ -175,15 +176,15 @@ def evaluate(predictions, gold_standard, model, model_path):
     """ Compare predictions to gold standard """
     for p, g in zip(pred, gold):
         s_index = conllutools.FORM
-        e_index = conllutools.UPOS+1
-        xlit, p_lemma, p_pos = p.split('\t')[s_index:e_index]
-        g_lemma, g_pos = g.split('\t')[s_index+1:e_index]
+        e_index = conllutools.XPOS+1
+        xlit, p_lemma, p_upos, p_xpos = p.split('\t')[s_index:e_index]
+        g_lemma, g_upos, g_xpos = g.split('\t')[s_index+1:e_index]
 
         """ Build evaluation pairs for different categories """
         eval_data = {
-            'POS-tagger': (p_pos, g_pos),
+            'POS-tagger': (p_xpos, g_xpos),
             'Lemmatizer': (p_lemma, g_lemma),
-            'Combined  ': (f'{p_lemma} {p_pos}', f'{g_lemma} {g_pos}')} 
+            'Combined  ': (f'{p_lemma} {p_xpos}', f'{g_lemma} {g_xpos}')} 
 
         """ Compare OOV inputs and all inputs """
         for category, pair in eval_data.items():
@@ -233,6 +234,8 @@ def pipeline(*models, cpu=False, fast=False):
     :type no_run         bool
 
     """
+
+    ## TODO: simplify, too much reading and writing same files
     
     results = defaultdict(dict)
     R = defaultdict(dict)
@@ -249,7 +252,8 @@ def pipeline(*models, cpu=False, fast=False):
         eval_path = os.path.join(model_path, 'eval')
         tagger_path = os.path.join(model_path, 'tagger')
         lemmatizer_path = os.path.join(model_path, 'lemmatizer')
-
+        conllu_path = os.path.join(model_path, 'conllu')
+        
         """ Intermediate files """
         tagger_output = 'output_tagger.txt'
         lemmatizer_input = 'input_lemmatizer.txt'
@@ -286,41 +290,74 @@ def pipeline(*models, cpu=False, fast=False):
                 output_file = os.path.join(eval_path, lemmatizer_output),
                 cpu = cpu)
             
-        """ Merge prediced results """
-        model_api.merge_to_final(
-            tags = os.path.join(eval_path, tagger_output),
-            lemmas = os.path.join(eval_path, lemmatizer_output),
-            output = os.path.join(eval_path, final_output))
+        #""" Merge prediced results """
+        #model_api.merge_to_final(
+        #    tags = os.path.join(eval_path, tagger_output),
+        #    lemmas = os.path.join(eval_path, lemmatizer_output),
+        #    output = os.path.join(eval_path, final_output))
 
+        """ Read XPOS and LEMMA tags produced by the neural net """
+        xpos_tags = model_api.read_results(os.path.join(eval_path, tagger_output))
+        lemmas = model_api.read_results(os.path.join(eval_path, lemmatizer_output))
+
+        """ Merge results with the CoNLL-U file """
+        this_data = conlluplus.ConlluPlus(os.path.join(conllu_path, 'test.conllu'), validate=False)
+        this_data.update_value('xpos', xpos_tags)
+        this_data.update_value('lemma', lemmas)
+
+        """ Add XPOS context field based on predictions """
+        this_data.update_value('xposctx', this_data.get_contexts('xpos', size=1))
+        
+        #""" Force 0.0 confidence scores """
+        #this_data.force_value(field='score', value=str(0.0))
+        
+        """ Write lemmatized/tagged file to disk """
+        this_data.write_file(filename = os.path.join(eval_path, 'test_nn.conllu'))
+        
         """ Write neural net results to conllu """
-        conllutools.make_conllu(
-            final_results = os.path.join(eval_path, final_output),
-            source_conllu = os.path.join(model_path, 'conllu', 'test.conllu'),
-            output_conllu = os.path.join(eval_path, 'output_final.conllu'))
+        #conllutools.make_conllu(
+        #    final_results = os.path.join(eval_path, final_output),
+        #    source_conllu = os.path.join(model_path, 'conllu', 'test.conllu'),
+        #    output_conllu = os.path.join(eval_path, 'output_final.conllu'))
 
+        """ Add contexts and rewrite """
+        #fntmp = os.path.join(eval_path, 'output_final.conllu')
+        #pos_contexts = conllutools.get_contexts(
+        #    data = fntmp,
+        #    context = 1)
+
+        #fntmpp = os.path.join(eval_path, 'output_final.conlluplus')
+        #tmp = conllutools.add_fields(
+        #    fntmp, pos_contexts, conllutools.CONTEXT)
+        #conllutools.write_conllu(fntmpp, tmp)
+        
         """ Neural net evaluation """
         R[model], OOV[model] = evaluate(
-            predictions = os.path.join(eval_path, 'output_final.conllu'),
+            predictions = os.path.join(eval_path, 'test_nn.conllu'),
             gold_standard = os.path.join(model_path, 'conllu', 'test.conllu'),
             model = model,
             model_path = model_path)
 
-        """ Run post-processing """
-        #PP.eval_test(model, Paths.models)
+        """ Run post-corrections """
         P = postprocess.Postprocessor(
-            filename = os.path.join(eval_path, 'output_final.conllu'),
+            predictions = this_data,
             model_name = model)
-        P.fill_unambiguous(threshold = 0.9)
 
-        conllutools.make_conllu(
-            final_results = P.last_step,
-            source_conllu = os.path.join(model_path, 'conllu', 'test.conllu'),
-            output_conllu = os.path.join(eval_path, 'output_final.conllu.final'))
-                
+        """ Initialize confidence scoring """
+        #this_data.force_value(field='score', value=str(0.0))
+        P.initialize_scores()
+        P.fill_unambiguous(threshold = 0.7)
+        P.disambiguate_by_pos_context(threshold = 0.7)
 
-        """ Post-processor evaluation """
+        this_data.force_value('xposctx', '_')
+        this_data.force_value('formctx', '_')
+        this_data.write_file(
+            filename = os.path.join(eval_path, 'test_pp.conllu'),
+            add_info = True)
+        
+        """ Post-correction evaluation """
         R_post[model], OOV_post[model] = evaluate(
-            predictions = os.path.join(eval_path, 'output_final.conllu.final'),
+            predictions = os.path.join(eval_path, 'test_pp.conllu'),
             gold_standard = os.path.join(model_path, 'conllu', 'test.conllu'),
             model = model,
             model_path = model_path)

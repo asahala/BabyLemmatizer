@@ -37,6 +37,14 @@ def run_lemmatizer(input_file, model_name, output_file, cpu=False):
     os.system(command)
 
 
+def read_results(filename):
+    """ Read OpenNMT output file """
+    with open(filename, 'r', encoding='utf-8') as f:
+        for line in f:
+            
+            yield line.replace(' ', '').rstrip()
+
+    
 def merge_tags(tagged_file, lemma_input, output_file):
     """ This function merges Tagger output with lemmatizer test data
     to create input for lemmatizer evaluation """
@@ -68,7 +76,7 @@ def merge_tags(tagged_file, lemma_input, output_file):
                 o_file.write(f'{lemma} {pos}\n')
 
 
-def merge_to_final(tags, lemmas, output):
+def ___merge_to_final(tags, lemmas, output):
     """ Merges tags and lemmata into a single output """
     with open(tags, 'r', encoding='utf-8') as t_file,\
          open(lemmas, 'r', encoding='utf-8') as l_file,\

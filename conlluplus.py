@@ -4,19 +4,18 @@ from collections import defaultdict
 
 """ ============================================================
 CoNLL-U+ file processor for BabyLemmatizer 2
-
 asahala 2023
 github.com/asahala/BabyLemmatizer
-
 ============================================================ """
 
 ID, FORM, LEMMA, UPOS, XPOS = 0, 1, 2, 3, 4
 FEATS, HEAD, DEPREL, DEPS, MISC = 5, 6, 7, 8, 9
-ENG, NORM, LANG, SCORE = 10, 11, 12, 13
+ENG, NORM, LANG, FORMCTX, XPOSCTX, SCORE = 10, 11, 12, 13, 14, 15
 
 FIELDS = {'id': 0, 'form': 1, 'lemma': 2, 'upos': 3, 'xpos': 4,
           'feats': 5, 'head': 6, 'deprel': 7, 'deps': 8,
-          'misc': 9, 'norm': 11, 'lang': 12, 'score': 13}
+          'misc': 9, 'norm': 11, 'lang': 12, 'formctx': 13,
+          'xposctx': 14, 'score': 15}
 
 LAST_FIELD = SCORE
 SOU = '<SOU>'
@@ -28,10 +27,8 @@ class ConlluPlus:
 
     """ Class for doing stuff with CoNLL-U+ files
     https://universaldependencies.org/ext-format.html
-
     :param filename        CoNLL-U path/filename
     :param validate        Run validator to check data integrity
-
     :type filename         str / path
     :type validate         bool """
 
@@ -81,16 +78,14 @@ class ConlluPlus:
                     
     def _iterate_fields(self, unit, *fields):
         """ General iterator for fetching data from given fields
-
         :param unit       CoNLL-U+ phrase/sent/text unit
         :param *fields    Names of fields to be fetched
-
         :type unit        iterable
         :type *fields     *str """
         
         if not fields:
             for word in unit:
-                yield sent
+                yield word
         else:
             for word in unit:
                 result = []
@@ -105,7 +100,6 @@ class ConlluPlus:
     def read_file(self, filename):
         """ Reads and parses a CoNLL-U+ file. Forces
         additional fields for extra information 
-
         :param filename        filename
         :type filename         str / path  """
         
@@ -145,17 +139,17 @@ class ConlluPlus:
                         print(f'   {warning}')
 
 
-    def write_file(self, filename):
+    def write_file(self, filename, add_info=False):
         """ Compiles and writes a CoNLL-U+ file
-
         :param filename        filename
         :type filename         str / path  """
 
         print(f'> Writing {filename}')
         with open(filename, 'w', encoding='utf-8') as f:
-            f.write('# global.info = generated with BabyLemmatizer 2.0; '\
+            if add_info:
+                f.write('# global.info = generated with BabyLemmatizer 2.0; '\
                     'github.com/asahala/BabyLemmatizer\n')
-            f.write('# global.columns = ' + ' '.join(FIELDS) + '\n')
+                f.write('# global.columns = ' + ' '.join(FIELDS) + '\n')
             for comments, sentence in self.data:
                 if comments:
                     for comment in comments:
@@ -174,7 +168,6 @@ class ConlluPlus:
             
     def get_contents(self, *fields):
         """ Yield given fields from data, e.g. xpos tags for each word
-
         :param *fields        Fields to be fetched
         :type *fields         *str """
         
@@ -185,15 +178,13 @@ class ConlluPlus:
                     
     def get_contexts(self, *fields, size=1):
         """ Fetch surrounding contexts of any fields
-
         :param *fields        Fields to be fetched
         :param size           Context size (how many adjacent)
-
         :type *fields          *str
         :type size            int """
         
-        print('> Fetching contexts')
-        if size > 1:
+        print(f'> Fetching contexts for \"{"|".join(fields)}\"')
+        if len(fields) > 1:
             start = tuple([SOU] * len(fields))
             end = tuple([EOU] * len(fields))
         else:
@@ -215,28 +206,76 @@ class ConlluPlus:
                 if seq[size] not in UNIT_MARKERS:
                     yield seq
 
+    def conditional_update_value(self, mappings, fields):
 
+        self.e = 0
+        self.subs = 0
+        self.score = 0
+
+        def update(sent):
+            key = tuple(sent[FIELDS[field]] for field in fields)
+            substitutions = mappings.get(key, None)
+            if substitutions is not None:
+                for index, sub in substitutions.items():
+                    if isinstance(index, int):
+                        if sent[index] != sub:
+                            sent[index] = sub
+                            self.subs += 1
+                            
+                sent[FIELDS['score']] = str(float(sent[FIELDS['score']]) + substitutions['score'])
+                self.score += substitutions['score']
+            self.e += 1
+            return sent
+        
+        self.data = [(comments, [update(sent) for sent in sents]) for
+                     comments, sents in self.data]
+
+        print(f'  + Step score: {round(self.score / self.e, 2)} '\
+              f'Substitutions: {self.subs} '\
+              f'({round(100*self.subs / self.e, 2)}%)')
+                
+        
     def update_value(self, field, values):
-        for unit in self.contents:
-            for i, u in enumerate(unit.sentence):
-                    unit.add_field(i, field, values.pop(0))
+        print(f'> Updating field "{field}"')
+        ## TODO: fix and add multi-field update
+        def update(sent):
+            vals = next(values)
+            if isinstance(vals, (tuple, list)):
+                vals = '|'.join(vals)
+            sent[FIELDS[field]] = str(vals)
+            #else:
+            #    vals = next(values)
+            #    for field, vals in zip(fields, zip(*vals)):
+            #        if isinstance(vals, (tuple, list)):
+            #            vals = '|'.join(vals)
+            #        sent[FIELDS[field]] = str(vals)
+                
+            return sent
 
-                    
-st = time.time()
-x = ConlluPlus('train.conllu')
-print(len(x))
-#a = x.length
-#oo = list(range(a))
-ls = x.get_word_freqs('xpos')
-#for i in ls:
-#    print(i)
-x.write_file('kakka.conllu')
-#x.update_value('norm', oo)
-et = time.time()
-print(et-st)
-
-#for i in x.get_contexts('form', size=1):
-#    pass
+        self.data = [(comments, [update(sent) for sent in sents]) for comments, sents in self.data]
 
 
-    
+    def force_value(self, field, value):
+        print(f'> Removing field "{field}"')
+        def update(sent):
+            sent[FIELDS[field]] = value
+            return sent
+        
+        self.data = [(comments, [update(sent) for sent in sents]) for comments, sents in self.data]
+        
+if __name__ == "__main__":
+    #x = ConlluPlus('input/example.conllu')
+    #contexts = x.get_contexts('form', 'xpos', size=1)
+    #x.update_value('formctx', 'xposctx',  values=contexts)
+
+    #for l in x.get_contents():
+    #    print('NEW\t', l)
+
+    y = ConlluPlus('input/example_nn.conllu')
+            
+    contexts = y.get_contexts('xpos', size=2)
+
+    for l in contexts:
+        print('NEW\t', l)
+
+                        
