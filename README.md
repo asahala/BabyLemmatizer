@@ -150,9 +150,12 @@ In order of priority:
 * If user forgets = between parameter and argument in command line use, things go wrong
 
 # Todo before official release
-* --lemmatize
+* --lemmatize to work with conlluplus
 * conf score-wise evaluation
-* lemmatization cycle
+* lemmatization --cycle as automatic as possible
 * model versioning
 * global __version__ and logger
+* adjustable context window
+* normalize function for conlluplus
+* data splitter for conlluplus
 
