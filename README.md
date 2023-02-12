@@ -148,3 +148,11 @@ In order of priority:
 
 # Bugs
 * If user forgets = between parameter and argument in command line use, things go wrong
+
+# Todo before official release
+* --lemmatize
+* conf score-wise evaluation
+* lemmatization cycle
+* model versioning
+* global __version__ and logger
+
