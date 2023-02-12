@@ -158,6 +158,7 @@ In order of priority:
 * adjustable context window
 * normalize function for conlluplus
 * data splitter for conlluplus
+* force determinative capitalization for train data
 
 If willpower
 
