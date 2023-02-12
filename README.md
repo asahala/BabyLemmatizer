@@ -159,9 +159,11 @@ In order of priority:
 * normalize function for conlluplus
 * data splitter for conlluplus
 * force determinative capitalization for train data
+* remove unused code
 
 If willpower
 
+* rewrite conllu+ class in a way that updates can be done on the fly instead of reiterating
 * tag confusion matrix
 * tag-wise evaluation
 * category-wise evaluation (logo/logosyll/syll)
