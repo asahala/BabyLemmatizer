@@ -1,6 +1,7 @@
 import time
 import re
 from collections import defaultdict
+import preprocessing as PP
 
 """ ============================================================
 CoNLL-U+ file processor for BabyLemmatizer 2
@@ -22,6 +23,7 @@ SOU = '<SOU>'
 EOU = '<EOU>'
 UNIT_MARKERS = frozenset((SOU, EOU))
 
+# TODO: Add verbose option
 
 class ConlluPlus:
 
@@ -100,10 +102,12 @@ class ConlluPlus:
     def read_file(self, filename):
         """ Reads and parses a CoNLL-U+ file. Forces
         additional fields for extra information 
+
         :param filename        filename
         :type filename         str / path  """
-        
+
         print(f'> Parsing {filename}')
+
         with open(filename, 'r', encoding='utf-8') as f:
             lines = []
             comments = []
@@ -118,7 +122,9 @@ class ConlluPlus:
 
                     if self.validate:
                         is_valid = self._is_valid(line, e)
+
                     ## TODO: Add possibility to clean data automatically
+                    
                     lines.append(line)
 
                     self.freqs['lemma'][line[FIELDS['lemma']]] += 1
@@ -137,7 +143,8 @@ class ConlluPlus:
                     print(k + ':\n================================\n')
                     for warning in v:
                         print(f'   {warning}')
-
+            print('\n')
+            
 
     def write_file(self, filename, add_info=False):
         """ Compiles and writes a CoNLL-U+ file
@@ -262,6 +269,47 @@ class ConlluPlus:
             return sent
         
         self.data = [(comments, [update(sent) for sent in sents]) for comments, sents in self.data]
+
+
+    def remove_unannotated(self, sent):
+        pass
+    
+
+    def normalize(self, is_traindata=False):
+        """ Run all normalizations for lemmatization and 
+        transliteration. 
+
+        :param is_trainingdata     This data is used for training
+        :type is_trainingdata      bool 
+
+        """
+
+        ## TODO: laita mahdollisuus korjata virheitä
+        ## esim. poistaa xlit jos ei lemmattu
+        
+        print(f'> Normalizing CoNLL-U')
+        def update(sent):
+            xlit = sent[FORM]
+            lemma = sent[LEMMA]
+            xlit = PP.lowercase_determinatives(xlit)
+            xlit = PP.subscribe_indices(xlit)
+            xlit = PP.unify_h(xlit)
+            xlit = PP.remove_brackets(xlit)
+            lemma = PP.unify_h(lemma)
+            if not xlit:
+                xlit = '_'
+            if not lemma:
+                lemma = '_'
+
+            #if is_traindata:
+            #    sent = self.remove_unannotated
+
+            sent[FORM] = xlit
+            sent[LEMMA] = lemma
+            return sent
+
+        self.data = [(comments, [update(sent) for sent in sents]) for comments, sents in self.data]
+
         
 if __name__ == "__main__":
     #x = ConlluPlus('input/example.conllu')

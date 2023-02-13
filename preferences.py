@@ -1,5 +1,7 @@
 import os
 
+__version__ = '2.0'
+
 """ Virtual environment path that contains all requirements for OpenNMT """
 python_path = '/projappl/clarin/onmt/OpenNMT/bin/'
 

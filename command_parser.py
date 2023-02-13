@@ -39,7 +39,7 @@ def overwrite_prompt(prefix, files):
             sys.exit(1)
 
 
-def parse_prefix(prefix, evaluate=False):
+def parse_prefix(prefix, evaluate=False, build=False):
     """ Parse star expressions for file prefixes
 
     :param prefix              model name prefix
@@ -71,12 +71,12 @@ def parse_prefix(prefix, evaluate=False):
     if ask_prompt:
         overwrite_prompt(prefix, models)
 
-    """ If models do not exist, check if train data exists and
-    create model name lists """
+    # """ If models do not exist, check if train data exists and
+    #create model name lists """
     prefixes = (split_train_filename(x)[0] for x
                 in os.listdir(Paths.conllu) if x.endswith('-train.conllu'))
 
-    if not models:
+    if build:
         if prefix.endswith('*'):
             models = [f for f in prefixes if f.startswith(prefix[:-1])]
         else:
@@ -85,5 +85,5 @@ def parse_prefix(prefix, evaluate=False):
     if not models:
         print(f'> No training data for "{prefix}" in folder "{conllu_path}"')
         sys.exit(0)
-        
+
     return models

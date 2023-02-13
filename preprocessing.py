@@ -89,3 +89,17 @@ def clean_traindata(xlit):
     xlit = uppercase_determinatives(xlit)
     xlit = get_chars(xlit)
     return xlit
+
+
+def make_tagger_src(formctx, context):
+    """ Format FORM context for training data """
+    return ' '.join(f'<< {get_chars(xlit)} >>'
+            if e == context else f'{get_chars(xlit)}'
+            for e, xlit in enumerate(formctx.split('|')))
+
+def make_lem_src(form, xposctx):
+    """ Format XPOS context for training data """
+    xlit = get_chars(form)
+    xpos = ' '.join(f'P{e}={pos}'for e, pos in enumerate(xposctx.split('|')))
+    return f'{xlit} {xpos}'
+                                                        

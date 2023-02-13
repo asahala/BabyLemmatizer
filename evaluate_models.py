@@ -14,6 +14,8 @@ import model_api
 import conllutools
 import conlluplus
 
+## TODO: get rid of conllutools
+
 """ ===========================================================
 Evaluation pipeline for BabyLemmatizer 2
 
@@ -268,6 +270,15 @@ def pipeline(*models, cpu=False, fast=False):
                   ' tagger/lemmatizer outputs not found')
             fast = False
 
+        """ Load test data as CoNLL-U+ object """
+        this_data = conlluplus.ConlluPlus(
+            os.path.join(conllu_path, 'test.conllu'),
+            validate=False)
+
+        this_data.force_value('lemma', '_')
+        this_data.force_value('xpos', '_')
+        this_data.force_value('upos', '_')
+        
         if not fast:
             print(f'> Running model {model}')
             """ Run tagger """
@@ -277,11 +288,17 @@ def pipeline(*models, cpu=False, fast=False):
                 output_file = os.path.join(eval_path, tagger_output),
                 cpu = cpu)
 
-            """ Merge tagger results to lemmatizer input """
+            #xpos_tags = model_api.read_results(os.path.join(eval_path, tagger_output))
+            #this_data.update_value('xpos', xpos_tags)
+            #xposctx = this_data.get_context('xpos')
+            #this_data.update_value('xposctx', xposctx)
+            """ Merge tagger output with CoNLL-U+ """
             model_api.merge_tags(
-                tagged_file = os.path.join(eval_path, tagger_output),
-                lemma_input = os.path.join(lemmatizer_path, 'traindata', 'test.src'),
-                output_file = os.path.join(eval_path, lemmatizer_input))
+                neural_net_output = os.path.join(eval_path, tagger_output),
+                conllu_object = this_data,#os.path.join(lemmatizer_path, 'traindata', 'test.src'),
+                output_file = os.path.join(eval_path, lemmatizer_input),
+                field = 'xpos',
+                fieldctx = 'xposctx')
 
             """ Run lemmatizer """
             model_api.run_lemmatizer(
@@ -289,6 +306,14 @@ def pipeline(*models, cpu=False, fast=False):
                 model_name = os.path.join(lemmatizer_path, step),
                 output_file = os.path.join(eval_path, lemmatizer_output),
                 cpu = cpu)
+
+            """ Merge lemmatizer output with CoNLL-U+ """
+            model_api.merge_tags(
+                neural_net_output = os.path.join(eval_path, lemmatizer_output),
+                conllu_object = this_data,#os.path.join(lemmatizer_path, 'traindata', 'test.src'),
+                output_file = None,#os.path.join(eval_path, lemmatizer_input),
+                field = 'lemma',
+                fieldctx = None)            
             
         #""" Merge prediced results """
         #model_api.merge_to_final(
@@ -296,17 +321,18 @@ def pipeline(*models, cpu=False, fast=False):
         #    lemmas = os.path.join(eval_path, lemmatizer_output),
         #    output = os.path.join(eval_path, final_output))
 
-        """ Read XPOS and LEMMA tags produced by the neural net """
-        xpos_tags = model_api.read_results(os.path.join(eval_path, tagger_output))
-        lemmas = model_api.read_results(os.path.join(eval_path, lemmatizer_output))
+        if fast:
+            """ Read XPOS and LEMMA tags produced by the neural net """
+            xpos_tags = model_api.read_results(os.path.join(eval_path, tagger_output))
+            lemmas = model_api.read_results(os.path.join(eval_path, lemmatizer_output))
 
-        """ Merge results with the CoNLL-U file """
-        this_data = conlluplus.ConlluPlus(os.path.join(conllu_path, 'test.conllu'), validate=False)
-        this_data.update_value('xpos', xpos_tags)
-        this_data.update_value('lemma', lemmas)
+            """ Merge results with the CoNLL-U file """
+            #this_data = conlluplus.ConlluPlus(os.path.join(conllu_path, 'test.conllu'), validate=False)
+            this_data.update_value('xpos', xpos_tags)
+            this_data.update_value('lemma', lemmas)
 
-        """ Add XPOS context field based on predictions """
-        this_data.update_value('xposctx', this_data.get_contexts('xpos', size=1))
+            """ Add XPOS context field based on predictions """
+            this_data.update_value('xposctx', this_data.get_contexts('xpos', size=1))
         
         #""" Force 0.0 confidence scores """
         #this_data.force_value(field='score', value=str(0.0))

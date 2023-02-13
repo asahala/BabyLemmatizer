@@ -9,7 +9,7 @@ import re
 from collections import defaultdict
 from preferences import python_path, onmt_path, Paths
 from command_parser import parse_prefix, split_train_filename
-import preprocessing
+import preprocessing as PP
 import conllutools
 import conlluplus
 import base_yaml
@@ -166,17 +166,17 @@ def _make_training_data(filename):
     prefix is arbitrary identifier and suffix `dev`, `test`,
     or `train` depending on which set the data belongs. """
 
-    def make_tagger_src(formctx):
-        """ Format FORM context for training data """
-        return ' '.join(f'<< {preprocessing.get_chars(xlit)} >>'
-                    if e == context else f'{preprocessing.get_chars(xlit)}'
-                    for e, xlit in enumerate(formctx.split('|')))
-    
-    def make_lem_src(form, xposctx):
-        """ Format XPOS context for training data """
-        xlit = preprocessing.get_chars(form)
-        xpos = ' '.join(f'P{e}={pos}'for e, pos in enumerate(xposctx.split('|')))
-        return f'{xlit} {xpos}'
+    #def make_tagger_src(formctx):
+    #    """ Format FORM context for training data """
+    #    return ' '.join(f'<< {preprocessing.get_chars(xlit)} >>'
+    #                if e == context else f'{preprocessing.get_chars(xlit)}'
+    #                for e, xlit in enumerate(formctx.split('|')))
+    # 
+    #def make_lem_src(form, xposctx):
+    #    """ Format XPOS context for training data """
+    #    xlit = preprocessing.get_chars(form)
+    #    xpos = ' '.join(f'P{e}={pos}'for e, pos in enumerate(xposctx.split('|')))
+    #    return f'{xlit} {xpos}'
     
     context = 1
     
@@ -207,7 +207,7 @@ def _make_training_data(filename):
 
     """ Load CoNLL-U+ file """
     this_data = conlluplus.ConlluPlus(filename)
-
+    this_data.normalize(is_traindata=True)
     """ Fill in context information and save file to model dir """
     for src_field, tgt_field in (('form', 'formctx'), ('xpos', 'xposctx')):
         this_data.update_value(
@@ -219,16 +219,6 @@ def _make_training_data(filename):
     conllu_ext = os.path.join(Paths.models, prefix, 'conllu', f'{data_type}.conllu')
     this_data.write_file(conllu_ext)
                 
-    #""" Get contexts """
-    #pos_contexts = conllutools.get_contexts(filename, context=1)
-
-    #""" Add fields to CoNLL-U files """
-    #tmp = conllutools.add_fields(filename, pos_contexts, conllutools.CONTEXT)
-
-    #""" Save this data """
-    #conllu_ext = os.path.join(Paths.models, prefix, 'conllu', f'{data_type}.conllu')
-    #conllutools.write_conllu(conllu_ext, tmp)
-        
     """ Generate training data """
     tagger_path = os.path.join(
         Paths.models, prefix, 'tagger', 'traindata')
@@ -243,7 +233,6 @@ def _make_training_data(filename):
 
     logger('   + Building tagger and lemmatizer training sets')
     
-    #EOU = conllutools.EOU[0]
     """ Build training data """
     with open(pos_src_fn, 'w', encoding='utf-8') as pos_src,\
          open(pos_tgt_fn, 'w', encoding='utf-8') as pos_tgt,\
@@ -253,39 +242,11 @@ def _make_training_data(filename):
         fields = ('form', 'lemma', 'xpos', 'formctx', 'xposctx')
         for data in this_data.get_contents(*fields):
             form, lemma, xpos, formctx, xposctx = data
-
-            #form = preprocessing.get_chars(data[0])
-            #formctx = ' '.join(
-            #    f'<< {preprocessing.get_chars(xlit)} >>'
-            #    if e == context else f'{preprocessing.get_chars(xlit)}'
-            #    for e, xlit in enumerate(data[2].split('|')))
-            #xposctx = ' '.join(
-            #    f'P{e}={pos}'for e, pos in enumerate(data[3].split('|')))
-            #print(xposctx)
-
-            pos_src.write(make_tagger_src(formctx) + '\n')
+            pos_src.write(PP.make_tagger_src(formctx) + '\n', context=context)
             pos_tgt.write(xpos + '\n')
-            lem_src.write(make_lem_src(form, xposctx) + '\n')
-            lem_tgt.write(preprocessing.get_chars_lemma(lemma) + '\n')
-            
-        #for stack in conllutools.get_training_data2(filename):
-        #    if stack is None:
-        #        continue
-
-            #if stack == EOU:
-            #    pos_src.write(f'{EOU}\n')
-            #    pos_tgt.write(f'{EOU}\n')
-            #    lem_src.write(f'{EOU}\n')
-            #    lem_tgt.write(f'{EOU}\n')
-            #    continue
-
-            #""" Define source and target format for train data """
-            #pos_src.write(preprocessing.to_tagger_input(stack))
-            #pos_tgt.write(stack[1][2] + '\n')
-            #lem_src.write(preprocessing.to_lemmatizer_input(stack))
-            #lem_tgt.write(' '.join(list(stack[1][1])) + '\n')
+            lem_src.write(PP.make_lem_src(form, xposctx) + '\n')
+            lem_tgt.write(PP.get_chars_lemma(lemma) + '\n')
             statistics[filename] += 1
-
     
     """ Build YAML-definitions for models. The network architecture
     and its parameters follow (Kanerva, Ginter & Salakoski 2020),

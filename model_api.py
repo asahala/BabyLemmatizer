@@ -1,6 +1,7 @@
 import os
 from preferences import python_path, onmt_path
 import conllutools as ct
+import preprocessing as PP
 
 """ ===========================================================
 API for calling OpenNMT and performing intermediate steps for
@@ -44,11 +45,45 @@ def read_results(filename):
             
             yield line.replace(' ', '').rstrip()
 
+
+def merge_tags(neural_net_output, conllu_object, output_file, field, fieldctx):
+    """ Merge neural net output with the CoNLL-U+ object and generate
+    data for the next step in pipeline 
+
+    :param neural_net_output     Path/filename to previous step's output
+    :param conllu_object         File for storing the annotations
+    :param output_file           Output for next step's input
+    :param field                 Which field to populate with the output
+    :param fieldctx              Which context field to update
+
+    :type neural_net_outpu       path/file as str
+    :type conllu_object          ConlluPlus obj
+    :type output_file            path/file as str or None
+    :type field                  str
+    :type fieldctx               str or None """
+
+    ## TODO: tee tää suoraan tagger/lemmatisaattorikutsun
+    ## yhteydessä, etenkin jos tästä tulee modulaarisempi
     
-def merge_tags(tagged_file, lemma_input, output_file):
+    annotations = read_results(neural_net_output)
+    conllu_object.update_value(field, annotations)
+
+    if fieldctx is not None:
+        ctx_annotations = conllu_object.get_contexts(field)
+        conllu_object.update_value(fieldctx, ctx_annotations)
+
+    if output_file is not None and fieldctx is not None:
+        with open(output_file, 'w', encoding='utf-8') as o_file:
+            for form, xposctx in conllu_object.get_contents('form', 'xposctx'):
+                o_file.write(PP.make_lem_src(form, xposctx) + '\n')
+
+            
+def ___merge_tags(tagged_file, lemma_input, output_file):
     """ This function merges Tagger output with lemmatizer test data
     to create input for lemmatizer evaluation """
 
+    ## TODO: DO THIS IN CONLLUPLUS:: OBSOLETE NOW
+    
     def filter_pos(string):
         xlit = string.split(' PREV')[0]
         return xlit

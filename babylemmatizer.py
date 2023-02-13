@@ -2,24 +2,31 @@
 # -*- coding: utf-8 -*-
 
 from argparse import ArgumentParser
+import os
 import train_pipeline
 import evaluate_models
-import conllutools
+#import conllutools
 import lemmatizer_pipeline
 from command_parser import parse_prefix
-from preferences import Paths
+from preferences import Paths, __version__
 
-""" ===========================================================
-BabyLemmatizer 2.0
+div = '‹<>›'*16
 
-asahala 2023
-https://github.com/asahala
+info =\
+f"""
+{div}
 
-University of Helsinki
-   Origins of Emesal Project
-   Centre of Excellence for Ancient Near-Eastern Empires
+   BabyLemmatizer {__version__}
 
-=========================================================== """
+   A. Aleksi Sahala 2023
+      + https://github.com/asahala
+
+   University of Helsinki
+      + Origins of Emesal Project
+      + Centre of Excellence for Ancient Near-Eastern Empires
+
+{div}
+"""
 
 def get_args():
     """ Get commandline arguments """
@@ -50,6 +57,9 @@ def get_args():
 
 
 if __name__ == "__main__":
+
+    print(info)
+    
     args = get_args()
 
     """ Optional args """
@@ -64,11 +74,11 @@ if __name__ == "__main__":
         train_pipeline.train_model(
             *models, cpu=args.use_cpu)
     elif args.build:
-        models = parse_prefix(args.build)
+        models = parse_prefix(args.build, build=True)
         train_pipeline.build_train_data(
             *models)
     elif args.build_train:
-        models = parse_prefix(args.build_train)
+        models = parse_prefix(args.build_train, build=True)
         train_pipeline.build_train_data(
             *models)
         train_pipeline.train_model(
@@ -83,8 +93,8 @@ if __name__ == "__main__":
              args.evaluate_fast, evaluate=True)
          evaluate_models.pipeline(
              *models, cpu=args.use_cpu, fast=True)
-    elif args.normalize_conllu:
-        conllutools.normalize_all('conllu')
+         #elif args.normalize_conllu:
+         #   conllutools.normalize_all('conllu')
     elif args.lemmatize:
         cpu = args.use_cpu
         lemmatizer = lemmatizer_pipeline.Lemmatizer(args.filename)
