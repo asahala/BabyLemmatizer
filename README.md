@@ -160,6 +160,7 @@ In order of priority:
 * data splitter for conlluplus
 * [DONE] force determinative capitalization for train data
 * remove unused code
+* Oracc guideword field for conllu+
 
 If willpower
 
