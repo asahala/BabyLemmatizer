@@ -242,7 +242,7 @@ def _make_training_data(filename):
         fields = ('form', 'lemma', 'xpos', 'formctx', 'xposctx')
         for data in this_data.get_contents(*fields):
             form, lemma, xpos, formctx, xposctx = data
-            pos_src.write(PP.make_tagger_src(formctx) + '\n', context=context)
+            pos_src.write(PP.make_tagger_src(formctx, context=context) + '\n')
             pos_tgt.write(xpos + '\n')
             lem_src.write(PP.make_lem_src(form, xposctx) + '\n')
             lem_tgt.write(PP.get_chars_lemma(lemma) + '\n')
