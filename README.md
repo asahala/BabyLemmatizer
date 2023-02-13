@@ -156,7 +156,7 @@ In order of priority:
 * model versioning
 * global __version__ and logger
 * adjustable context window
-* normalize function for conlluplus
+* [DONE] normalize function for conlluplus
 * data splitter for conlluplus
 * [DONE] force determinative capitalization for train data
 * remove unused code
