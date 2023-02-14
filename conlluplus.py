@@ -1,5 +1,6 @@
 import time
 import re
+import os
 from collections import defaultdict
 import preprocessing as PP
 
@@ -25,6 +26,52 @@ UNIT_MARKERS = frozenset((SOU, EOU))
 
 # TODO: Add verbose option
 
+def sort_dict(dictionary):
+    for k, v in sorted(dictionary.items(),
+                       key=lambda item: item[1],
+                       reverse=True):
+        yield k, v
+    
+
+class LemmaDict:
+
+    def __init__(self):
+        self.data = {}
+        self.counts = defaultdict(int)
+        
+    def add_entry(self, form, lemma, xpos):
+        #self.counts[(form, lemma, xpos)] += 1
+        #self.lemmata[form].add((lemma, xpos))
+        if form not in self.counts:
+            self.data[form] = defaultdict(int)#{}#(lemma, xpos): 1}
+
+        self.data[form][(lemma, xpos)] += 1        
+        self.counts[form] += 1
+        
+    def write_file(self, score, filename):
+        filename, extension = os.path.splitext(filename)
+        o_file = filename + '_' + score.replace('.', '') + '.tsv'
+        
+        with open(o_file, 'w', encoding='utf-8') as f:
+            f.write('# {frq: <5} │ {frm: <37} │ {lem: <22} │ {pos}\n'\
+                    .format(frq='FREQ', frm='FORM', lem='LEMMA', pos='XPOS'))
+            f.write('#' + '─'*79 + '\n')
+            for form, _ in sort_dict(self.counts):
+                #f.write(f'#form: {form}\n\n')
+                #formcount = 0
+                sep = '│'
+                if len(self.data[form]) > 1:
+                    sep = '╬'
+                for lemmaxpos, count in sort_dict(self.data[form]):
+                    lemma, xpos = lemmaxpos
+                    f.write(f'# {count : <5} {sep} {form : <37} {sep} {lemma : <22} {sep} {xpos}\n')
+                    #formcount += 1
+                #if formcount > 1:
+                #    f.write('#' + '–'*62 + '\n')
+
+        print(f'> Wrote {o_file}')
+        
+        
 class ConlluPlus:
 
     """ Class for doing stuff with CoNLL-U+ files
@@ -310,20 +357,30 @@ class ConlluPlus:
 
         self.data = [(comments, [update(sent) for sent in sents]) for comments, sents in self.data]
 
+
+    def make_lemmalists(self):
+
+        lemmadict = defaultdict(LemmaDict)
         
+        for comments, unit in self.data:
+            for form, lemma, xpos, score in self._iterate_fields(unit, 'form', 'lemma', 'xpos', 'score'):
+                if float(score) <= 2.0:
+                    lemmadict[score].add_entry(form, lemma, xpos)
+
+        for score, ldict in lemmadict.items():
+            ldict.write_file(score, self.filename)
+
+            
 if __name__ == "__main__":
-    #x = ConlluPlus('input/example.conllu')
+    #y = ConlluPlus('input/example_pp.conllu')
     #contexts = x.get_contexts('form', 'xpos', size=1)
     #x.update_value('formctx', 'xposctx',  values=contexts)
 
     #for l in x.get_contents():
     #    print('NEW\t', l)
 
-    y = ConlluPlus('input/example_nn.conllu')
+    y = ConlluPlus('models/lbtest2/eval/test_pp.conllu')
             
-    contexts = y.get_contexts('xpos', size=2)
-
-    for l in contexts:
-        print('NEW\t', l)
-
+    y.make_lemmalists()
+    pass
                         

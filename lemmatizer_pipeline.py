@@ -56,7 +56,6 @@ class Lemmatizer:
         #self.preprocess_input(input_file)
         """ Load and normalize source CoNLL-U+ file """
         self.source_file = conlluplus.ConlluPlus(input_file, validate=False)
-        self.preprocess_source()
         
         
     def preprocess_source(self):
@@ -88,11 +87,19 @@ class Lemmatizer:
 
             
     def run_model(self, model_name, cpu):
+
+        """ Load and normalize source CoNLL-U+ file """
+        self.source_file = conlluplus.ConlluPlus(input_file, validate=False)
+                
+        """ Preprocess data for lemmatization """
+        self.preprocess_source()
+
+        """ Set model paths """
         tagger_path = os.path.join(
             Paths.models, model_name, 'tagger', 'model.pt')
         lemmatizer_path = os.path.join(
             Paths.models, model_name, 'lemmatizer', 'model.pt')
-        
+
         """ Run tagger on input """
         io(f'Tagging {self.tagger_input} with {model_name}')
         model_api.run_tagger(self.tagger_input,
@@ -137,6 +144,12 @@ class Lemmatizer:
 
         self.source_file.write_file(self.input_file.replace('.conllu', '_pp.conllu'), add_info=True)
 
+
+    def cycle(self):
+        """ Lemmatization cycle """
+        filename, ext = os.path.splitext(self.filename)
+        
+        
         
 if __name__ == "__main__":
     """ Demo for lemmatization """
