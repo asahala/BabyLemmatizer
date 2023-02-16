@@ -26,10 +26,6 @@ University of Helsinki
 
 =========================================================== """
 
-
-hr = '=' * 20
-print(f'{hr} BabyLemmatizer 2.0 {hr}')
-
 statistics = defaultdict(int)
 counts = defaultdict(dict)
 log = []
@@ -83,7 +79,7 @@ def print_oov_rates():
                 """ Make OOV dictionary and save it """
                 out_of_vocab = this - train
 
-                fn = os.path.join(Paths.models, model, 'override',
+                fn = os.path.join(Paths.models, model, 'lex',
                      f'{data_type}-types-oov.{word_type}')
                 
                 with open(fn, 'w', encoding='utf-8') as f:
@@ -116,19 +112,19 @@ def print_oov_rates():
             logger('   {: <20} {:>7} {:>7} {:>7}'.format(key, *values))           
            
 
-def make_override(prefix, data_type, filename):
-    """ Setup override """
+def make_lexicon(prefix, data_type, filename):
+    """ Setup lexicon """
     ### TODO: rewrite this, uses still old conllu module
     fn = os.path.join(
-        Paths.models, prefix, 'override', f'{data_type}.all')
+        Paths.models, prefix, 'lex', f'{data_type}.all')
     fnl = os.path.join(
-        Paths.models, prefix, 'override', f'{data_type}-types.lem')
+        Paths.models, prefix, 'lex', f'{data_type}-types.lem')
     fnx = os.path.join(
-        Paths.models, prefix, 'override', f'{data_type}-types.xlit')
+        Paths.models, prefix, 'lex', f'{data_type}-types.xlit')
     lemma_dict = defaultdict(int)
     xlit_dict = defaultdict(int)
 
-    logger('   + Building override lexicons')
+    logger('   + Building lexicons')
     with open(fn, 'w', encoding='utf-8') as f:
         for line in conllutools.get_override(filename):
             if line:
@@ -166,18 +162,6 @@ def _make_training_data(filename):
     prefix is arbitrary identifier and suffix `dev`, `test`,
     or `train` depending on which set the data belongs. """
 
-    #def make_tagger_src(formctx):
-    #    """ Format FORM context for training data """
-    #    return ' '.join(f'<< {preprocessing.get_chars(xlit)} >>'
-    #                if e == context else f'{preprocessing.get_chars(xlit)}'
-    #                for e, xlit in enumerate(formctx.split('|')))
-    # 
-    #def make_lem_src(form, xposctx):
-    #    """ Format XPOS context for training data """
-    #    xlit = preprocessing.get_chars(form)
-    #    xpos = ' '.join(f'P{e}={pos}'for e, pos in enumerate(xposctx.split('|')))
-    #    return f'{xlit} {xpos}'
-    
     context = 1
     
     """ Create required folder structures for the model """
@@ -196,7 +180,7 @@ def _make_training_data(filename):
         os.path.join(Paths.models, prefix, 'tagger', 'traindata'),
         os.path.join(Paths.models, prefix, 'lemmatizer', 'traindata'),
         os.path.join(Paths.models, prefix, 'eval'),
-        os.path.join(Paths.models, prefix, 'override'),
+        os.path.join(Paths.models, prefix, 'lex'),
         os.path.join(Paths.models, prefix, 'conllu'))
 
     for path in paths:
@@ -273,7 +257,7 @@ def _make_training_data(filename):
         base_yaml.make_tagger_yaml(
             prefix, hyper)
 
-    make_override(prefix, data_type, filename)
+    make_lexicon(prefix, data_type, filename)
 
 
 def build_train_data(*models):

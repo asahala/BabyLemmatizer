@@ -53,7 +53,7 @@ class Postprocessor:
         """ Initialize confidence scores """
         oov = set()
         with open(os.path.join(Paths.models, self.model_name,
-                               'override', 'test-types-oov.xlit')) as f:
+                               'lex', 'test-types-oov.xlit')) as f:
             for line in f:
                 line = line.rstrip()
                 oov.add(line.split('\t')[0])

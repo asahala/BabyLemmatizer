@@ -163,7 +163,7 @@ def evaluate(predictions, gold_standard, model, model_path):
     gold = conllutools.read_conllu(gold_standard, only_data=True)
 
     """ Read OOV transliterations """
-    oov_path = os.path.join(model_path, 'override', 'test-types-oov.xlit')
+    oov_path = os.path.join(model_path, 'lex', 'test-types-oov.xlit')
     oov = set()
     with open(oov_path, 'r', encoding='utf-8') as f:
         for word in f.read().splitlines():

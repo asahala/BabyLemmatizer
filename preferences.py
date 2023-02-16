@@ -14,6 +14,7 @@ class Paths:
     """ Container for crucial paths """
     conllu = 'conllu'
     models = 'models'
+    override = 'override'
     
     
 if __name__ == "__main__":

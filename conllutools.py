@@ -84,7 +84,7 @@ def add_fields(source_file, values, index):
             yield '\t'.join(data)
 
             
-def get_override(filename):
+def get_lexicon(filename):
     """ Parse override data from CoNLL-U file """
     yield EOU
     for line in read_conllu(filename):
