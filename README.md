@@ -77,7 +77,7 @@ BabyParser 2.0 can be used directly from the command line.
 ### Lemmatization
 To lemmatize unlemmatized corpus, run the following command:
 
-```python3 babylemmatizer.py --filename=corpus_file --lemmatize=modelname```
+```python3 babylemmatizer.py --lemmatize=modelname --filename=corpus_file```
 
 where ```corpus_file``` points to the CoNLL-U file (e.g. ```input/example.conllu```) you want to lemmatize and ```modelname``` to the model you want to use. Lemmatization is by default done on GPU, but if you don't have a CUDA capable GPU, you can add parameter ```--use-cpu```.
 
@@ -137,14 +137,13 @@ If you use BabyLemmatizer for annotating your data or training new models, pleas
 # Upcoming features
 In order of priority:
 
-* Pretrained models
+* Pretrained models (late feb or early march)
 * Advanced command-line use (tuning the neural net, customizing folders etc)
 * Phonological transcription
-* Named-entity recognition
-* Direct Oracc ATF support
 * Morphological analysis
+* Named-entity recognition
+* Direct Oracc ATF support (E. Pagé-Perron has perhaps already done ATF<->CoNLL-u scripts)
 * Server-side use
-* Machine Translation
 
 # Bugs
 * If user forgets = between parameter and argument in command line use, things go wrong
@@ -168,3 +167,4 @@ If willpower
 * tag confusion matrix
 * tag-wise evaluation
 * category-wise evaluation (logo/logosyll/syll)
+* add possibility to use external validation set
