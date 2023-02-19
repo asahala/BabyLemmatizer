@@ -1,5 +1,5 @@
 # Note
-This documentation is partly obsolete. I have moved to CoNLL-U+ format, which has a couple of additional fields. They will be documented at official resease in the end of February 2023.
+This documentation is partly obsolete. I have moved to CoNLL-U+ format, which has a couple of additional fields. They will be documented at official resease in the end of February 2023. However, the scripts will automatically convert CoNLL-U described in this file into CoNLL-U+ when the lemmatizer is ran.
 
 # CoNLL-U files for training the models
 The files **must** be named as follows ```modelname-type.conllu```, where *modelname* is an arbitrary name that describes your model, *type* is either ```train```, ```test``` or ```dev``` depending on the function of your dataset. For example: ```latebabylonian-train.conllu```, ```latebabylonian-dev.conllu``` and ```latebabylonian-test.conllu```. Do not use any special characters in your model names, excluding numbers and underscore.
