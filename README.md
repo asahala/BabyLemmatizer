@@ -77,9 +77,9 @@ BabyParser 2.0 can be used directly from the command line.
 ### Lemmatization
 To lemmatize unlemmatized corpus, run the following command:
 
-```python3 babylemmatizer.py --filename corpus_file --lemmatize=modelname```
+```python3 babylemmatizer.py --filename=corpus_file --lemmatize=modelname```
 
-where ```corpus_file``` points to the CoNLL-U file you want to lemmatize and ```modelname``` to the model you want to use. Lemmatization is by default done on GPU, but if you don't have a CUDA capable GPU, you can add parameter ```--use-cpu```.
+where ```corpus_file``` points to the CoNLL-U file (e.g. ```input/example.conllu```) you want to lemmatize and ```modelname``` to the model you want to use. Lemmatization is by default done on GPU, but if you don't have a CUDA capable GPU, you can add parameter ```--use-cpu```.
 
 ### Training and evaluation
 Training and evaluation can be done using ```babylemmatizer.py``` command line API. The command line interface is purposefully simple and does not give user direct access to any additional parameters.
