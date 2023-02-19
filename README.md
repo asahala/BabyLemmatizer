@@ -41,6 +41,9 @@ Now you can run ```preferences.py``` and if lots of OpenNMT documentation prints
 
 # Use in Python
 
+## Input and output format
+BabyLemmatizer uses CoNLL-U+ format. You can read more about it here [conllu](https://github.com/asahala/BabyLemmatizer/tree/main/conllu).
+
 ### Lemmatization
 To tag and lemmatize texts, you need to first convert it into a CoNLL-U format. See instructions in the [conllu](https://github.com/asahala/BabyLemmatizer/tree/main/conllu) folder.
 
