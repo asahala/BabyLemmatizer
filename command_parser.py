@@ -5,6 +5,8 @@ from preferences import Paths
 
 """ BabyLemmatizer 2.0 utils """
 
+## TODO clean
+
 def split_train_filename(orig_fn):
     """ Split train filename into prefix and data_type """
     prefix = re.sub('-(dev|test|train).+', '', orig_fn)
