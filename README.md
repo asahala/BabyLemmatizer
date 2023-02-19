@@ -155,7 +155,7 @@ In order of priority:
 * lemmatization --cycle as automatic as possible
 * model versioning
 * global __version__ and logger
-* adjustable context window
+* [DONE but needs CMD params] adjustable context window
 * [DONE] normalize function for conlluplus
 * data splitter for conlluplus
 * [DONE] force determinative capitalization for train data
