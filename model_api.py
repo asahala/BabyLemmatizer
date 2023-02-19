@@ -5,7 +5,7 @@ import preprocessing as PP
 
 """ ===========================================================
 API for calling OpenNMT and performing intermediate steps for
-BabyLemmatizer 2.0
+BabyLemmatizer 2
 
 asahala 2023
 https://github.com/asahala
