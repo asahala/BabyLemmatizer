@@ -55,5 +55,5 @@ Original: ```ZU₂.LUM.MA {lu₂}mu-kin-ni {m}{d}AG-URU₃-šu₂```
 
 Lemmatizer input: ```{LU₂} m u - k i n - n i 1=N 2=N 3=PN```
 
-Lemmatizer output: ```mukinnu```
+Lemmatizer output: ```m u k i n n u```
 
