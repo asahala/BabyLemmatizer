@@ -90,7 +90,7 @@ Training and evaluation can be done using ```babylemmatizer.py``` command line A
 ```
 GENERAL PARAMETERS (use only one)
 --build=<arg>                  Builds data from CoNNL-U files in your conllu folder
---train=<arg>                  Trains a model or models for the built data
+--train=<arg>                  Trains a model or models from the built data
 --build-train=<arg>            Builds data and trains a model or models
 --evaluate=<arg>               Evaluates and cross-validates your model or models
 --evaluate-fast=<arg>          Rerun evaluation without running POS-tagger and lemmatizer
