@@ -51,7 +51,7 @@ Tagger output: ```N```
 ## Lemmatizer sequences (token-based)
 Lemmatizer inputs are encoded as single word forms in logo-phonemic tokenization, with adjacent POS tags for context disambiguation.
 
-Original: ```ZU₂.LUM.MA {lu₂}mu-kin-ni {m}{d}AG-URU₃-šu₂```
+Original: ```{lu₂}mu-kin-ni```
 
 Lemmatizer input: ```{LU₂} m u - k i n - n i 1=N 2=N 3=PN```
 
