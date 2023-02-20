@@ -18,7 +18,7 @@ BabyLemmatizer 2.0 approaches POS-tagging and lemmatization as a Machine Transla
 
 # Requirements
 1. [OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)
-2. Python 3.6+
+2. Python 3.6+ (for BabyLemmatizer and 3.9 for OpenNMT virtual environment)
 
 BabyLemmatizer 2.0 has been tested with Python 3.9 and OpenNMT-py 3.0.
 
