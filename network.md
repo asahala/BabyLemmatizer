@@ -1,5 +1,5 @@
 ## Network Architecture
-Following Kanerva et al. 2021 but using a little different step parameters.
+Following Kanerva et al. 2021 but using a little different step parameters (documented later).
 
 ```
  NMTModel(
