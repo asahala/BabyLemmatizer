@@ -40,7 +40,7 @@ Following Kanerva et al. 2021 but using a little different step parameters (docu
 ```
 
 ## Tagger sequences
-Tagger inputs are encoded as 3-grams tokenized into signs: logograms are represented as indexed tokens and syllabograms as unindexed character sequences, which I refer as logo-phonemic tokenization.
+Tagger input is encoded as 3-grams: logograms are represented as indexed tokens and syllabograms as unindexed character sequences, which I refer as logo-phonemic tokenization.
 
 Original: ```ZU₂.LUM.MA {lu₂}mu-kin-ni {m}{d}AG-URU₃-šu₂```
 
