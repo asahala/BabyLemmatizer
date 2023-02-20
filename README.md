@@ -92,7 +92,9 @@ GENERAL PARAMETERS (use only one)
 --build=<arg>                  Builds data from CoNNL-U files in your conllu folder
 --train=<arg>                  Trains a model or models for the built data
 --build-train=<arg>            Builds data and trains a model or models
---evaluate=<arg>               Cross-validates your model or models
+--evaluate=<arg>               Evaluates and cross-validates your model or models
+--evaluate-fast=<arg>          Rerun evaluation without running POS-tagger and lemmatizer
+                               (in case you have ran them already and just want to see the results again)
 
 PATH AND OPTIONS
 --use-cpu                      Use CPU instead of GPU (read more below)
