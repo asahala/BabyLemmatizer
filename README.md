@@ -16,7 +16,7 @@ BabyLemmatizer 2.0 approaches POS-tagging and lemmatization as a Machine Transla
 | a-ra-an-šu | arnu | N |
 | pu-uṭ-ri | paṭāru | V |
 
-### Quick guide
+# Quick guide
 See [BabyLemmatizer Manual](https://docs.google.com/document/d/1j11N2bsIEcuZpAzJP1wmVaWrsjd0ml3HF7K-PK0AXdQ/) for detailed instructions how to lemmatize the demo text.
 
 # Requirements
