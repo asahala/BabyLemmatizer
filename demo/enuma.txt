@@ -1,0 +1,7 @@
+# BabyLemmatizer Demo
+# Enūma Eliš: Tablet I, lines 1-5
+e-nu-ma e-liš la na-bu-ú šá-ma-mu
+šap-liš am-ma-tum šu-ma la zak-rat
+ABZU-ma reš-tu-ú za-ru-šu-un
+mu-um-mu ti-amat mu-al-li-da-at gim-ri-šú-un
+A.MEŠ-šú-nu iš-te-niš i-hi-qu-ú-ma
