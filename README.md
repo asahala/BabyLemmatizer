@@ -16,9 +16,6 @@ BabyLemmatizer 2.0 approaches POS-tagging and lemmatization as a Machine Transla
 | a-ra-an-šu | arnu | N |
 | pu-uṭ-ri | paṭāru | V |
 
-# Quick guide
-See [BabyLemmatizer Manual](https://docs.google.com/document/d/1j11N2bsIEcuZpAzJP1wmVaWrsjd0ml3HF7K-PK0AXdQ/) for detailed instructions how to lemmatize the demo text.
-
 # Requirements
 1. [OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)
 2. Python 3.6+ (for BabyLemmatizer and 3.9 for OpenNMT virtual environment)
@@ -41,6 +38,9 @@ onmt_path = '/yourpath/OpenNMT/lib/python3.9/site-packages/onmt/bin'
 ``` 
 
 Now you can run ```preferences.py``` and if lots of OpenNMT documentation prints on your screen, everything should be okay.
+
+# Quick guide
+See [BabyLemmatizer Manual](https://docs.google.com/document/d/1j11N2bsIEcuZpAzJP1wmVaWrsjd0ml3HF7K-PK0AXdQ/) for instructions how to lemmatize the demo text.
 
 # Use in Python
 
