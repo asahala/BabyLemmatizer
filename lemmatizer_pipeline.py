@@ -29,7 +29,7 @@ CONTEXT = 1
 
 class Lemmatizer:
 
-    def __init__(self, input_file):
+    def __init__(self, input_file, fast=False):
         path, file_ = os.path.split(input_file)
         f, e = file_.split('.')
 
@@ -44,7 +44,9 @@ class Lemmatizer:
             pass
         
         fn = os.path.join(step_path, f)
+        self.fast = fast
         self.input_file = input_file
+        self.input_path = path
         self.word_forms = fn + '.forms'
         self.tagger_input = fn + '.tag_src'
         self.tagger_output = fn + '.tag_pred'
@@ -56,7 +58,7 @@ class Lemmatizer:
         #self.preprocess_input(input_file)
         """ Load and normalize source CoNLL-U+ file """
         self.source_file = conlluplus.ConlluPlus(input_file, validate=False)
-        
+       
         
     def preprocess_source(self):
 
@@ -85,20 +87,37 @@ class Lemmatizer:
             io(f'Input file size: {self.line_count}'\
                f' words in {self.segment_count} segments.')
 
+
+    def update_model(self, model_name):
+        overrides = [os.path.join(self.input_path, f) for f\
+                     in os.listdir(self.input_path) if f.endswith('.tsv')]
+
+        if overrides:
+            mod_o = os.path.join(
+                Paths.models, model_name, 'override', 'override.conllu')
+            override = conlluplus.ConlluPlus(mod_o, validate=False)
+            for o_file in overrides:
+                override.read_corrections(o_file)
+                os.remove(o_file) # this is bad
+            override.write_file(mod_o)
+
             
     def run_model(self, model_name, cpu):
 
+        """ Update model override """
+        self.update_model(model_name)
+
         """ Load and normalize source CoNLL-U+ file """
-        self.source_file = conlluplus.ConlluPlus(input_file, validate=False)
+        self.source_file = conlluplus.ConlluPlus(self.input_file, validate=False)
                 
         """ Preprocess data for lemmatization """
         self.preprocess_source()
 
         """ Set model paths """
         tagger_path = os.path.join(
-            Paths.models, model_name, 'tagger', 'model.pt')
+                Paths.models, model_name, 'tagger', 'model.pt')
         lemmatizer_path = os.path.join(
-            Paths.models, model_name, 'lemmatizer', 'model.pt')
+                Paths.models, model_name, 'lemmatizer', 'model.pt')
 
         """ Run tagger on input """
         io(f'Tagging {self.tagger_input} with {model_name}')
@@ -129,8 +148,9 @@ class Lemmatizer:
                              None)
 
         ## TODO: fix path
-        self.source_file.write_file(self.input_file.replace('.conllu', '_nn.conllu'))
-
+        self.source_file.write_file(
+                self.input_file.replace('.conllu', '_nn.conllu'))
+        
         P = postprocess.Postprocessor(
             predictions = self.source_file,
             model_name = model_name)
@@ -138,14 +158,19 @@ class Lemmatizer:
         P.initialize_scores()
         P.fill_unambiguous(threshold = 0.7)
         P.disambiguate_by_pos_context(threshold = 0.7)
-
+        P.apply_override()
+        
         self.source_file.force_value('xposctx', '_')
         self.source_file.force_value('formctx', '_')
 
-        self.source_file.write_file(self.input_file.replace('.conllu', '_pp.conllu'), add_info=True)
+        self.source_file.write_file(
+            self.input_file.replace('.conllu', '_pp.conllu'), add_info=True)
 
+        """ Write lemmalists """
+        self.source_file.make_lemmalists()
+        
 
-    def cycle(self):
+    def override_cycle(self):
         """ Lemmatization cycle """
         filename, ext = os.path.splitext(self.filename)
         

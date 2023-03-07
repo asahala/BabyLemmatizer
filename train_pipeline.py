@@ -126,7 +126,7 @@ def make_lexicon(prefix, data_type, filename):
 
     logger('   + Building lexicons')
     with open(fn, 'w', encoding='utf-8') as f:
-        for line in conllutools.get_override(filename):
+        for line in conllutools.get_lexicon(filename):
             if line:
                 f.write('\t'.join(line) + '\n')
                 xlit, lemma, pos = line
@@ -175,6 +175,7 @@ def _make_training_data(filename):
     paths = (
         Paths.models,
         os.path.join(Paths.models, prefix),
+        os.path.join(Paths.models, prefix, 'override'),
         os.path.join(Paths.models, prefix, 'tagger'),
         os.path.join(Paths.models, prefix, 'lemmatizer'),
         os.path.join(Paths.models, prefix, 'tagger', 'traindata'),

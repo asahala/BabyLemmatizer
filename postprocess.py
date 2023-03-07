@@ -18,10 +18,17 @@ class Postprocessor:
         self.train = os.path.join(
             Paths.models, self.model_name,
             'conllu', 'train.conllu')
+        self.override = os.path.join(
+            Paths.models, self.model_name,
+            'override', 'override.conllu')
 
         """ Container for the last post-processing step """
+        if isinstance(predictions, str):
+            predictions = cplus.ConlluPlus(predictions, validate=False)
+
         self.predictions = predictions
         self.train_data = None
+
         
     def _generate_lemmadict(self, fields, threshold):
         """ Creates naive disambiguation dictionary based on
@@ -31,7 +38,7 @@ class Postprocessor:
         lems = defaultdict(dict)
         if self.train_data is None:
             self.train_data = cplus.ConlluPlus(self.train, validate=False)
-
+            
         for data in self.train_data.get_contents():
             key1 = data[fields[0]]
             key2 = data[fields[1]]
@@ -51,17 +58,17 @@ class Postprocessor:
                     
     def initialize_scores(self):
         """ Initialize confidence scores """
-        oov = set()
+        invocab = set()
         with open(os.path.join(Paths.models, self.model_name,
-                               'lex', 'test-types-oov.xlit')) as f:
+                               'lex', 'train-types.xlit')) as f:
             for line in f:
                 line = line.rstrip()
-                oov.add(line.split('\t')[0])
+                invocab.add(line.split('\t')[0])
 
         def get_scores():
             for sentence in self.predictions.get_contents():
                 form = sentence[cplus.FORM]
-                if form in oov:
+                if form not in invocab:
                     if form.lower() == form:
                         score = 2.0
                     elif form.upper() == form:
@@ -75,7 +82,7 @@ class Postprocessor:
         self.predictions.update_value(
             field = 'score', values = get_scores())
         
-                
+
     def fill_unambiguous(self, threshold=0.9):
         """ First post-processing step: calculate close-to
         unambiguous word forms + pos tags from the training
@@ -116,8 +123,19 @@ class Postprocessor:
             unambiguous, fields = ('form', 'xposctx'))
         
         
-        
-    
+    def apply_override(self):
+        """ Make override dictionary """
+        override = cplus.ConlluPlus(self.override, validate=False)
+
+        _dict = {}
+        for form, lemma, xpos in override.get_contents('form', 'lemma', 'xpos'):
+            _dict[form] = {'lemma': lemma, 'xpos': xpos}
+            
+        # aa override ja ylikirjoita jokainen form overriden lemma + pos kombolla
+        self.predictions.override_form(_dict)
+
+            
 if __name__ == "__main__":
-    P = Postprocessor('input/example_nn.conllu.final', 'lbtest1')
-    P.disambiguate_by_pos_context()
+    P = Postprocessor('input/example_nn.conllu', 'lbtest2')
+    #P.disambiguate_by_pos_context()
+    P.apply_override()

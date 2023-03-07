@@ -52,7 +52,7 @@ def get_args():
     ap.add_argument(
         '--lemmatize', type=str)
     ap.add_argument(
-        '--cycle', type=str)
+        '--lemmatize-fast', type=str)
     ap.add_argument(
         '--use-cpu', action='store_true')
     return ap.parse_args()
@@ -85,9 +85,6 @@ if __name__ == "__main__":
             *models)
         train_pipeline.train_model(
             *models, cpu=args.use_cpu)
-    elif args.cycle:
-        lemmatizer = lemmatizer_pipeline.Lemmatizer(args.filename)
-        model = args.cycle
     elif args.evaluate:
         models = parse_prefix(
             args.evaluate, evaluate=True)
@@ -102,6 +99,17 @@ if __name__ == "__main__":
          #   conllutools.normalize_all('conllu')
     elif args.lemmatize:
         cpu = args.use_cpu
-        lemmatizer = lemmatizer_pipeline.Lemmatizer(args.filename)
+        lemmatizer = lemmatizer_pipeline.Lemmatizer(
+            args.filename,
+            fast=False)
         model = args.lemmatize
         lemmatizer.run_model(model, cpu)
+    elif args.lemmatize_fast:
+        cpu = args.use_cpu
+        lemmatizer = lemmatizer_pipeline.Lemmatizer(
+            args.filename,
+            fast=True)
+        model = args.lemmatize
+        lemmatizer.run_model(model, cpu)
+                                        
+        

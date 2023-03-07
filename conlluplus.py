@@ -127,7 +127,7 @@ class LemmaDict:
 
         print(f'> Wrote low-confidence lemmatizations to {o_file}')
 
-        
+
 class ConlluPlus:
 
     """ Class for doing stuff with CoNLL-U+ files
@@ -148,11 +148,13 @@ class ConlluPlus:
                       'xpos': defaultdict(int)}
         self.warnings = defaultdict(list)
 
-        if filename.endswith('.conllu'):
+        if filename is None:
+            pass
+        elif filename.endswith('.conllu'):
             self.read_file(filename)
-        if filename.endswith('.tsv'):
+        elif filename.endswith('.tsv'):
             self.read_corrections(filename)
-        self.word_count = sum(len(unit) for _, unit in self.data)
+        #self.word_count = sum(len(unit) for _, unit in self.data)
 
 
     def __len__(self):
@@ -247,7 +249,9 @@ class ConlluPlus:
                 
                 self.data.append(([''], [base]))
 
+        self.word_count = sum(len(unit) for _, unit in self.data)
             
+
     def read_file(self, filename):
         """ Reads and parses a CoNLL-U+ file. Forces
         additional fields for extra information 
@@ -259,7 +263,6 @@ class ConlluPlus:
         concatenate all the CoNLL-U+ files. """
 
         print(f'> Parsing {filename}')
-
         with open(filename, 'r', encoding='utf-8') as f:
             lines = []
             comments = []
@@ -296,8 +299,10 @@ class ConlluPlus:
                     for warning in v:
                         print(f'   {warning}')
             print('\n')
-            
 
+        self.word_count = sum(len(unit) for _, unit in self.data)
+
+            
     def write_file(self, filename, add_info=False):
         """ Compiles and writes a CoNLL-U+ file
         :param filename        filename
@@ -467,6 +472,30 @@ class ConlluPlus:
                      for comments, sents in self.data]
 
 
+    def override_form(self, dictionary):
+        """ Overides any annotation given to a form 
+
+        :param dictionary      override dictionary
+        :type dictionary       dict
+
+        {form: {lemma: x, xpos: y}, ...} """
+
+        ## TODO: Update also POS-contexts, now old context remains
+        
+        def update(sent):
+            values = dictionary.get(sent[FORM], None)
+            if values is None:
+                return sent
+            
+            for k, v in values.items():
+                sent[FIELDS[k]] = v
+            sent[SCORE] = '4.0'
+            return sent
+
+        self.data = [(comments, [update(sent) for sent in sents])
+                     for comments, sents in self.data]
+           
+            
     def make_lemmalists(self):
         """ Extract all low-confidece lemmatizations from
         the file and write them into correction glossaries 
