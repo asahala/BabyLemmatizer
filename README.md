@@ -1,7 +1,7 @@
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/babylemmatizer2.png)
 
 # BabyLemmatizer 2.0
-State-of-the-art neural tagger and lemmatizer for Akkadian (and other cuneiform languages). ***This repository will be officially published and documented in late February 2023. Before that some files may be missing and the system cannot be used. This disclaimer will be removed after the official publication.***
+State-of-the-art neural tagger and lemmatizer for Akkadian (and other cuneiform languages). ***This repository will be officially published and documented in late February/early March 2023. Before that some files may be missing and the system cannot be used. This disclaimer will be removed after the official publication.***
 
 BabyLemmatizer 2.0 is fully based on OpenNMT, which makes it simpler to use than the previous BabyLemmatizer version that was dependent on an outdated version of TurkuNLP with some problematic dependencies. At its current stage, BabyLemmatizer can be used for part-of-speech tagging and lemmatization of transliterated Akkadian texts. Unlike the old version, BabyLemmatizer 2.0 uses an unindexed character based representation for syllabic signs and sign-based tokenization for logograms, that maximize its capability to discriminate between predictable and suppletive grapheme to phoneme relations. For network architecture and encoding of the input sequences, see [this description](network.md).
 
