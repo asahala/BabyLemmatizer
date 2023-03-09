@@ -49,8 +49,27 @@ If you want to train new models, you need to populate the ```LEMMA``` and ```XPO
 # BabyLemmatizer CoNLLU+ file format description
 CoNLLU is a standardized format used by the Universal Dependencies [Universal Dependencies website](https://universaldependencies.org/format.html). In short, it is a word-per-line format closely related to TSV (Tab Separated Columns) and VRT (VeRticalized Text). BabyLemmatizer uses an extended CoNLLU format known as CoNLLU+. Each segment (e.g. line, sentence, text, whichever you prefer) is separated by an empty line, and each line of text data consists of 10 tab-separated standard CoNLLU fields: ```ID, FORM, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC``` and seven additional fields for extra information ```ENG, NORM, LANG, FORMCTX, XPOSCTX, SCORE, LOCK```.
 
-The important fields are ```FORM``` that contains *transliteration* and ```LEMMA``` that contains the lemma. See example below. **CoNLL-U always ends with and empty line.**
+Crucial fields are ```FORM``` that contains *transliteration* and ```LEMMA``` that contains the lemma. **Note that CoNLL-U always ends with and empty line.**
 
+| Field | Description |
+| --- | --- |
+| ID | Number of the word in the unit starting from 1 |
+| FORM | Transliteration |
+| LEMMA | Lemma (dictionary form) of the word |
+| UPOS | UD Part-of-speech tag, for now always underscore _ |
+| XPOS | Oracc part-of-speech tag |
+| FEATS | Morphological feats, for now always underscore _ |
+| HEAD | Dependency stuff, 0 for the first word of the unit, otherwise 1 |
+| DEPREL | Dependency stuff, root for the first word of the unit, otherwise child |
+| DEPS | Always underscore _ |
+| MISC | Arbitrary information |
+| ENG | English translation of the word if available |
+| NORM | Normalization (phonological transcription of the word) if available |
+| LANG | Word's language, for now always underscore _ |
+| FORMCTX | Word's context, filled automatically |
+| XPOSCTX | Word's part-of-speech context, filled automatically |
+| SCORE | Confidence score of the lemmatization |
+| LOCK | Write-protection, underscore if the field is not write-protected |
 
 # Creating training sets
 
