@@ -70,3 +70,6 @@ The standard practice is to use 80% of your training corpus as the train data, a
 
 ## Demo
 Extract ```lbtest1.tar.gz``` for some data to test training a model with.
+
+# Bringing annotations back to the original format
+This remains user's responsibility. Currently BabyLemmatizer does not provide tools for converting CoNLL-U+ into ATF, Oracc JSON etc.
