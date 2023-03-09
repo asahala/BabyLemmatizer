@@ -161,7 +161,8 @@ In order of priority:
 # Todo before official release
 * [DONE] --lemmatize to work with conlluplus
 * conf score-wise evaluation
-* lemmatization --cycle as automatic as possible
+* [DONE] lemmatization cycle as automatic as possible
+* write-protected fields
 * model versioning
 * global __version__ and logger
 * [DONE but needs CMD params] adjustable context window
