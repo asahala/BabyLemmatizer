@@ -68,8 +68,9 @@ Crucial fields are ```FORM``` that contains *transliteration* and ```LEMMA``` th
 | LANG | Word's language, for now always underscore _ |
 | FORMCTX | Word's context, filled automatically |
 | XPOSCTX | Word's part-of-speech context, filled automatically |
-| SCORE | Confidence score of the lemmatization |
-| LOCK | Write-protection, underscore if the field is not write-protected |
+| SCORE | Confidence score of the lemmatization: 0.0 OOV logogram, 1.0 OOV logo-syllabic, 2.0 OOV syllabi, 3.0 ambiguous, 4.0 close-to-unambiguous, 5.0 close-to-unambiguous and exists in a previously known context. |
+| LOCK | Write-protection, underscore if the field is not write-protected. If you make manual corrections to the lemmatization, change this value to TRUE to tell the lemmatizer to never touch this word or its annotation again. |
+
 
 # Creating training sets
 
