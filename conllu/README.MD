@@ -16,7 +16,7 @@ Input data format must follow [Oracc conventions](http://oracc.museum.upenn.edu/
 
 My library [Cuneiformtools](https://docs.google.com/document/d/1kW9DnCpXGICJ_ttOCO182G2jivE7_knVOZP_v6vdNPw/) may be useful for making transliteration conversions. It is distributed as a part of BabyLemmatizer 2.0 (see [cuneiformtools](https://github.com/asahala/BabyLemmatizer/tree/main/cuneiformtools) folder.
 
-### Line-per-line rawtext format
+### Rawtext to CoNLLU+
 You can use the script ```txt2conllu.py --filename=yourpath/yourfile.txt``` to convert line-per-line raw text format into CoNLLU+. For example,
 
 ```
@@ -30,40 +30,28 @@ into the following CoNLL-U that can be tagged and lemmatized with BabyLemmatizer
 
 ```
 # Code of Hammurapi example
-1	šum-ma	_	_	_	_	0	root	_	_
-2	a-wi-lum	_	_	_	_	1	child	_	_
+1	šum-ma	_	_	_	_	0	root	_	_ ...
+2	a-wi-lum	_	_	_	_	1	child	_	_ ...
 
-1	in	_	_	_	_	0	root	_	_
-2	DUMU	_	_	_	_	1	child	_	_
-3	a-wi-lim	_	_	_	_	1	child	_	_
-4	uh₂-tap-pi-id	_	_	_	_	1	child	_	_
+1	in	_	_	_	_	0	root	_	_ ...
+2	DUMU	_	_	_	_	1	child	_	_ ...
+3	a-wi-lim	_	_	_	_	1	child	_	_ ...
+4	uh₂-tap-pi-id	_	_	_	_	1	child	_	_ ...
 
-1	in-šu	_	_	_	_	0	root	_	_
-2	u-ha-ap-pa-du	_	_	_	_	1	child	_	_
+1	in-šu	_	_	_	_	0	root	_	_ ...
+2	u-ha-ap-pa-du	_	_	_	_	1	child	_	_ ...
 
 ```
 
-If you want to train new models, you need to populate the ```LEMMA, UPOS, XPOS``` fields with lemmatization and pos-tagging. See more information below.
+If you want to train new models, you need to populate the ```LEMMA``` and ```XPOS``` fields with lemmatization and pos-tagging. See more information below.
 
 
 # BabyLemmatizer CoNLLU+ file format description
-CoNLLU is a standardized format used by the Universal Dependencies [Universal Dependencies website](https://universaldependencies.org/format.html). In short, it is a word-per-line format closely related to TSV (Tab Separated Columns) and VRT (VeRticalized Text). BabyLemmatizer uses an extended CoNLLU format known as CoNLLU+. Each segment (e.g. line, sentence, text, whichever you prefer) is separated by an empty line, and each line of text data consists of 10 tab-separated standard CoNLLU fields: ```ID, FORM, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC``` and 
+CoNLLU is a standardized format used by the Universal Dependencies [Universal Dependencies website](https://universaldependencies.org/format.html). In short, it is a word-per-line format closely related to TSV (Tab Separated Columns) and VRT (VeRticalized Text). BabyLemmatizer uses an extended CoNLLU format known as CoNLLU+. Each segment (e.g. line, sentence, text, whichever you prefer) is separated by an empty line, and each line of text data consists of 10 tab-separated standard CoNLLU fields: ```ID, FORM, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC``` and seven additional fields for extra information ```ENG, NORM, LANG, FORMCTX, XPOSCTX, SCORE, LOCK```.
 
 The important fields are ```FORM``` that contains *transliteration* and ```LEMMA``` that contains the lemma. See example below. **CoNLL-U always ends with and empty line.**
 
 
-```
-1	ki-i	kī	PRP	PRP	_	0	root	_	like
-2	iš-ku-nu	šakānu	V	V	_	1	child	_	put
-3	{uru}an-at	Anat	SN	SN	_	1	child	_	Anat
-
-1	ul-te-šib	wašābu	V	V	_	0	root	_	sit (down)
-2	uru	ālu	N	N	_	1	child	_	city
-3	{uru}an-at	Anat	SN	SN	_	1	child	_	Anat
-4	ki	kī	PRP	PRP	_	1	child	_	like
-5	pa-na-a-ma	pāna	AV	AV	_	1	child	_	formerly
-
-```
 # Creating training sets
 
 You can create n-fold splits from a single CoNLLU-U file for training models by using the ```split_training_data()``` method in  ```conllutools.py```.  For example ```conllutools.split_training_data(source='mypath/source.conllu', n=10)``` splits the data into 80/10/10 train/dev/test sets and saves them into the same folder.
