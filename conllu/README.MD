@@ -1,12 +1,4 @@
-# Note
-This documentation is partly obsolete. I have moved to CoNLL-U+ format, which has a couple of additional fields. They will be documented at official resease in the end of February 2023. However, the scripts will automatically convert CoNLL-U described in this file into CoNLL-U+ when the lemmatizer is ran.
-
-# CoNLL-U+ files for training the models
-The files **must** be named as follows ```modelname-type.conllu```, where *modelname* is an arbitrary name that describes your model, *type* is either ```train```, ```test``` or ```dev``` depending on the function of your dataset. For example: ```latebabylonian-train.conllu```, ```latebabylonian-dev.conllu``` and ```latebabylonian-test.conllu```. Do not use any special characters in your model names, excluding numbers and underscore.
-
-The standard practice is to use 80% of your training corpus as the train data, and split the remaining 20% into test and dev data.
-
-## Input data format
+# Input data format
 Input data format must follow [Oracc conventions](http://oracc.museum.upenn.edu/doc/help/languages/akkadian/akkadianstylesheet/index.html). If you have your transliteration in any other notation, you must convert it into Oracc notation. BabyLemmatizer automatically normalizes transliterations to a certain extent:
 
 1. Accented and numeric indexation is converted into subscripts.
@@ -71,10 +63,10 @@ Crucial fields are ```FORM``` that contains *transliteration* and ```LEMMA``` th
 | SCORE | Confidence score of the lemmatization: 0.0 OOV logogram, 1.0 OOV logo-syllabic, 2.0 OOV syllabi, 3.0 ambiguous, 4.0 close-to-unambiguous, 5.0 close-to-unambiguous and exists in a previously known context. |
 | LOCK | Write-protection, underscore if the field is not write-protected. If you make manual corrections to the lemmatization, change this value to TRUE to tell the lemmatizer to never touch this word or its annotation again. |
 
+# CoNLL-U+ files for training the models
+The files **must** be named as follows ```modelname-type.conllu```, where *modelname* is an arbitrary name that describes your model, *type* is either ```train```, ```test``` or ```dev``` depending on the function of your dataset. For example: ```latebabylonian-train.conllu```, ```latebabylonian-dev.conllu``` and ```latebabylonian-test.conllu```. Do not use any special characters in your model names, excluding numbers and underscore.
 
-# Creating training sets
-
-You can create n-fold splits from a single CoNLLU-U file for training models by using the ```split_training_data()``` method in  ```conllutools.py```.  For example ```conllutools.split_training_data(source='mypath/source.conllu', n=10)``` splits the data into 80/10/10 train/dev/test sets and saves them into the same folder.
+The standard practice is to use 80% of your training corpus as the train data, and split the remaining 20% into test and dev data. You can create n-fold splits from a single CoNLLU-U file for training models by using the ```split_training_data()``` method in  ```conllutools.py```.  For example ```conllutools.split_training_data(source='mypath/source.conllu', n=10)``` splits the data into 80/10/10 train/dev/test sets and saves them into the same folder.
 
 ## Demo
 Extract ```lbtest1.tar.gz``` for some data to test training a model with.
