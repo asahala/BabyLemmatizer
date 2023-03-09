@@ -1,7 +1,7 @@
 # Note
 This documentation is partly obsolete. I have moved to CoNLL-U+ format, which has a couple of additional fields. They will be documented at official resease in the end of February 2023. However, the scripts will automatically convert CoNLL-U described in this file into CoNLL-U+ when the lemmatizer is ran.
 
-# CoNLL-U files for training the models
+# CoNLL-U+ files for training the models
 The files **must** be named as follows ```modelname-type.conllu```, where *modelname* is an arbitrary name that describes your model, *type* is either ```train```, ```test``` or ```dev``` depending on the function of your dataset. For example: ```latebabylonian-train.conllu```, ```latebabylonian-dev.conllu``` and ```latebabylonian-test.conllu```. Do not use any special characters in your model names, excluding numbers and underscore.
 
 The standard practice is to use 80% of your training corpus as the train data, and split the remaining 20% into test and dev data.
@@ -46,8 +46,8 @@ into the following CoNLL-U that can be tagged and lemmatized with BabyLemmatizer
 If you want to train new models, you need to populate the ```LEMMA, UPOS, XPOS``` fields with lemmatization and pos-tagging. See more information below.
 
 
-## How does CoNLL-U look like?
-See official description of the format at [Universal Dependencies website](https://universaldependencies.org/format.html). In short, it is a word-per-line format closely related to TSV and VRT. Each segment (e.g. line, sentence, text) is separated by an empty line, and each line of text data consists of 10 tab-separated fields: ```ID, FORM, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC```. For our purposes ```UPOS``` and ```XPOS``` fields contain the same information, ```FEATS``` is always empty, ```HEAD``` and ```DEPREL``` indicate the first word as the segment as *root* and *0*, and the following words as *child* and *1*, ```DEPS``` field has and *_* and ```MISC``` contains whatever other information.
+# BabyLemmatizer CoNLLU+ file format description
+CoNLLU is a standardized format used by the Universal Dependencies [Universal Dependencies website](https://universaldependencies.org/format.html). In short, it is a word-per-line format closely related to TSV (Tab Separated Columns) and VRT (VeRticalized Text). BabyLemmatizer uses an extended CoNLLU format known as CoNLLU+. Each segment (e.g. line, sentence, text, whichever you prefer) is separated by an empty line, and each line of text data consists of 10 tab-separated standard CoNLLU fields: ```ID, FORM, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC``` and 
 
 The important fields are ```FORM``` that contains *transliteration* and ```LEMMA``` that contains the lemma. See example below. **CoNLL-U always ends with and empty line.**
 
