@@ -8,8 +8,8 @@ Input data format must follow [Oracc conventions](http://oracc.museum.upenn.edu/
 
 My library [Cuneiformtools](https://docs.google.com/document/d/1kW9DnCpXGICJ_ttOCO182G2jivE7_knVOZP_v6vdNPw/) may be useful for making transliteration conversions. It is distributed as a part of BabyLemmatizer 2.0 (see [cuneiformtools](https://github.com/asahala/BabyLemmatizer/tree/main/cuneiformtools) folder.
 
-### Rawtext to CoNLLU+
-You can use the script ```txt2conllu.py --filename=yourpath/yourfile.txt``` to convert line-per-line raw text format into CoNLLU+. For example,
+### Rawtext to CoNLL-U+
+You can use the script ```txt2conllu.py --filename=yourpath/yourfile.txt``` to convert line-per-line raw text format into CoNLL-U+. For example,
 
 ```
 # Code of Hammurapi example
@@ -38,8 +38,8 @@ into the following CoNLL-U that can be tagged and lemmatized with BabyLemmatizer
 If you want to train new models, you need to populate the ```LEMMA``` and ```XPOS``` fields with lemmatization and pos-tagging. See more information below.
 
 
-# BabyLemmatizer CoNLLU+ file format description
-CoNLLU is a standardized format used by the Universal Dependencies [Universal Dependencies website](https://universaldependencies.org/format.html). In short, it is a word-per-line format closely related to TSV (Tab Separated Columns) and VRT (VeRticalized Text). BabyLemmatizer uses an extended CoNLLU format known as CoNLLU+. Each segment (e.g. line, sentence, text, whichever you prefer) is separated by an empty line, and each line of text data consists of 10 tab-separated standard CoNLLU fields: ```ID, FORM, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC``` and seven additional fields for extra information ```ENG, NORM, LANG, FORMCTX, XPOSCTX, SCORE, LOCK```.
+# BabyLemmatizer CoNLL-U+ file format description
+CoNLL-U is a standardized format used by the Universal Dependencies [Universal Dependencies website](https://universaldependencies.org/format.html). In short, it is a word-per-line format closely related to TSV (Tab Separated Columns) and VRT (VeRticalized Text). BabyLemmatizer uses an extended CoNLL-U format known as CoNLL-U+. Each segment (e.g. line, sentence, text, whichever you prefer) is separated by an empty line, and each line of text data consists of 10 tab-separated standard CoNLL-U fields: ```ID, FORM, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC``` and seven additional fields for extra information ```ENG, NORM, LANG, FORMCTX, XPOSCTX, SCORE, LOCK```.
 
 Crucial fields are ```FORM``` that contains *transliteration* and ```LEMMA``` that contains the lemma. **Note that CoNLL-U always ends with and empty line.**
 
@@ -66,7 +66,7 @@ Crucial fields are ```FORM``` that contains *transliteration* and ```LEMMA``` th
 # CoNLL-U+ files for training the models
 The files **must** be named as follows ```modelname-type.conllu```, where *modelname* is an arbitrary name that describes your model, *type* is either ```train```, ```test``` or ```dev``` depending on the function of your dataset. For example: ```latebabylonian-train.conllu```, ```latebabylonian-dev.conllu``` and ```latebabylonian-test.conllu```. Do not use any special characters in your model names, excluding numbers and underscore.
 
-The standard practice is to use 80% of your training corpus as the train data, and split the remaining 20% into test and dev data. You can create n-fold splits from a single CoNLLU-U file for training models by using the ```split_training_data()``` method in  ```conllutools.py```.  For example ```conllutools.split_training_data(source='mypath/source.conllu', n=10)``` splits the data into 80/10/10 train/dev/test sets and saves them into the same folder.
+The standard practice is to use 80% of your training corpus as the train data, and split the remaining 20% into test and dev data. You can create n-fold splits from a single CoNLL-U+ file for training models by using the ```split_training_data()``` method in  ```conllutools.py```.  For example ```conllutools.split_training_data(source='mypath/source.conllu', n=10)``` splits the data into 80/10/10 train/dev/test sets and saves them into the same folder.
 
 ## Demo
 Extract ```lbtest1.tar.gz``` for some data to test training a model with.
