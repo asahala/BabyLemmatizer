@@ -118,6 +118,8 @@ Some additional commands:
 # Performance
 This section presents 10-fold cross-validated evaluation results for various cuneiform languages using 80/10/10 split and their confidence intervals (CI). Evaluation is ran component by component (POS-tagger, lemmatizer and POS-tagger+lemmatizer combined) ignoring fully broken words. Evaluation is ran also separately for OOV words to show model's ability to deal with previously unseen word forms.
 
+Evaluation is performed for the Neural Net output and for the Post-Corrected output separately. The improvement is very slight compared to BabyLemmatizer 1.0, where the NN performed on average 10-15% worse.
+
 ### Urartian
 Data set size ca. 20k words.
 
