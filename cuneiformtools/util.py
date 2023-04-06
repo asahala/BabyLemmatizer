@@ -1,13 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-""" CuneiformTools Utilities                      
-
-asahala 2021
-https://github.com/asahala/
-
-"""
-
 import sys
 import re
 from functools import lru_cache
@@ -168,8 +161,8 @@ def zip_xlit(signs, delimiters):
     """
     
     word = ''
-    for c in '_'.join(signs):
-        if c == '_':
+    for c in '¤'.join(signs):
+        if c == '¤':
             word += delimiters.pop(0)
         else:
             word += c
