@@ -116,12 +116,17 @@ Some additional commands:
 ```
 
 # Performance
-This section presents 10-fold cross-validated evaluation results for various cuneiform languages using 80/10/10 split.
+This section presents 10-fold cross-validated evaluation results for various cuneiform languages using 80/10/10 split and their confidence intervals (CI). Evaluation is ran component by component (POS-tagger, lemmatizer and POS-tagger+lemmatizer combined) ignoring fully broken words. Evaluation is ran also separately for OOV words to show model's ability to deal with previously unseen word forms.
 
 ### Urartian
 Data set size ca. 20k words.
 
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/urartian-eval.png)
+
+### Neo-Assyrian
+Data set size ca. 330k words. Consists of all Oracc texts labeled as Neo-Assyrian.
+
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/neoass-eval.png)
 
 
 # Citations
