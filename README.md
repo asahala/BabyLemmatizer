@@ -116,19 +116,12 @@ Some additional commands:
 ```
 
 # Performance
-This section presents some results of the 5-fold cross-validation of the first millennium Babylonian models trained with 500k examples split into 80/10/10. Evaluation has been done before and after the post-processing, for the whole data sets and out-of-vocabulary items only. Both evaluations use the exactly same POS-tagger models. 
+This section presents 10-fold cross-validated evaluation results for various cuneiform languages using 80/10/10 split.
 
-With token-based output the models achieve an average accuracy of ***93.99%*** before post-corrections and ***94.23%*** after the post-corrections (i.e. both, the lemma and the POS-tag are predicted correctly). The models with character sequence output perform slightly better, achieving an average accuracy of ***94.22%*** before and ***94.48%*** after post-corrections. By default BabyLemmatizer uses character-based output sequences, which offer better prediction accuracy for out-of-vocabulary words.
+### Urartian
+Data set size ca. 20k words.
 
-Although the post-corrected results beat BabyLemmatizer 1 only by small margin, the non-post-processed results are significantly more reliable, combined lemma+POS accuracy being ***8.68%*** higher, and lemmatization accuracy being ***8.61%*** higher. Improvement in POS-tagging is much smaller: ***0.14%***.
-
-***Output: token***
-
-![alt text](https://www.mv.helsinki.fi/home/asahala/img/lbtest-eval-token.png)
-
-***Output: character sequence***
-
-![alt text](https://www.mv.helsinki.fi/home/asahala/img/lbtest-eval.png)
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/urartian-eval.png)
 
 
 # Citations
