@@ -52,8 +52,6 @@ def get_args():
     ap.add_argument(
         '--lemmatize', type=str)
     ap.add_argument(
-        '--lemmatize-fast', type=str)
-    ap.add_argument(
         '--use-cpu', action='store_true')
     return ap.parse_args()
 
@@ -103,13 +101,5 @@ if __name__ == "__main__":
             args.filename,
             fast=False)
         model = args.lemmatize
-        lemmatizer.run_model(model, cpu)
-    elif args.lemmatize_fast:
-        cpu = args.use_cpu
-        lemmatizer = lemmatizer_pipeline.Lemmatizer(
-            args.filename,
-            fast=True)
-        model = args.lemmatize
-        lemmatizer.run_model(model, cpu)
-                                        
+        lemmatizer.run_model(model, cpu)                                        
         

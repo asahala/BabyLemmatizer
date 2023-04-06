@@ -6,6 +6,7 @@ import os
 import math
 import copy
 from collections import defaultdict
+from collections import Counter
 from command_parser import parse_prefix
 from postcorrect import pipeline as PP
 from preferences import Paths
@@ -79,7 +80,7 @@ def cross_validation(results, oov_rates):
     csv = []
 
     """ Heading for the models to be evaluated """
-    keys = [f' MODEL{e}' for e, x in enumerate(results, start=1)]
+    keys = [f' MODEL{e}' for e, x in enumerate(sorted(results.keys()), start=0)]
     print('COMPONENT', 'AVG', 'CI', '\t'.join(keys), sep='\t')
     csv.append(';'.join(
         ('#component', 'confidence_interval',
@@ -87,7 +88,7 @@ def cross_validation(results, oov_rates):
 
     """ Collect accuracies for each evaluation category
     for each model from result dict """
-    for model, data in results.items():
+    for model, data in sorted(results.items()):
         for model_type, res in data.items():
             vf[model_type].append(res['accuracy'])
 
@@ -171,10 +172,12 @@ def evaluate(predictions, gold_standard, model, model_path):
 
     """ Initialize containers for results """
     results = defaultdict(int)
+    errors = defaultdict(list)
     results_oov = defaultdict(int)
     total = 0
     total_oov = 0
-
+    skip = 0
+    
     """ Compare predictions to gold standard """
     for p, g in zip(pred, gold):
         s_index = conllutools.FORM
@@ -182,6 +185,12 @@ def evaluate(predictions, gold_standard, model, model_path):
         xlit, p_lemma, p_upos, p_xpos = p.split('\t')[s_index:e_index]
         g_lemma, g_upos, g_xpos = g.split('\t')[s_index+1:e_index]
 
+        """ Skip lacunae """
+        ## TODO
+        if xlit == 'x':
+            skip += 1
+            continue
+        
         """ Build evaluation pairs for different categories """
         eval_data = {
             'POS-tagger': (p_xpos, g_xpos),
@@ -196,6 +205,9 @@ def evaluate(predictions, gold_standard, model, model_path):
                 
             if pair[0] == pair[1]:
                 results[category] += 1
+            else:
+                errors[category].append((xlit, pair[0], pair[1]))
+
 
         """ Calculate totals """
         total += 1
@@ -218,9 +230,25 @@ def evaluate(predictions, gold_standard, model, model_path):
                             'incorrect': total_oov-correct,
                             'total': total_oov}
 
+    """ Write error logs """
+    for category, errs in errors.items():
+        cat = category.lower().strip()
+        with open(os.path.join(model_path, 'eval', f'errors-{cat}.tsv'),
+                  'w', encoding='utf=8') as efile:
+            errorfreqs = sorted([(str(v).zfill(3), *k) for k, v in Counter(errs).items()], reverse=True)
+            efile.write('OOV\tFREQ\tFORM\tPRED\tGOLD\n')
+            for e in errorfreqs:
+                xlit = e[1]
+                if xlit in oov:
+                    is_oov = '+'
+                else:
+                    is_oov = '-'
+                efile.write(is_oov + '\t' + '\t'.join(e) + '\n')
+            
     """ Calculate OOV rate """
     oov_rate = output['Lemmatizer OOV']['total']/output['Lemmatizer']['total']
-        
+
+    print(f'>NOTE: {skip} lacunae with POS=u or XLIT=_ ignored') 
     return output, oov_rate
         
     

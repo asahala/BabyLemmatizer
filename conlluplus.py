@@ -39,6 +39,7 @@ Fields in BabyLemmatizer 2 CoNLL-U+
    `formctx`   Context of the word as transliteration, i.e. form
    `xposctx`   Context of the word as XPOS tag
    `score`     Confidence score
+   `lock`      Write-protection for the field
 
    Formal info:
 
@@ -57,13 +58,13 @@ Fields in BabyLemmatizer 2 CoNLL-U+
 # CoNLL-U+ field names; never change this order
 FIELD_NAMES = ('id', 'form', 'lemma', 'upos', 'xpos', 'feats',
                'head', 'deprel', 'deps', 'misc', 'eng', 'norm',
-               'lang', 'formctx', 'xposctx', 'score')
+               'lang', 'formctx', 'xposctx', 'score', 'lock')
 
 FIELDS = {name: index for index, name in enumerate(FIELD_NAMES)}
 
 ID, FORM, LEMMA, UPOS, XPOS, FEATS,\
     HEAD, DEPREL, DEPS, MISC, ENG, NORM,\
-    LANG, FORMCTX, XPOSCTX, SCORE = FIELDS.values()
+    LANG, FORMCTX, XPOSCTX, SCORE, LOCK = FIELDS.values()
 
 LAST_FIELD = max(FIELDS.values())
 
@@ -87,7 +88,26 @@ def sort_dict(dictionary):
                        reverse=True):
         yield k, v
         
-        
+
+def merge_backup(backup_file, pp_file):
+    with open(pp_file, 'r', encoding='utf-8') as f:
+        pp = f.read().splitlines()
+    
+    with open(backup_file, 'r', encoding='utf-8') as f,\
+         open(pp_file, 'w', encoding='utf-8') as f_o:
+        for line in f.read().splitlines():
+            pp_line = pp.pop(0)
+            if not line:
+                f_o.write(line + '\n')
+            elif line.startswith('#'):
+                f_o.write(line + '\n')
+            else:
+                if line.split('\t')[-1] != '_':
+                    f_o.write(line + '\n')
+                else:
+                    f_o.write(line + '\n')
+    
+                        
 class LemmaDict:
 
     """ Class for constructing and writing lemma
@@ -173,7 +193,7 @@ class ConlluPlus:
             print(f'> WARNING (line {lineno}): BabyLemmatizer expects '\
                   'exactly one word per line!')
             return False
-        if line[FIELDS['lemma']] == '_':
+        if line[FIELDS['lemma']] == '_' and not line[FIELDS['form']][0].isdigit():
             if 'x' not in line[FIELDS['form']]:
                 self.warnings['Lemma missing for non-lacuna'].append(
                     f'{lineno.zfill(6)} | {identifier}')
@@ -275,6 +295,12 @@ class ConlluPlus:
                     if len(line) < LAST_FIELD:
                         line.extend(['_'] * (LAST_FIELD - len(line) + 1))
 
+                    """ Fix empty elements """
+                    if '' in set(line):
+                        print(f'> ERROR: Empty field at line {e} -> '\
+                              'replaced with _')
+                        line = [x if x != '' else '_' for x in line]
+                        
                     if self.validate:
                         is_valid = self._is_valid(line, e)
 
@@ -377,6 +403,10 @@ class ConlluPlus:
         self.score = 0
 
         def update(sent):
+            if sent[LOCK] != '_':
+                self.e += 1
+                return sent
+            
             key = tuple(sent[FIELDS[field]] for field in fields)
             substitutions = mappings.get(key, None)
             if substitutions is not None:
@@ -404,6 +434,9 @@ class ConlluPlus:
         print(f'> Updating field "{field}"')
         ## TODO: fix and add multi-field update
         def update(sent):
+            if sent[LOCK] != '_':
+                return sent
+            
             vals = next(values)
             if isinstance(vals, (tuple, list)):
                 vals = '|'.join(vals)
@@ -424,6 +457,8 @@ class ConlluPlus:
     def force_value(self, field, value):
         print(f'> Removing field "{field}"')
         def update(sent):
+            if sent[LOCK] != '_':
+                return sent
             sent[FIELDS[field]] = value
             return sent
         
@@ -449,6 +484,8 @@ class ConlluPlus:
         
         print(f'> Normalizing CoNLL-U')
         def update(sent):
+            if sent[LOCK] != '_':
+                return sent
             xlit = sent[FORM]
             lemma = sent[LEMMA]
             xlit = PP.lowercase_determinatives(xlit)
@@ -483,6 +520,8 @@ class ConlluPlus:
         ## TODO: Update also POS-contexts, now old context remains
         
         def update(sent):
+            if sent[LOCK] != '_':
+                return sent
             values = dictionary.get(sent[FORM], None)
             if values is None:
                 return sent
@@ -497,7 +536,7 @@ class ConlluPlus:
            
             
     def make_lemmalists(self):
-        """ Extract all low-confidece lemmatizations from
+        """ Extract all low-confidence lemmatizations from
         the file and write them into correction glossaries 
         aka lemmadicts. """
         
@@ -514,7 +553,7 @@ class ConlluPlus:
 
             
 if __name__ == "__main__":
-    y = ConlluPlus('input/test_pp_10.tsv')
+    #y = ConlluPlus('achemenet/achemenet-murashu.conllu', validate=False)
     #contexts = x.get_contexts('form', 'xpos', size=1)
     #x.update_value('formctx', 'xposctx',  values=contexts)
 
@@ -522,8 +561,7 @@ if __name__ == "__main__":
     #    print('NEW\t', l)
 
     #y = ConlluPlus('models/lbtest2/eval/test_pp.conllu')
-    y.read_corrections('input/test_pp_10.tsv')
-    for x in y.get_contents():
-        print(x)
-
-                        
+    #y.read_corrections('input/test_pp_10.tsv')
+    #for x in y.get_contents():
+    #    print(x)
+    merge_backup('demo/backup.conllu', 'demo/enuma_pp.conllu')                   

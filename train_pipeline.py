@@ -315,6 +315,7 @@ def train_model(*models, cpu=False):
             print(f'> Run build_training_data({model}) before training.')
             sys.exit(0)
 
+        ## TODO: use os.path.join instead of string formatting
         model_path = os.path.join(Paths.models, model)
         for yaml in (x for x in os.listdir(model_path) if x.endswith('.yaml')):
             os.system(f'{python_path}python {onmt_path}build_vocab.py '\

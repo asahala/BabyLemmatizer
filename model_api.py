@@ -1,6 +1,6 @@
 import os
 from preferences import python_path, onmt_path
-import conllutools as ct
+#import conllutools as ct
 import preprocessing as PP
 
 """ ===========================================================
@@ -111,20 +111,20 @@ def ___merge_tags(tagged_file, lemma_input, output_file):
                 o_file.write(f'{lemma} {pos}\n')
 
 
-def ___merge_to_final(tags, lemmas, output):
-    """ Merges tags and lemmata into a single output """
-    with open(tags, 'r', encoding='utf-8') as t_file,\
-         open(lemmas, 'r', encoding='utf-8') as l_file,\
-         open(output, 'w', encoding='utf-8') as o_file:
-
-        combined = zip(l_file.read().splitlines(),
-                       t_file.read().splitlines())
-
-        for lemma, pos in combined:
-            lemma = ''.join(lemma.split(' '))
-            o_file.write(f'{lemma}\t{pos}\n')
-
-        o_file.write('\n')
+#def ___merge_to_final(tags, lemmas, output):
+#    """ Merges tags and lemmata into a single output """
+#    with open(tags, 'r', encoding='utf-8') as t_file,\
+#         open(lemmas, 'r', encoding='utf-8') as l_file,\
+#         open(output, 'w', encoding='utf-8') as o_file:
+#
+#        combined = zip(l_file.read().splitlines(),
+#                       t_file.read().splitlines())
+#
+#        for lemma, pos in combined:
+#            lemma = ''.join(lemma.split(' '))
+#            o_file.write(f'{lemma}\t{pos}\n')
+#
+#        o_file.write('\n')
 
 
 def file_to_set(filename):

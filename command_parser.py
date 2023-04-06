@@ -3,7 +3,7 @@ import re
 import sys
 from preferences import Paths
 
-""" BabyLemmatizer 2.0 utils """
+""" BabyLemmatizer 2 utils """
 
 ## TODO clean
 

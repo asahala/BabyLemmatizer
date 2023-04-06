@@ -54,12 +54,15 @@ def get_chars_lemma(lemma):
 
 @lru_cache(maxsize=512)
 def get_chars(xlit):
+    
     if xlit == '_':
         return xlit
+
     xlit = uppercase_determinatives(xlit)
     signs, delimiters = util.unzip_xlit(xlit)
     delimiters = [f' {d} '.replace('{ ', '{').replace(' }', '}') for d in delimiters]
     signs = [reformat(s) for s in signs]
+    
     xlit_ = util.zip_xlit(signs, delimiters)\
             .lstrip()\
             .rstrip()

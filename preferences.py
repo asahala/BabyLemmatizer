@@ -1,5 +1,16 @@
 import os
 
+""" BabyLemmatizer 2 Preferences ==================================
+
+  asahala 2023
+  github.com/asahala/BabyLemmatizer
+
+=============================================================== """
+
+version_history =\
+    "1.0    2022-05-01    TurkuNLP dependent version.\n"\
+    "2.0    2023-03-08    Moved to OpenNMT from TurkuNLP.\n"
+
 __version__ = '2.0'
 
 """ Virtual environment path that contains all requirements for OpenNMT """

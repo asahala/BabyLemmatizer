@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-import conllutools as ct
+import shutil
+#import conllutools as ct
 import conlluplus
 import preprocessing as pp
 import model_api
@@ -10,7 +11,7 @@ from preferences import Paths
 import postprocess
 
 info = """===========================================================
-Lemmatizer pipeline for BabyLemmatizer 2.0
+Lemmatizer pipeline for BabyLemmatizer 2
 
 asahala 2023
 https://github.com/asahala
@@ -44,6 +45,7 @@ class Lemmatizer:
             pass
         
         fn = os.path.join(step_path, f)
+        self.backup_file = os.path.join(path, 'backup.conllu')
         self.fast = fast
         self.input_file = input_file
         self.input_path = path
@@ -54,7 +56,7 @@ class Lemmatizer:
         self.lemmatizer_output = fn + '.lem_pred'
         self.final_output = fn + '.final'
         self.line_count = 0
-        self.segment_count = 1
+        self.segment_count = 0
         #self.preprocess_input(input_file)
         """ Load and normalize source CoNLL-U+ file """
         self.source_file = conlluplus.ConlluPlus(input_file, validate=False)
@@ -69,11 +71,13 @@ class Lemmatizer:
         with open(self.tagger_input, 'w', encoding='utf-8') as pos_src,\
              open(self.word_forms, 'w', encoding='utf-8') as wf:
             io(f'Generating input data for neural net {self.input_file}')
-            for form, formctx in self.source_file.get_contents('form', 'formctx'):
-                pos_src.write(pp.make_tagger_src(formctx, context=CONTEXT) + '\n')
+            for id_, form, formctx in self.source_file.get_contents('id', 'form', 'formctx'):
+                pos_src.write(
+                    pp.make_tagger_src(formctx, context=CONTEXT) + '\n')
                 wf.write(pp.get_chars(form + '\n'))
                 self.line_count += 1
-                
+                if id_ == '1':
+                    self.segment_count += 1
             #for stack in ct.get_training_data2(filename,
             #                    pp.clean_traindata):
             #    if stack == ct.EOU:
@@ -98,6 +102,7 @@ class Lemmatizer:
             override = conlluplus.ConlluPlus(mod_o, validate=False)
             for o_file in overrides:
                 override.read_corrections(o_file)
+                override.normalize()
                 os.remove(o_file) # this is bad
             override.write_file(mod_o)
 
@@ -108,11 +113,17 @@ class Lemmatizer:
         self.update_model(model_name)
 
         """ Load and normalize source CoNLL-U+ file """
-        self.source_file = conlluplus.ConlluPlus(self.input_file, validate=False)
+        self.source_file = conlluplus.ConlluPlus(
+            self.input_file, validate=False)
                 
+        """ Backup for write-protected fields """
+        pp_file = self.input_file.replace('.conllu', '_pp.conllu')
+        if os.path.isfile(pp_file):
+            shutil.copy(pp_file, self.backup_file)
+
         """ Preprocess data for lemmatization """
         self.preprocess_source()
-
+                
         """ Set model paths """
         tagger_path = os.path.join(
                 Paths.models, model_name, 'tagger', 'model.pt')
@@ -150,7 +161,11 @@ class Lemmatizer:
         ## TODO: fix path
         self.source_file.write_file(
                 self.input_file.replace('.conllu', '_nn.conllu'))
+
+        #""" Merge backup """
+        #pass
         
+        """ Initialize postprocessor """
         P = postprocess.Postprocessor(
             predictions = self.source_file,
             model_name = model_name)
@@ -159,13 +174,18 @@ class Lemmatizer:
         P.fill_unambiguous(threshold = 0.7)
         P.disambiguate_by_pos_context(threshold = 0.7)
         P.apply_override()
-        
+
+        """ Temporary field cleanup """
         self.source_file.force_value('xposctx', '_')
         self.source_file.force_value('formctx', '_')
 
         self.source_file.write_file(
             self.input_file.replace('.conllu', '_pp.conllu'), add_info=True)
 
+        """ Merge backup """
+        print('> Merging manual corrections')
+        conlluplus.merge_backup(self.backup_file, pp_file)
+        
         """ Write lemmalists """
         self.source_file.make_lemmalists()
         
