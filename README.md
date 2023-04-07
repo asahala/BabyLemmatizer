@@ -132,6 +132,10 @@ Total data set size ca. 330k words (including lacunae). Consists of all Oracc te
 
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/neoass-eval2.png)
 
+### First Millennium Babylonian
+Total data set size ca. 1.3M words (including lacunae). Consists of all Oracc texts labeled as any variant of Babylonian or Akkadian in the first millennium BCE. Neo-Assyrian excluded.
+
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/neobab-eval.png)
 
 # Citations
 If you use BabyLemmatizer for annotating your data or training new models, please cite this repository and [Sahala et al. 2022](http://hdl.handle.net/10138/348412). An updated publication will be written in 2023 that describes this version of the system.
