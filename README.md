@@ -130,7 +130,7 @@ Data set size ca. 20k words.
 ### Neo-Assyrian
 Data set size ca. 330k words. Consists of all Oracc texts labeled as Neo-Assyrian.
 
-![alt text](https://www.mv.helsinki.fi/home/asahala/img/neoass-eval.png)
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/neoass-eval2.png)
 
 
 # Citations
