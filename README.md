@@ -122,6 +122,8 @@ This section presents 10-fold cross-validated evaluation results for various cun
 
 Evaluation is performed for the Neural Net output and for the Post-Corrected output separately. The improvement is very slight compared to BabyLemmatizer 1.0, where the NN performed on average 10-15% worse.
 
+Look for the results in the AVG column.
+
 ### Urartian
 Total data set size ca. 20k words (including lacunae).
 
