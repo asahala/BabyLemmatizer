@@ -123,12 +123,12 @@ This section presents 10-fold cross-validated evaluation results for various cun
 Evaluation is performed for the Neural Net output and for the Post-Corrected output separately. The improvement is very slight compared to BabyLemmatizer 1.0, where the NN performed on average 10-15% worse.
 
 ### Urartian
-Data set size ca. 20k words.
+Total data set size ca. 20k words (including lacunae).
 
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/urartian-eval.png)
 
 ### Neo-Assyrian
-Data set size ca. 330k words. Consists of all Oracc texts labeled as Neo-Assyrian.
+Total data set size ca. 330k words (including lacunae). Consists of all Oracc texts labeled as Neo-Assyrian.
 
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/neoass-eval2.png)
 
