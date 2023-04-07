@@ -133,7 +133,7 @@ Total data set size ca. 330k words (including lacunae). Consists of all Oracc te
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/neoass-eval2.png)
 
 ### First Millennium Babylonian
-Total data set size ca. 1.3M words (including lacunae). Consists of all Oracc texts labeled as any variant of Babylonian or Akkadian in the first millennium BCE. Neo-Assyrian excluded.
+Total data set size ca. 1.3M words (including lacunae). Consists of all Oracc texts labeled as any variant of Babylonian or Akkadian in the first millennium BCE. Neo-Assyrian excluded. OOV rate is fairly low but the data set is very varied and comprises all different text genres.
 
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/neobab-eval.png)
 
