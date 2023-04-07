@@ -137,6 +137,11 @@ Total data set size ca. 1.3M words (including lacunae). Consists of all Oracc te
 
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/neobab-eval.png)
 
+### Sumerian (Literary)
+Total data set size ca. 270K words (including lacunae). Consists of all Sumerian literary texts in EPSD2/Literary, EPSD2/earlylit and EPSD/Praxis*. Note the very high amount of OOV words in this data set. Subscript indices were not removed from the Sumerian data as homophones with different indices can belong to different POS-classes.
+
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/sumlit-eval.png)
+
 # Citations
 If you use BabyLemmatizer for annotating your data or training new models, please cite this repository and [Sahala et al. 2022](http://hdl.handle.net/10138/348412). An updated publication will be written in 2023 that describes this version of the system.
 
