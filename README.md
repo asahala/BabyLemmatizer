@@ -164,7 +164,7 @@ In order of priority:
 * [DONE] --lemmatize to work with conlluplus
 * conf score-wise evaluation
 * [DONE] lemmatization cycle as automatic as possible
-* write-protected fields
+* [DONE] write-protected fields
 * model versioning
 * global __version__ and logger
 * [DONE but needs CMD params] adjustable context window
