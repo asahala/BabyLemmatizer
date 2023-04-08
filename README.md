@@ -124,6 +124,11 @@ Evaluation is performed for the Neural Net output and for the Post-Corrected out
 
 Look for the results in the AVG column.
 
+## Summary
+Summary of the evaluation results. Detailed information below.
+
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/summary.png)
+
 ### Urartian
 Total data set size ca. 20k words (including lacunae).
 
