@@ -144,6 +144,11 @@ Total data set size ca. 270k words (including lacunae). Consists of all Sumerian
 
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/sumlit-eval.png)
 
+### Sumerian (Administrative)
+Total data set size ca. 570k words (including lacunae). Consists of all Sumerian Early Dynastic, Old Babylonian, Old Akkadian, Ebla and Lagaš II administrative texts in EPSD2. Ur III texts were left out as it would have completely dominated the data set. OOV rate is fairly low.
+
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/sumadm-eval.png)
+
 # Citations
 If you use BabyLemmatizer for annotating your data or training new models, please cite this repository and [Sahala et al. 2022](http://hdl.handle.net/10138/348412). An updated publication will be written in 2023 that describes this version of the system.
 
