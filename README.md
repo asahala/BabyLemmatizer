@@ -150,7 +150,7 @@ Total data set size ca. 270k words (including lacunae). Consists of all Sumerian
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/sumlit-eval.png)
 
 ### Sumerian (Administrative)
-Total data set size ca. 570k words (including lacunae). Consists of all Sumerian Early Dynastic, Old Babylonian, Old Akkadian, Ebla and Lagaš II administrative texts in EPSD2. Ur III texts were left out as it would have completely dominated the data set. OOV rate is fairly low.
+Total data set size ca. 570k words (including lacunae). Consists of all Sumerian Early Dynastic, Old Babylonian, Old Akkadian, Ebla and Lagaš II administrative texts in EPSD2. Ur III corpus was left out as it would have completely dominated the data set. OOV rate is fairly low. Indices were preserved as above.
 
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/sumadm-eval.png)
 
