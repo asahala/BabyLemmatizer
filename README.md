@@ -156,7 +156,7 @@ Total data set size ca. 570k words (including lacunae). Consists of all Sumerian
 
 ## Non-cuneiform languages
 ### Ancient Greek
-Total data set size ca. 560k words. Consists the Greek data from [PerseusDL](http://perseusdl.github.io/treebank_data/) treebank. Empty lemmata and POS-tags removed and POS-tags simplified by removing [morphological annotation](https://github.com/cltk/greek_treebank_perseus) (i.e. only predicting the first character in the postag-sequence). Morphological feats will be predicted later. Post-processing does not improve results with Ancient Greek.
+Total data set size ca. 560k words. Consists of the Greek data from [PerseusDL](http://perseusdl.github.io/treebank_data/) treebank. Empty lemmata and POS-tags removed and POS-tags simplified by removing [morphological annotation](https://github.com/cltk/greek_treebank_perseus) (i.e. only predicting the first character in the postag-sequence). Morphological feats will be predicted later. Post-processing does not improve results with Ancient Greek.
 
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/sgreek-eval2.png)
 
