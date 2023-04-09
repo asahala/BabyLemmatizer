@@ -154,6 +154,12 @@ Total data set size ca. 570k words (including lacunae). Consists of all Sumerian
 
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/sumadm-eval.png)
 
+## Non-cuneiform languages
+### Ancient Greek
+Total data set size ca. 560k words. Consists the Greek data from PerseusDL. Empty lemmata and POS-tags removed and POS-tags simplified by removing morphological annotation (i.e. only predicting the first character in the postag-sequence). Morphological feats will be predicted later.
+
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/sgreek-eval.png)
+
 # Citations
 If you use BabyLemmatizer for annotating your data or training new models, please cite this repository and [Sahala et al. 2022](http://hdl.handle.net/10138/348412). An updated publication will be written in 2023 that describes this version of the system.
 
