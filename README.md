@@ -127,17 +127,17 @@ Average results are shown in the AVG column.
 ## Summary
 Summary of the evaluation results. Detailed information below.
 
-![alt text](https://www.mv.helsinki.fi/home/asahala/img/summary.png)
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/summary2.png)
 
 ### Urartian
 Total data set size ca. 20k words (including lacunae).
 
-![alt text](https://www.mv.helsinki.fi/home/asahala/img/urartian-eval.png)
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/urartian-eval2.png)
 
 ### Neo-Assyrian
 Total data set size ca. 330k words (including lacunae). Consists of all Oracc texts labeled as Neo-Assyrian.
 
-![alt text](https://www.mv.helsinki.fi/home/asahala/img/neoass-eval2.png)
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/neoass-eval.png)
 
 ### First Millennium Babylonian
 Total data set size ca. 1.3M words (including lacunae). Consists of all Oracc texts labeled as any variant of Babylonian or Akkadian in the first millennium BCE. Neo-Assyrian excluded. OOV rate is fairly low but the data set is very varied and comprises all different text genres.
