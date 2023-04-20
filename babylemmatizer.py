@@ -53,6 +53,8 @@ def get_args():
         '--lemmatize', type=str)
     ap.add_argument(
         '--use-cpu', action='store_true')
+    ap.add_argument(
+        '--preserve-numbers', action='store_true')
     return ap.parse_args()
 
 
@@ -97,9 +99,14 @@ if __name__ == "__main__":
          #   conllutools.normalize_all('conllu')
     elif args.lemmatize:
         cpu = args.use_cpu
+        if args.preserve_numbers:
+            ignore_nums = False
+        else:
+            ignore_nums = True
         lemmatizer = lemmatizer_pipeline.Lemmatizer(
             args.filename,
-            fast=False)
+            fast=False,
+            ignore_numbers=ignore_nums)
         model = args.lemmatize
         lemmatizer.run_model(model, cpu)                                        
         

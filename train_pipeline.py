@@ -162,7 +162,7 @@ def _make_training_data(filename):
     prefix is arbitrary identifier and suffix `dev`, `test`,
     or `train` depending on which set the data belongs. """
 
-    context = 1
+    context = 2
     
     """ Create required folder structures for the model """
     orig_fn = os.path.split(filename)[-1]
@@ -194,11 +194,23 @@ def _make_training_data(filename):
     this_data = conlluplus.ConlluPlus(filename)
     this_data.normalize(is_traindata=True)
     """ Fill in context information and save file to model dir """
+    '''
     for src_field, tgt_field in (('form', 'formctx'), ('xpos', 'xposctx')):
         this_data.update_value(
             field = tgt_field,
             values = this_data.get_contexts(src_field, size=context))
+    '''
+    ## TEMPORARY: laita eri ikkuna muodolle
+    #for src_field, tgt_field in ('xpos', 'xposctx'):
+    this_data.update_value(
+            field = 'xposctx',
+            values = this_data.get_contexts('xpos', size=1))
 
+    this_data.update_value(
+            field = 'formctx',
+            values = this_data.get_contexts('form', size=context))
+    
+    
     """ Save this data to the model directory for reproducibility and
     ease of use """
     conllu_ext = os.path.join(Paths.models, prefix, 'conllu', f'{data_type}.conllu')

@@ -30,7 +30,7 @@ CONTEXT = 1
 
 class Lemmatizer:
 
-    def __init__(self, input_file, fast=False):
+    def __init__(self, input_file, fast=False, ignore_numbers=True):
         path, file_ = os.path.split(input_file)
         f, e = file_.split('.')
 
@@ -43,9 +43,12 @@ class Lemmatizer:
             os.mkdir(step_path)
         except FileExistsError:
             pass
+
+        """ Parameters """
+        self.ignore_numbers = ignore_numbers
         
         fn = os.path.join(step_path, f)
-        self.backup_file = os.path.join(path, 'backup.conllu')
+        self.backup_file = os.path.join(path, f'backup_{f}.conllu')
         self.fast = fast
         self.input_file = input_file
         self.input_path = path
@@ -60,7 +63,7 @@ class Lemmatizer:
         #self.preprocess_input(input_file)
         """ Load and normalize source CoNLL-U+ file """
         self.source_file = conlluplus.ConlluPlus(input_file, validate=False)
-       
+        
         
     def preprocess_source(self):
 
@@ -119,8 +122,11 @@ class Lemmatizer:
         """ Backup for write-protected fields """
         pp_file = self.input_file.replace('.conllu', '_pp.conllu')
         if os.path.isfile(pp_file):
+            is_backup = True
             shutil.copy(pp_file, self.backup_file)
-
+        else:
+            is_backup = False
+            
         """ Preprocess data for lemmatization """
         self.preprocess_source()
                 
@@ -159,6 +165,7 @@ class Lemmatizer:
                              None)
 
         ## TODO: fix path
+
         self.source_file.write_file(
                 self.input_file.replace('.conllu', '_nn.conllu'))
 
@@ -174,6 +181,9 @@ class Lemmatizer:
         P.fill_unambiguous(threshold = 0.7)
         P.disambiguate_by_pos_context(threshold = 0.7)
         P.apply_override()
+        
+        if self.ignore_numbers:
+            self.source_file.unlemmatize(numbers=True)
 
         """ Temporary field cleanup """
         self.source_file.force_value('xposctx', '_')
@@ -184,7 +194,8 @@ class Lemmatizer:
 
         """ Merge backup """
         print('> Merging manual corrections')
-        conlluplus.merge_backup(self.backup_file, pp_file)
+        if is_backup:
+            conlluplus.merge_backup(self.backup_file, pp_file)
         
         """ Write lemmalists """
         self.source_file.make_lemmalists()

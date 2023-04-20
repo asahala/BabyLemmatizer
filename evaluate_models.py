@@ -14,6 +14,7 @@ import postprocess
 import model_api
 import conllutools
 import conlluplus
+import cuneiformtools.tests as tests
 
 ## TODO: get rid of conllutools
 
@@ -185,9 +186,9 @@ def evaluate(predictions, gold_standard, model, model_path):
         xlit, p_lemma, p_upos, p_xpos = p.split('\t')[s_index:e_index]
         g_lemma, g_upos, g_xpos = g.split('\t')[s_index+1:e_index]
 
-        """ Skip lacunae """
+        """ Skip lacunae and numbers """
         ## TODO
-        if xlit == 'x':
+        if tests.is_lacuna(xlit):
             skip += 1
             continue
         
@@ -248,7 +249,7 @@ def evaluate(predictions, gold_standard, model, model_path):
     """ Calculate OOV rate """
     oov_rate = output['Lemmatizer OOV']['total']/output['Lemmatizer']['total']
 
-    print(f'>NOTE: {skip} lacunae with POS=u or XLIT=_ ignored') 
+    print(f'>NOTE: {skip} lacunae ignored') 
     return output, oov_rate
         
     

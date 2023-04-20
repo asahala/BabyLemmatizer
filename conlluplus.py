@@ -3,6 +3,7 @@ import re
 import os
 from collections import defaultdict
 import preprocessing as PP
+import cuneiformtools.tests as tests
 
 """ ============================================================
 
@@ -534,7 +535,7 @@ class ConlluPlus:
         self.data = [(comments, [update(sent) for sent in sents])
                      for comments, sents in self.data]
            
-            
+        
     def make_lemmalists(self):
         """ Extract all low-confidence lemmatizations from
         the file and write them into correction glossaries 
@@ -545,13 +546,54 @@ class ConlluPlus:
         for comments, unit in self.data:
             for form, lemma, xpos, score in self._iterate_fields(
                     unit, 'form', 'lemma', 'xpos', 'score'):
+                if score == '_':
+                    continue
                 if float(score) <= 2.0:
                     lemmadict[score].add_entry(form, lemma, xpos)
 
         for score, ldict in lemmadict.items():
             ldict.write_file(score, self.filename)
 
+
+    def unlemmatize(self, numbers=True):
+        """ Remove lemmatization from numerals """
+
+        if numbers:
+            print('> Removing lemmatizations of numbers')
+        
+        self.nums_removed = 0
+        self.lacunae_removed = 0
+        def update(sent):
+            if sent[LOCK] != '_':
+                return sent
+
+            field_type = tests.is_numeral(sent[FORM])
+            if field_type:
+                self.nums_removed += 1
+                sent[LEMMA] = '_'
+                sent[XPOS] = 'n'
+                sent[MISC] = field_type
+                sent[SCORE] = '_'
+
+            lacuna_type = tests.is_lacuna(sent[FORM])
+            if lacuna_type:
+                self.lacunae_removed += 1
+                sent[LEMMA] = '_'
+                sent[XPOS] = 'u'
+                sent[MISC] = lacuna_type
+                sent[SCORE] = '_'
+                
+            return sent
             
+        self.data = [(comments, [update(sent) for sent in sents])
+                     for comments, sents in self.data]
+
+        if self.nums_removed:
+            print(f'  + {self.nums_removed} numbers flattened')
+        if self.lacunae_removed:
+            print(f'  + {self.lacunae_removed} lacunae flattened')
+
+
 if __name__ == "__main__":
     #y = ConlluPlus('achemenet/achemenet-murashu.conllu', validate=False)
     #contexts = x.get_contexts('form', 'xpos', size=1)
@@ -560,8 +602,9 @@ if __name__ == "__main__":
     #for l in x.get_contents():
     #    print('NEW\t', l)
 
-    #y = ConlluPlus('models/lbtest2/eval/test_pp.conllu')
+    y = ConlluPlus('everling/EverlingNB_pp.conllu')
     #y.read_corrections('input/test_pp_10.tsv')
     #for x in y.get_contents():
     #    print(x)
-    merge_backup('demo/backup.conllu', 'demo/enuma_pp.conllu')                   
+    #merge_backup('demo/backup.conllu', 'demo/enuma_pp.conllu')                   
+    y.unlemmatize()
