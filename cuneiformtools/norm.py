@@ -317,6 +317,8 @@ def unit_test():
              ('{D}30', '{d}30', True),
              ('60-x', '60-x', True),
              ('EN+60', 'EN+60', True),
+             ('1/2', '1/2', True),
+             ('14.KAM2', '14.KAM₂', True)
              ('6.4.0.1(DIŠ)', '6.4.0.1(DIŠ)', True),
              ('{M}da-da', '{M}da-da', False),
              ('{F}da-da', '{f}da-da', True),
