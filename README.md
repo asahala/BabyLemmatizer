@@ -186,16 +186,7 @@ In order of priority:
 
 # Bugs
 * If user forgets = between parameter and argument in command line use, things go wrong
-* star operator fails for some reason: trained neoass0, neoass1, neoass2 and evaluation crashed; works for neoass0, ..., neoass9 ``` Neural Net Evaluation
-COMPONENT       AVG     CI
-Traceback (most recent call last):
-  File "babylemmatizer.py", line 92, in <module>
-    *models, cpu=args.use_cpu)
-  File "/scratch/clarin/opennmt/evaluate_models.py", line 422, in pipeline
-    cross_validation(R, OOV)
-  File "/scratch/clarin/opennmt/evaluate_models.py", line 118, in cross_validation
-    / len(oov_rates), 2), '.2f')
-ZeroDivisionError: division by zero ```
+
 
 # Todo
 * [DONE] --lemmatize to work with conlluplus
