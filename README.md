@@ -117,7 +117,7 @@ Some additional commands:
 
 # Performance
 
-By using all relevant data from Oracc and a 80/10/10 train/dev/test sets. 1st Bab = all first millennium Babylonian texts.
+By using all relevant data from Oracc and a 80/10/10 train/dev/test sets. 1st Bab = all first millennium Babylonian texts. Full evaluation will be reported in a 2023 publication.
 
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/summary2.png)
 
