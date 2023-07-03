@@ -116,6 +116,13 @@ Some additional commands:
 ```
 
 # Performance
+
+By using all relevant data from Oracc and a 80/10/10 train/dev/test sets. 1st Bab = all first millennium Babylonian texts.
+
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/summary2.png)
+
+<!--
+# Performance
 This section presents 10-fold cross-validated evaluation results for various cuneiform languages using 80/10/10 split and their confidence intervals (CI). Evaluation is ran component by component (POS-tagger, lemmatizer and POS-tagger+lemmatizer combined) ignoring fully broken words. Evaluation is ran also separately for OOV words to show model's ability to deal with previously unseen word forms. The performance is measured in accuracy.
 
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/formula2.png)
@@ -159,6 +166,7 @@ Total data set size ca. 570k words (including lacunae). Consists of all Sumerian
 Total data set size ca. 560k words. Consists of the Greek data from [PerseusDL](http://perseusdl.github.io/treebank_data/) treebank. Empty lemmata and POS-tags removed and POS-tags simplified by removing [morphological annotation](https://github.com/cltk/greek_treebank_perseus) (i.e. only predicting the first character in the postag-sequence). Morphological feats will be predicted later. Post-processing does not improve results with Ancient Greek.
 
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/sgreek-eval2.png)
+-->
 
 # Citations
 If you use BabyLemmatizer for annotating your data or training new models, please cite this repository and [Sahala et al. 2022](http://hdl.handle.net/10138/348412). An updated publication will be written in 2023 that describes this version of the system.
