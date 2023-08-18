@@ -91,8 +91,11 @@ def cross_validation(results, oov_rates):
     for each model from result dict """
     for model, data in sorted(results.items()):
         for model_type, res in data.items():
+            #try:
             vf[model_type].append(res['accuracy'])
-
+            #except KeyError:
+            #    vf[model_type].append(0)
+                
     """ Pretty-print results and calculate confidence
     interval for n-fold cross-validation """
     for model_type, acc in vf.items():
@@ -153,7 +156,7 @@ def evaluate(predictions, gold_standard, model, model_path):
      ...}                                                    
 
     """
-
+    
     def norm_key(key):
         return key
         if len(key) < 16:
@@ -201,12 +204,14 @@ def evaluate(predictions, gold_standard, model, model_path):
             'POS-tagger': (p_xpos, g_xpos),
             'Lemmatizer': (p_lemma, g_lemma),
             'Combined  ': (f'{p_lemma} {p_xpos}', f'{g_lemma} {g_xpos}')} 
-
+        
         """ Compare OOV inputs and all inputs """
         for category, pair in eval_data.items():
             if xlit in oov:
                 if pair[0] == pair[1]:
                     results_oov[category] += 1
+                else:
+                    results_oov[category] += 0
                 
             if pair[0] == pair[1]:
                 results[category] += 1
@@ -250,11 +255,14 @@ def evaluate(predictions, gold_standard, model, model_path):
                 efile.write(is_oov + '\t' + '\t'.join(e) + '\n')
             
     """ Calculate OOV rate """
-    if results_oov:
-        oov_rate = output['Lemmatizer OOV']['total']/output['Lemmatizer']['total']
-    else:
-        oov_rate = 0.0
-        
+    #for k, v in results_oov.items():
+    #    print(k,v)
+    #if oov:
+    #    oov_rate = output['Lemmatizer OOV']['total']/output['Lemmatizer']['total']
+    #else:
+    #    oov_rate = 0.0
+    oov_rate = total_oov / total
+
     print(f'>NOTE: {skip} lacunae ignored') 
     return output, oov_rate
         

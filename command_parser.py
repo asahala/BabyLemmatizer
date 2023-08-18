@@ -52,9 +52,13 @@ def parse_prefix(prefix, evaluate=False, build=False):
         models = [f for f in os.listdir(Paths.models) if f.startswith(prefix[:-1])]
     else:
         models = [f for f in os.listdir(Paths.models) if f == prefix]
-        
+
     """ Do not prompt if used for evaluation """
     if evaluate:
+        if not models:
+            print(f'> Model "{prefix}" does not exist in /{Paths.models}')
+            print('> Use --model-path=PATH to give the correct path\n\n')
+            sys.exit(0)                
         return models
 
     """ Test if model actually exists """
@@ -85,7 +89,7 @@ def parse_prefix(prefix, evaluate=False, build=False):
             models = [f for f in prefixes if f == prefix]
 
     if not models:
-        print(f'> No training data for "{prefix}" in folder "{conllu_path}"')
+        print(f'> No training data for "{prefix}" in folder "{Paths.models}"')
         sys.exit(0)
 
     return models
