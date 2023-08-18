@@ -85,7 +85,9 @@ To lemmatize unlemmatized corpus, run the following command:
 
 ```python3 babylemmatizer.py --lemmatize=modelname --filename=corpus_file```
 
-where ```corpus_file``` points to the CoNLL-U file (e.g. ```input/example.conllu```) you want to lemmatize and ```modelname``` to the model you want to use. Lemmatization is by default done on GPU, but if you don't have a CUDA capable GPU, you can add parameter ```--use-cpu```.
+where ```corpus_file``` points to the CoNLL-U file (e.g. ```input/example.conllu```) you want to lemmatize and ```modelname``` to the model you want to use. Lemmatization is by default done on GPU, but if you don't have a CUDA capable GPU, you can add parameter ```--use-cpu```. If you use a custom model directory, remember to add ```--model-path=yourpath``` argument.
+
+It is recommended that the file that you are lemmatizing is in some directory, because the lemmatizer produces several output files. For example, if your unlemmatized conllu file is in ```myworkpath/``` use ```--filename=myworkpath/corpus_file```. For more information about lemmatization, see [BabyLemmatizer Manual](https://docs.google.com/document/d/1j11N2bsIEcuZpAzJP1wmVaWrsjd0ml3HF7K-PK0AXdQ/).
 
 ### Training and evaluation
 Training and evaluation can be done using ```babylemmatizer.py``` command line API. The command line interface is purposefully simple and does not give user direct access to any additional parameters.
