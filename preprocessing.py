@@ -3,6 +3,7 @@
 
 import re
 from cuneiformtools import util, norm, alphabet
+from cuneiformtools import tests
 from functools import lru_cache
 
 """ BabyLemmatizer 2 preprocessor 
@@ -54,9 +55,20 @@ def get_chars_lemma(lemma):
 
 @lru_cache(maxsize=512)
 def get_chars(xlit):
+
+    """ It seems that the best tokenization for Akkadian includes
+    
+    - logo-syllabic tokenization
+    - removal of indices for lowerase
+    - preserving indices for uppercase
+    - splitting logograms at .
+    
+    """
     
     if xlit == '_':
         return xlit
+
+    #return ' '.join(list(xlit))
 
     xlit = uppercase_determinatives(xlit)
     signs, delimiters = util.unzip_xlit(xlit)
@@ -68,6 +80,8 @@ def get_chars(xlit):
             .rstrip()
     xlit_ = re.sub('(\{\+)(.+?)(\})', r'\1 \2 \3', xlit_)
     xlit_ = re.sub(' +', ' ', xlit_)
+    #xlit_ = re.sub(' ?- ?', ' ', xlit_) ## TMP remove dashes
+    #xlit_ = xlit_.replace(' . ', '.') ### TEMP
     return xlit_    
  
 
@@ -77,17 +91,17 @@ def get_signs(xlit):
         (sign for sign in util.unzip_xlit(xlit)[0] if sign))
 
 
-@lru_cache(maxsize=1024)
-def to_tagger_input(stack):
-    tokens = [x[0] for x in stack]
-    return '{} << {} >> {}\n'.format(*tokens)
+#@lru_cache(maxsize=1024)
+#def to_tagger_input(stack):
+#    tokens = [x[0] for x in stack]
+#    return '{} << {} >> {}\n'.format(*tokens)
 
 
-@lru_cache(maxsize=1024)
-def to_lemmatizer_input(stack):
-    token = stack[1][0]
-    context = f'PREV={stack[0][2]} UPOS={stack[1][2]} NEXT={stack[2][2]}'
-    return f'{token} {context}\n'
+#@lru_cache(maxsize=1024)
+#def to_lemmatizer_input(stack):
+#    token = stack[1][0]
+#    context = f'PREV={stack[0][2]} UPOS={stack[1][2]} NEXT={stack[2][2]}'
+#    return f'{token} {context}\n'
 
 
 @lru_cache(maxsize=1024)
@@ -102,11 +116,12 @@ def make_tagger_src(formctx, context):
     """ Format FORM context for training data """
     return ' | '.join(f'<< {get_chars(xlit)} >>'
             if e == context else f'{get_chars(xlit)}'
-            for e, xlit in enumerate(formctx.split('|')))
+                      for e, xlit in enumerate(formctx.split('|')))
 
 def make_lem_src(form, xposctx):
     """ Format XPOS context for training data """
     xlit = get_chars(form)
-    xpos = ' '.join(f'P{e}={pos}'for e, pos in enumerate(xposctx.split('|')))
+    xpos = ' '.join(f'P{e}={pos}' for e, pos in enumerate(xposctx.split('|')))
     return f'{xlit} {xpos}'
-                                                        
+
+

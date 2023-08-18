@@ -23,7 +23,7 @@ def write_yaml(filename, content):
 def set_hyper(examples, steps_per_epoch,
               total_steps, start_decay):
 
-    decay_steps = int(steps_per_epoch/10)
+    decay_steps = max(int(steps_per_epoch/10), 1)
 
     return f"""save_checkpoint_steps: {total_steps}
 train_steps: {total_steps}

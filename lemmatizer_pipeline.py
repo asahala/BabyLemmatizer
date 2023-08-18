@@ -81,16 +81,6 @@ class Lemmatizer:
                 self.line_count += 1
                 if id_ == '1':
                     self.segment_count += 1
-            #for stack in ct.get_training_data2(filename,
-            #                    pp.clean_traindata):
-            #    if stack == ct.EOU:
-            #        f.write(ct.EOU[0] + '\n')
-            #        wf.write(ct.EOU[0] + '\n')
-            #        self.segment_count += 1
-            #    else:
-            #        f.write(pp.to_tagger_input(stack))
-            #        wf.write(pp.get_chars(stack[1][0]) + '\n')
-            #        self.line_count += 1
             io(f'Input file size: {self.line_count}'\
                f' words in {self.segment_count} segments.')
 

@@ -248,27 +248,42 @@ def _make_training_data(filename):
     """ Build YAML-definitions for models. The network architecture
     and its parameters follow (Kanerva, Ginter & Salakoski 2020),
     i.e. TurkuNLP's Universal Lemmatizer where BabyLemmatizer 1.0 was
-    based on. Also build override lexicons for future use. """
+    based on. Also build override lexicons for future use.
+
+    BabyLemmatizer uses significantly lower number of training steps
+    as it seems to improve OOV lemmatization. """
 
     if data_type == 'train':
 
         """ Setup neural net """
         examples = statistics[filename]
         steps_per_epoch = int(math.ceil(int(examples) / 64))
-        total_steps = int(examples * 0.15)
-        start_decay = int(math.ceil(total_steps /2))
 
-        hyper = base_yaml.set_hyper(
+        ## Tagger setup (tmp)
+        total_steps = int(examples * 0.20)
+        start_decay = int(math.ceil(total_steps / 2))
+
+        hyper_tagger = base_yaml.set_hyper(
             examples,
             steps_per_epoch,
             total_steps,
             start_decay)
 
+        ## Lemmatizer setup (tmp)
+        total_steps = int(examples * 0.15)
+        start_decay = int(math.ceil(total_steps / 2))        
+        
+        hyper_lemmatizer = base_yaml.set_hyper(
+            examples,
+            steps_per_epoch,
+            total_steps,
+            start_decay)
+        
         base_yaml.make_lemmatizer_yaml(
-            prefix, hyper)
+            prefix, hyper_lemmatizer)
 
         base_yaml.make_tagger_yaml(
-            prefix, hyper)
+            prefix, hyper_tagger)
 
     make_lexicon(prefix, data_type, filename)
 

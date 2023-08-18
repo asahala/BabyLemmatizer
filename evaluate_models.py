@@ -183,14 +183,18 @@ def evaluate(predictions, gold_standard, model, model_path):
     for p, g in zip(pred, gold):
         s_index = conllutools.FORM
         e_index = conllutools.XPOS+1
+        score_index = conlluplus.SCORE
+        
         xlit, p_lemma, p_upos, p_xpos = p.split('\t')[s_index:e_index]
         g_lemma, g_upos, g_xpos = g.split('\t')[s_index+1:e_index]
 
-        """ Skip lacunae and numbers """
-        ## TODO
+        p_score = p.split('\t')[score_index]
+        
+        """ Skip lacunae that are never annotated """
         if tests.is_lacuna(xlit):
-            skip += 1
-            continue
+            if p_xpos == 'u' and p_lemma == '_':
+                skip += 1
+                continue            
         
         """ Build evaluation pairs for different categories """
         eval_data = {
@@ -209,7 +213,6 @@ def evaluate(predictions, gold_standard, model, model_path):
             else:
                 errors[category].append((xlit, pair[0], pair[1]))
 
-
         """ Calculate totals """
         total += 1
         if xlit in oov:
@@ -223,7 +226,7 @@ def evaluate(predictions, gold_standard, model, model_path):
                             'correct': correct,
                             'incorrect': total-correct,
                             'total': total}
-        
+
     for category, correct in results_oov.items():
         category = norm_key(category + ' OOV')
         output[category] = {'accuracy': correct/total_oov,
@@ -247,8 +250,11 @@ def evaluate(predictions, gold_standard, model, model_path):
                 efile.write(is_oov + '\t' + '\t'.join(e) + '\n')
             
     """ Calculate OOV rate """
-    oov_rate = output['Lemmatizer OOV']['total']/output['Lemmatizer']['total']
-
+    if results_oov:
+        oov_rate = output['Lemmatizer OOV']['total']/output['Lemmatizer']['total']
+    else:
+        oov_rate = 0.0
+        
     print(f'>NOTE: {skip} lacunae ignored') 
     return output, oov_rate
         
