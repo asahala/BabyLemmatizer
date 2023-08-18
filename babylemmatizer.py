@@ -73,7 +73,7 @@ if __name__ == "__main__":
         
     """ Complementary mandatory args """
     if args.train:
-        models = parse_prefix(args.train)
+        models = parse_prefix(args.train, train=True)
         train_pipeline.train_model(
             *models, cpu=args.use_cpu)
     elif args.build:

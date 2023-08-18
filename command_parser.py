@@ -41,18 +41,29 @@ def overwrite_prompt(prefix, files):
             sys.exit(1)
 
 
-def parse_prefix(prefix, evaluate=False, build=False):
+def parse_prefix(prefix, evaluate=False, build=False, train=False):
     """ Parse star expressions for file prefixes
 
     :param prefix              model name prefix
     :type prefix               str """
-
+    """
+    if build:
+        for filetype in ['-train.conllu', '-dev.conllu', '-test.conllu']:
+            P = os.path.join(Paths.conllu, prefix + filetype)
+            print(P)
+            if not os.path.isfile(P):
+                print(f'> Cannot find {P}')
+                print(f'> use --conllu-path=PATH and make sure you have test/dev/train data')
+                sys.exit(0)
+        return prefix
+    """
+    
     """ Check if models already exist and prompt overwrite """
     if prefix.endswith('*'):
         models = [f for f in os.listdir(Paths.models) if f.startswith(prefix[:-1])]
     else:
         models = [f for f in os.listdir(Paths.models) if f == prefix]
-
+        
     """ Do not prompt if used for evaluation """
     if evaluate:
         if not models:
