@@ -225,4 +225,4 @@ If willpower
 * add possibility to use external validation set
 
 # Last updates
-*2.1 (2023-09-05): ```--tokenizer``` parameter, models now know which tokenization to use if it is defined during --build.
+* 2.1 (2023-09-05): ```--tokenizer``` parameter, models now know which tokenization to use if it is defined during --build. Old models are backwards compatible.
