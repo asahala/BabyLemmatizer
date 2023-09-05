@@ -42,7 +42,7 @@ Now you can run ```preferences.py``` and if lots of OpenNMT documentation prints
 # Quick guide
 See [BabyLemmatizer Manual](https://docs.google.com/document/d/1j11N2bsIEcuZpAzJP1wmVaWrsjd0ml3HF7K-PK0AXdQ/) for instructions how to lemmatize the demo text.
 
-# Use in Python
+<!--# Use in Python
 
 ## Input and output format
 BabyLemmatizer uses CoNLL-U+ format. You can read more about it here [conllu](https://github.com/asahala/BabyLemmatizer/tree/main/conllu).
@@ -75,10 +75,10 @@ You can perform n-fold cross-validation of your models by using ```evaluate_mode
 
 All intermediate steps of evaluation are saved into ```models/model_name/eval/``` and the final lemmatization results are saved into ```output_final.conllu2``` in this folder.
 
+-->
 
 # Command line use
-
-BabyLemmatizer can be used directly from the command line.
+At present, BabyLemmatizer should be used via command line instead of calling it directly in Python.
 
 ### Lemmatization
 To lemmatize unlemmatized corpus, run the following command:
