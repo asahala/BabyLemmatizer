@@ -1,12 +1,12 @@
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/babylemmatizer2.png)
 
-# BabyLemmatizer 2.0
+# BabyLemmatizer 2.1
 State-of-the-art neural part-of-speech-tagger and lemmatizer finetuned for Cuneiform languages such as Akkadian, Sumerian and Urartian. BabyLemmatizer models also exist for other ancient languages such as Ancient Greek.
 
-BabyLemmatizer 2.0 is fully based on OpenNMT, which makes it simpler to use than the previous BabyLemmatizer version that was dependent on an outdated version of TurkuNLP with some problematic dependencies. At its current stage, BabyLemmatizer can be used for part-of-speech tagging and lemmatization of transliterated Akkadian texts. Unlike the old version, BabyLemmatizer 2.0 uses an unindexed character based representation for syllabic signs and sign-based tokenization for logograms, that maximize its capability to discriminate between predictable and suppletive grapheme to phoneme relations. For network architecture and encoding of the input sequences, see [this description](network.md).
+BabyLemmatizer is fully based on OpenNMT, which makes it simpler to use than the previous BabyLemmatizer version that was dependent on an outdated version of TurkuNLP with some problematic dependencies. At its current stage, BabyLemmatizer can be used for part-of-speech tagging and lemmatization of transliterated Akkadian texts. Unlike the old version, BabyLemmatizer uses an unindexed character based representation for syllabic signs and sign-based tokenization for logograms, that maximize its capability to discriminate between predictable and suppletive grapheme to phoneme relations. For network architecture and encoding of the input sequences, see [this description](network.md).
 
 ### Brief description
-BabyLemmatizer 2.0 approaches POS-tagging and lemmatization as a Machine Translation task. It features a POS-tagger and lemmatizer that combine strengths of encoder-decoder neural networks (i.e. predicting analyses for unseen word forms), and (at the moment very slightly) statistical and heuristic dictionary-based methods to post-correct and score the reliability of the annotations. BabyLemmatizer is useful for making Akkadian texts searchable and useable for other Natural Language Processing tasks, such as building [Word Embeddings](https://github.com/asahala/pmi-embeddings), as transliterated texts are practically impossible to use efficiently due to orthographic and morphological complexity of the language.
+BabyLemmatizer approaches POS-tagging and lemmatization as a Machine Translation task. It features a POS-tagger and lemmatizer that combine strengths of encoder-decoder neural networks (i.e. predicting analyses for unseen word forms), and (at the moment very slightly) statistical and heuristic dictionary-based methods to post-correct and score the reliability of the annotations. BabyLemmatizer is useful for making Akkadian texts searchable and useable for other Natural Language Processing tasks, such as building [Word Embeddings](https://github.com/asahala/pmi-embeddings), as transliterated texts are practically impossible to use efficiently due to orthographic and morphological complexity of the language.
 
 |***Transliteration*** | ***Lemma*** | ***POS-tag*** |
 | --- | --- | --- |
@@ -20,10 +20,10 @@ BabyLemmatizer 2.0 approaches POS-tagging and lemmatization as a Machine Transla
 1. [OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)
 2. Python 3.6+ (for BabyLemmatizer and 3.9 for OpenNMT virtual environment)
 
-BabyLemmatizer 2.0 has been tested with Python 3.9 and OpenNMT-py 3.0.
+BabyLemmatizer has been tested with Python 3.9 and OpenNMT-py 3.0.
 
 # Setting up BabyLemmatizer
-The easiest way to get BabyLemmatizer 2.0 running is to create a Python 3.9 virtual environment for OpenNMT-py. This ensures that you have permanently all necessary requirements installed and they do not conflict with your other libraries. This is fairly simple to do:
+The easiest way to get BabyLemmatizer running is to create a Python 3.9 virtual environment for OpenNMT-py. This ensures that you have permanently all necessary requirements installed and they do not conflict with your other libraries. This is fairly simple to do:
 
 1. ```python3.9 -m venv OpenNMT```
 2. ```source OpenNMT/bin/activate```
@@ -78,7 +78,7 @@ All intermediate steps of evaluation are saved into ```models/model_name/eval/``
 
 # Command line use
 
-BabyParser 2.0 can be used directly from the command line.
+BabyLemmatizer can be used directly from the command line.
 
 ### Lemmatization
 To lemmatize unlemmatized corpus, run the following command:
