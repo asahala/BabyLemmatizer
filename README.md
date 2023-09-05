@@ -221,8 +221,8 @@ If willpower
 * category-wise evaluation (logo/logosyll/syll)
 * add possibility to use external validation set
 
-# Last updates
-* 2.1 (2023-09-05): ```--tokenizer``` parameter, models now know which tokenization to use if it is defined during --build. Old models are backwards compatible.
+# Latest updates
+* 2.1 (2023-09-05): ```--tokenizer``` parameter, models now rembember which tokenization to use if it is defined during --build. Models created in version 2.0 will use logo-syllabic tokenization by default, unless you make a file ```config.txt``` in your model directory (the same place where the yaml files are) and type ```tokenizer=2``` on the first line (see command line parameters for possible values).
 
 # Data-openness Disclaimer
 This tool was made possible by open data, namely thousands of work-hours invested in annotating Oracc projects. If you use BabyLemmatizer for your dataset, it is HIGHLY advised that your corpus will be shared openly (e.g. CC-BY SA). Sitting on a corpus does not give it the recognition it could have, if it were distributed openly. Just be sure to publish a paper describing your data to ensure academically valued citations.
