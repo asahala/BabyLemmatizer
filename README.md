@@ -114,8 +114,12 @@ All these parameters have one mandatory argument, which points to the data in yo
 Some additional commands:
 
 ```
---normalize-conllu            Attempts to normalize transliteration in all files in your conllu folder (just for testing purposes)
+--tokenizer=<arg>             Select input tokenization type when you use --build or --build-train (default = 0)
+                              0 : Logo-syllabic tokenization (Akkadian, Elamite, Hittite, Urartian, Hurrian)
+                              1 : Indexed tokenization (Sumerian)
+                              2 : Character sequences (Non-cuneiform languages, like Greek, Latin, Sanskrit etc.)
 ```
+Note that ```--tokenizer``` is defined only when you build the model. This does nothing if used with --evaluate or --lemmatize, as the tokenization preferences are saved in your model.
 
 # Performance
 
@@ -203,7 +207,7 @@ In order of priority:
 * conf score-wise evaluation
 * [DONE] lemmatization cycle as automatic as possible
 * [DONE] write-protected fields
-* model versioning
+* [DONE] model versioning
 * global __version__ and logger
 * [DONE but needs CMD params] adjustable context window
 * [DONE] normalize function for conlluplus
@@ -219,3 +223,6 @@ If willpower
 * tag-wise evaluation
 * category-wise evaluation (logo/logosyll/syll)
 * add possibility to use external validation set
+
+# Last updates
+*2.1 (2023-09-05): ```--tokenizer``` parameter, models now know which tokenization to use if it is defined during --build.
