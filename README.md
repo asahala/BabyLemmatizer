@@ -172,15 +172,14 @@ Total data set size ca. 560k words. Consists of the Greek data from [PerseusDL](
 -->
 
 # Citations
-If you use BabyLemmatizer for annotating your data or training new models, please cite this repository and [Sahala et al. 2022](http://hdl.handle.net/10138/348412). An updated publication will be written in 2023 that describes this version of the system.
+If you use BabyLemmatizer for annotating your data or training new models, please cite this repository and [Sahala et al. 2022](http://hdl.handle.net/10138/348412).
 
 ```
-@inproceedings{sahala2022babylemmatizer,
-  title={BabyLemmatizer: A Lemmatizer and POS-tagger for Akkadian},
-  author={Sahala, Aleksi and Alstola, Tero and Valk, Jonathan and Linden, Krister},
-  booktitle={CLARIN Annual Conference Proceedings, 2022},
-  year={2022},
-  organization={CLARIN ERIC}
+@inproceedings{sahala2023babylemmatizer,
+  title={BabyLemmatizer: A Neural Pipeline for Lemmatizing and POS-tagging Cuneiform Languages},
+  author={Sahala, Aleksi and Lindán, Krister},
+  booktitle={Proceedings of RANLP 2023},
+  year={2023}
 }
 ```
 
@@ -223,3 +222,6 @@ If willpower
 
 # Last updates
 * 2.1 (2023-09-05): ```--tokenizer``` parameter, models now know which tokenization to use if it is defined during --build. Old models are backwards compatible.
+
+# Data-openness Disclaimer
+This tool was made possible by open data, namely thousands of work-hours invested in annotating Oracc projects. If you use BabyLemmatizer for your dataset, it is HIGHLY advised that your corpus will be shared openly (e.g. CC-BY SA). Sitting on a corpus does not give it the recognition it could have, if it were distributed openly. Just be sure to publish a paper describing your data to ensure academically valued citations.
