@@ -177,7 +177,7 @@ If you use BabyLemmatizer for annotating your data or training new models, pleas
 
 ```
 @inproceedings{sahala2023babylemmatizer,
-  title={BabyLemmatizer: A Neural Pipeline for Lemmatizing and POS-tagging Cuneiform Languages},
+  title={A Neural Pipeline for Lemmatizing and POS-tagging Cuneiform Languages},
   author={Sahala, Aleksi and Lindán, Krister},
   booktitle={Proceedings of RANLP 2023},
   year={2023}
