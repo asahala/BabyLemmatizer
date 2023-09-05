@@ -117,6 +117,7 @@ Note that ```--tokenizer``` is defined only when you build the model. This does 
 
 ***Using CPU:*** If you want to use CPU instead of GPU (i.e. if you get a CUDA error), use parameter ```--use-cpu``` in addition with parameters ```--train, --build-train``` and ```--evaluate```. Note that training models with CPU is extremely slow and may take days depending on your training data size and hardware. However, you can lemmatize new texts using CPU without too much waiting.
 
+On the first run OpenNMT may take a while to initialize (up to few minutes depending on your system).
 
 # Performance
 
