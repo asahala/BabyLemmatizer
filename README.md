@@ -194,6 +194,7 @@ If you use BabyLemmatizer for annotating your data or training new models, pleas
   year={2023}
 }
 ```
+For use-cases of the earlier version of BabyLemmatizer, see [Sahala et al. 2022](https://helda.helsinki.fi/server/api/core/bitstreams/c8df2cf2-28e2-421a-96e4-d677ab9fd80e/content).
 
 # Upcoming features
 In order of priority:
