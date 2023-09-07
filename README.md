@@ -39,6 +39,10 @@ onmt_path = '/yourpath/OpenNMT/lib/python3.9/site-packages/onmt/bin'
 
 Now you can run ```preferences.py``` and if lots of OpenNMT documentation prints on your screen, everything should be okay.
 
+# Pretrained models
+Following pretrained models are available for version 2.1 (and newer): [Sumerian](https://huggingface.co/asahala/BabyLemmatizer-Sumerian) (consists two sub-models: literary and administrative), [Neo-Assyrian](https://huggingface.co/asahala/BabyLemmatizer-Neo-Assyrian), [Middle Assyrian](https://huggingface.co/asahala/BabyLemmatizer-Middle-Assyrian) (augmented model). 
+
+
 # Quick guide
 See [BabyLemmatizer Manual](https://docs.google.com/document/d/1j11N2bsIEcuZpAzJP1wmVaWrsjd0ml3HF7K-PK0AXdQ/) for instructions how to lemmatize the demo text.
 
@@ -187,7 +191,6 @@ If you use BabyLemmatizer for annotating your data or training new models, pleas
 # Upcoming features
 In order of priority:
 
-* Pretrained models (late feb or early march)
 * Advanced command-line use (tuning the neural net, customizing folders etc)
 * Phonological transcription
 * Morphological analysis
