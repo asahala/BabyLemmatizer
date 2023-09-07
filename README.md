@@ -126,9 +126,13 @@ On the first run OpenNMT may take a while to initialize (up to few minutes depen
 
 # Performance
 
-Evaluatrion results summarized from Sahala & Lindén (2023). NN = neural net performance, PC = post-corrected performance. For data-set descriptions see the paper.
+For 10-fold cross-validated results see Sahala & Lindén (2023). The table below summarizes the performance of the pretrained models.
 
-![alt text](https://www.mv.helsinki.fi/home/asahala/img/results.png)
+|            | Greek   | Latin   | SumL  | SumA  | Bab1st  | Bab2nd  | Neo-Ass | Mid-Ass | Urart |
+|------------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+| Tagger     | 97.22 | 95.38 | 94.00 | 96.48 | 96.84 | 97.85 | 97.49 | 96.76 | 96.51 |
+| Lemmatizer | 97.62 | 96.49 | 93.70 | 95.42 | 95.36 | 94.59 | 95.44 | 94.46 | 93.96 |
+| OOV-rate   | 11.03 | 10.58 | 19.04 | 5.44  | 6.63  | 13.04 | 9.51  | 10.21 | 8.26  |
 
 <!--
 # Performance
