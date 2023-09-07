@@ -111,8 +111,8 @@ PATH AND OPTIONS
 --conllu-path=<arg>            Path where to read CoNLL-U files
 --model-path=<arg>             Path where to save/read models  
 --tokenizer=<arg>              Select input tokenization type when you use --build or --build-train (default = 0)
-                               0 : Logo-syllabic tokenization (Akkadian, Elamite, Hittite, Urartian, Hurrian)
-                               1 : Indexed tokenization (Sumerian)
+                               0 : Partly unnindexed logo-syllabic tokenization (Akkadian, Elamite, Hittite, Urartian, Hurrian)
+                               1 : Indexed logo-syllabic (Sumerian)
                                2 : Character sequences (Non-cuneiform languages, like Greek, Latin, Sanskrit etc.)
 ```
 
