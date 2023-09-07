@@ -126,7 +126,7 @@ On the first run OpenNMT may take a while to initialize (up to few minutes depen
 
 # Performance
 
-For 10-fold cross-validated results see Sahala & Lindén (2023). The table below summarizes the performance of the pretrained models.
+For 10-fold cross-validated results see Sahala & Lindén (2023). The table below summarizes the performance of the pretrained models. Full lacunae are not counted in the results as labeling them is trivial.
 
 |            | Greek   | Latin   | Sum-L  | Sum-A  | Bab-1st  | Bab-2nd  | Neo-Ass | Mid-Ass | Urart |
 |------------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
