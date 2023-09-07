@@ -40,8 +40,9 @@ onmt_path = '/yourpath/OpenNMT/lib/python3.9/site-packages/onmt/bin'
 Now you can run ```preferences.py``` and if lots of OpenNMT documentation prints on your screen, everything should be okay.
 
 # Pretrained models
-Following pretrained models are available for version 2.1 (and newer): [Sumerian](https://huggingface.co/asahala/BabyLemmatizer-Sumerian) (consists two sub-models: literary and administrative), [Neo-Assyrian](https://huggingface.co/asahala/BabyLemmatizer-Neo-Assyrian), [Middle Assyrian](https://huggingface.co/asahala/BabyLemmatizer-Middle-Assyrian) (augmented model). 
+Following pretrained models are available for version 2.1 (and newer): [Sumerian](https://huggingface.co/asahala/BabyLemmatizer-Sumerian) (consists two sub-models: literary and administrative), [Neo-Assyrian](https://huggingface.co/asahala/BabyLemmatizer-Neo-Assyrian), [Middle Assyrian](https://huggingface.co/asahala/BabyLemmatizer-Middle-Assyrian) (augmented model), [First Millennium Babylonian](https://huggingface.co/asahala/BabyLemmatizer-Babylonian-1st), [Second Millennium Babylonian](https://huggingface.co/asahala/BabyLemmatizer-Babylonian-2nd), [Urartian](https://huggingface.co/asahala/BabyLemmatizer-Urartian), [Latin](https://huggingface.co/asahala/BabyLemmatizer-Latin) (demo), [Ancient Greek](https://huggingface.co/asahala/BabyLemmatizer-Greek).
 
+To use these models, clone or download the repository you want and extract the ```.tar.gz``` file, e.g. ```tar -xf sumerian-lit.tar.gz``` to the models directory. You can rerun the evaluation with ```python babylemmatizer.py --evaluate=sumerian-lit```. If you want to use custom model path, see command-line parameters how to specify it.
 
 # Quick guide
 See [BabyLemmatizer Manual](https://docs.google.com/document/d/1j11N2bsIEcuZpAzJP1wmVaWrsjd0ml3HF7K-PK0AXdQ/) for instructions how to lemmatize the demo text.
