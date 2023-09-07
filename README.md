@@ -1,4 +1,4 @@
-![alt text](https://www.mv.helsinki.fi/home/asahala/img/lemmatizer.png)
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/lemmatizer2.png)
 
 # BabyLemmatizer 2.1
 State-of-the-art neural part-of-speech-tagger and lemmatizer finetuned for Cuneiform languages such as Akkadian, Sumerian and Urartian. BabyLemmatizer models also exist for other ancient languages such as Ancient Greek. 
