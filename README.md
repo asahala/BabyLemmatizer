@@ -128,7 +128,7 @@ On the first run OpenNMT may take a while to initialize (up to few minutes depen
 
 For 10-fold cross-validated results see Sahala & Lindén (2023). The table below summarizes the performance of the pretrained models.
 
-|            | Greek   | Latin   | SumL  | SumA  | Bab1st  | Bab2nd  | Neo-Ass | Mid-Ass | Urart |
+|            | Greek   | Latin   | Sum-L  | Sum-A  | Bab-1st  | Bab-2nd  | Neo-Ass | Mid-Ass | Urart |
 |------------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
 | Tagger     | 97.22 | 95.38 | 94.00 | 96.48 | 96.84 | 97.85 | 97.49 | 96.76 | 96.51 |
 | Lemmatizer | 97.62 | 96.49 | 93.70 | 95.42 | 95.36 | 94.59 | 95.44 | 94.46 | 93.96 |
