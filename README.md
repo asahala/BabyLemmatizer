@@ -126,9 +126,9 @@ On the first run OpenNMT may take a while to initialize (up to few minutes depen
 
 # Performance
 
-By using all relevant data from Oracc and a 80/10/10 train/dev/test sets. 1st Bab = all first millennium Babylonian texts. Full evaluation will be reported in a 2023 publication.
+Evaluatrion results summarized from Sahala & Lindén (2023). NN = neural net performance, PC = post-corrected performance. For data-set descriptions see the paper.
 
-![alt text](https://www.mv.helsinki.fi/home/asahala/img/summary2.png)
+![alt text](https://www.mv.helsinki.fi/home/asahala/img/results.png)
 
 <!--
 # Performance
