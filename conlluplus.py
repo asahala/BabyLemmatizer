@@ -602,9 +602,10 @@ if __name__ == "__main__":
     #for l in x.get_contents():
     #    print('NEW\t', l)
 
-    y = ConlluPlus('everling/EverlingNB_pp.conllu')
+    y = ConlluPlus('everling/EverlingNB_pp.conllu', validate=False)
     #y.read_corrections('input/test_pp_10.tsv')
     #for x in y.get_contents():
     #    print(x)
     #merge_backup('demo/backup.conllu', 'demo/enuma_pp.conllu')                   
-    y.unlemmatize()
+    x = y.get_contexts('form')
+    print(x)

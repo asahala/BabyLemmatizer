@@ -9,7 +9,7 @@ from collections import defaultdict
 from collections import Counter
 from command_parser import parse_prefix
 from postcorrect import pipeline as PP
-from preferences import Paths
+from preferences import Paths, Tokenizer
 import postprocess
 import model_api
 import conllutools
@@ -299,12 +299,15 @@ def pipeline(*models, cpu=False, fast=False):
         lemmatizer_path = os.path.join(model_path, 'lemmatizer')
         conllu_path = os.path.join(model_path, 'conllu')
         
+        """ Load Tokenizer preferences """
+        Tokenizer.read(model)                
+        
         """ Intermediate files """
         tagger_output = 'output_tagger.txt'
         lemmatizer_input = 'input_lemmatizer.txt'
         lemmatizer_output = 'output_lemmatizer.txt'
         final_output = 'output_final.txt'
-
+        
         """ Ignore fast evaluation if it has not been run before """
         eval_files = set(os.listdir(eval_path))
         if tagger_output not in eval_files\

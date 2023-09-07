@@ -7,7 +7,7 @@ import shutil
 import conlluplus
 import preprocessing as pp
 import model_api
-from preferences import Paths
+from preferences import Paths, Tokenizer
 import postprocess
 
 info = """===========================================================
@@ -63,10 +63,10 @@ class Lemmatizer:
         #self.preprocess_input(input_file)
         """ Load and normalize source CoNLL-U+ file """
         self.source_file = conlluplus.ConlluPlus(input_file, validate=False)
-        
+                
         
     def preprocess_source(self):
-
+        
         self.source_file.normalize()
         formctx = self.source_file.get_contexts('form')
         self.source_file.update_value('formctx', formctx)
@@ -88,7 +88,7 @@ class Lemmatizer:
     def update_model(self, model_name):
         overrides = [os.path.join(self.input_path, f) for f\
                      in os.listdir(self.input_path) if f.endswith('.tsv')]
-
+                
         if overrides:
             mod_o = os.path.join(
                 Paths.models, model_name, 'override', 'override.conllu')
@@ -100,8 +100,12 @@ class Lemmatizer:
             override.write_file(mod_o)
 
             
+            
     def run_model(self, model_name, cpu):
 
+        """ Read Tokenizer Preferences """
+        Tokenizer.read(model_name)
+        
         """ Update model override """
         self.update_model(model_name)
 

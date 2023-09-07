@@ -5,6 +5,7 @@ import re
 from cuneiformtools import util, norm, alphabet
 from cuneiformtools import tests
 from functools import lru_cache
+from preferences import Tokenizer
 
 """ BabyLemmatizer 2 preprocessor 
 
@@ -41,9 +42,13 @@ def remove_brackets(xlit):
     
 @lru_cache(maxsize=256)
 def reformat(sign):
+    """ Reformat cuneiform input """ 
     if sign.upper() == sign:
         return sign
     elif sign.lower() == sign:
+        """ Remove indices only if tokenizer setting 0 is used """
+        if Tokenizer.setting == 1:
+            return ' '.join(c for c in sign)
         return ' '.join(c for c in sign if not c.isdigit())
     else:
         return sign
@@ -67,6 +72,10 @@ def get_chars(xlit):
     
     if xlit == '_':
         return xlit
+
+    """ If used for languages with alphabet """
+    if Tokenizer.setting == 2:
+        return ' '.join(list(xlit))
 
     #return ' '.join(list(xlit))
 

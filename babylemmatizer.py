@@ -9,7 +9,7 @@ import evaluate_models
 #import conllutools
 import lemmatizer_pipeline
 from command_parser import parse_prefix
-from preferences import Paths, __version__
+from preferences import Paths, __version__, Tokenizer
 
 div = '‹<>›'*16
 
@@ -49,6 +49,8 @@ def get_args():
     ap.add_argument(
         '--build-train', type=str)
     ap.add_argument(
+        '--tokenizer', type=int, default=0)
+    ap.add_argument(
         '--normalize-conllu', action='store_true')
     ap.add_argument(
         '--lemmatize', type=str)
@@ -70,6 +72,11 @@ if __name__ == "__main__":
         Paths.conllu = args.conllu_path
     if args.model_path:
         Paths.models = args.model_path
+
+    if args.tokenizer > 2:
+        print('> Invalid tokenization setting')
+        print('> Use 0 = logosyllabic, 1 = sumerian, 2 = character sequence')
+        sys.exit(1)
         
     """ Complementary mandatory args """
     if args.train:
@@ -77,10 +84,12 @@ if __name__ == "__main__":
         train_pipeline.train_model(
             *models, cpu=args.use_cpu)
     elif args.build:
+        Tokenizer.setting = args.tokenizer
         models = parse_prefix(args.build, build=True)
         train_pipeline.build_train_data(
             *models)
     elif args.build_train:
+        Tokenizer.setting = args.tokenizer
         models = parse_prefix(args.build_train, build=True)
         train_pipeline.build_train_data(
             *models)

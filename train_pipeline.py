@@ -7,7 +7,7 @@ import math
 import shutil
 import re
 from collections import defaultdict
-from preferences import python_path, onmt_path, Paths
+from preferences import python_path, onmt_path, Paths, Tokenizer, __version__
 from command_parser import parse_prefix, split_train_filename
 import preprocessing as PP
 import conllutools
@@ -190,6 +190,11 @@ def _make_training_data(filename):
         except FileExistsError:
             pass
 
+    """ Write model config file """
+    with open(os.path.join(Paths.models, prefix, 'config.yaml'), 'w', encoding='utf-8') as conffile:
+        conffile.write(f'## Built with version {__version__}\n')
+        conffile.write(f'tokenizer: {Tokenizer.setting}\n')
+    
     """ Load CoNLL-U+ file """
     this_data = conlluplus.ConlluPlus(filename)
     this_data.normalize(is_traindata=True)
@@ -210,6 +215,11 @@ def _make_training_data(filename):
             field = 'formctx',
             values = this_data.get_contexts('form', size=context))
     
+
+    """ Create override file """
+    with open(os.path.join(Paths.models, prefix, 'override', 'override.conllu'),\
+              'w', encoding='utf-8') as f:
+        f.write(f'## BabyLemmatizer {__version__} Override\n')
     
     """ Save this data to the model directory for reproducibility and
     ease of use """
@@ -305,7 +315,6 @@ def build_train_data(*models):
     if not filelist:
         print(f'\n> Path "{Path.conllu}" does not contain'\
               ' files with given prefix')
-        sys.exit(0)
     
     for filename in sorted(filelist):
         _make_training_data(os.path.join(Paths.conllu, filename))
@@ -337,13 +346,15 @@ def train_model(*models, cpu=False):
     else:
         gpu = '-gpu_ranks 0 -world_size 1'
 
+        
     for model in sorted(models):
-        if model not in os.listdir(Paths.models):
+        if model not in os.listdir(Paths.models):            
             print(f'> Run build_training_data({model}) before training.')
             sys.exit(0)
 
         ## TODO: use os.path.join instead of string formatting
         model_path = os.path.join(Paths.models, model)
+
         for yaml in (x for x in os.listdir(model_path) if x.endswith('.yaml')):
             os.system(f'{python_path}python {onmt_path}build_vocab.py '\
                       f'-config {model_path}/{yaml} -n_sample -1 '\
