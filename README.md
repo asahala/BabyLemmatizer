@@ -184,7 +184,7 @@ Total data set size ca. 560k words. Consists of the Greek data from [PerseusDL](
 -->
 
 # Citations
-If you use BabyLemmatizer for annotating your data or training new models, please cite [Sahala et al. 2022](http://hdl.handle.net/10138/348412).
+If you use BabyLemmatizer for annotating your data or training new models, please cite the following 2023 paper:
 
 ```
 @inproceedings{sahala2023babylemmatizer,
