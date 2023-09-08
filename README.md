@@ -17,7 +17,7 @@ BabyLemmatizer approaches POS-tagging and lemmatization as a Machine Translation
 | pu-uṭ-ri | paṭāru | V |
 
 # Requirements
-1. [OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)
+1. [OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py) (tested to work withv version 3.0.3)
 2. Python 3.6+ (for BabyLemmatizer and 3.9 for OpenNMT virtual environment)
 
 BabyLemmatizer has been tested with Python 3.9 and OpenNMT-py 3.0.
@@ -34,7 +34,7 @@ The easiest way to get BabyLemmatizer running is to create a Python 3.9 virtual 
 Then you need to clone the **BabyLemmatizer** repository and edit ```preferences.py``` to add paths to the virtual environment and OpenNMT binaries. 
 
 ```
-python_path = '/yourpath/OpenNMT/bin/' (I use version 3.0.3)
+python_path = '/yourpath/OpenNMT/bin/'
 onmt_path = '/yourpath/OpenNMT/lib/python3.9/site-packages/onmt/bin'
 ``` 
 
