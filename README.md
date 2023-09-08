@@ -25,10 +25,11 @@ BabyLemmatizer has been tested with Python 3.9 and OpenNMT-py 3.0.
 # Setting up BabyLemmatizer
 The easiest way to get BabyLemmatizer running is to create a Python 3.9 virtual environment for OpenNMT-py. This ensures that you have permanently all necessary requirements installed and they do not conflict with your other libraries. This is fairly simple to do:
 
-1. ```python3.9 -m venv OpenNMT```
-2. ```source OpenNMT/bin/activate```
-3. ```pip install --upgrade pip```
-4. ```pip install OpenNMT-py```
+1. make a directory and go there (you need to use this path later)
+2. ```python3.9 -m venv OpenNMT```
+3. ```source OpenNMT/bin/activate```
+4. ```pip install --upgrade pip```
+5. ```pip install OpenNMT-py```
 
 Then you need to clone the **BabyLemmatizer** repository and edit ```preferences.py``` to add paths to the virtual environment and OpenNMT binaries. 
 
