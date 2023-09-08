@@ -49,7 +49,7 @@ Crucial fields are ```FORM``` that contains *transliteration* and ```LEMMA``` th
 | **FORM** | Transliteration |
 | **LEMMA** | Lemma (dictionary form) of the word |
 | UPOS | UD Part-of-speech tag, for now always underscore _ |
-| **XPOS** | Oracc part-of-speech tag |
+| **XPOS** | Oracc part-of-speech tag. ***NOTE that if you are using UD corpora, the models predict what's in the XPOS field only, now what's in the UPOS!*** |
 | FEATS | Morphological feats, for now always underscore _ |
 | HEAD | Dependency stuff, 0 for the first word of the unit, otherwise 1 |
 | DEPREL | Dependency stuff, root for the first word of the unit, otherwise child |
