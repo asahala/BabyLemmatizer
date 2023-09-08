@@ -38,7 +38,7 @@ python_path = '/yourpath/OpenNMT/bin/'
 onmt_path = '/yourpath/OpenNMT/lib/python3.9/site-packages/onmt/bin'
 ``` 
 
-Now you can run ```preferences.py``` and if lots of OpenNMT documentation prints on your screen, everything should be okay.
+Now you can run ```preferences.py``` and if lots of OpenNMT documentation prints on your screen, everything should be okay. Note that you need Python 3.9 ONLY for the virtual environment! BabyLemmatizer scripts work with Python 3.6+.
 
 # Pretrained models
 Following pretrained models are available for version 2.1 (and newer): [Sumerian](https://huggingface.co/asahala/BabyLemmatizer-Sumerian) (includes two sub-models: literary and administrative), [Neo-Assyrian](https://huggingface.co/asahala/BabyLemmatizer-Neo-Assyrian), [Middle Assyrian](https://huggingface.co/asahala/BabyLemmatizer-Middle-Assyrian) (augmented model), [First Millennium Babylonian](https://huggingface.co/asahala/BabyLemmatizer-Babylonian-1st) (Late and Neo-Babylonian, Standard Babylonian), [Second Millennium Babylonian](https://huggingface.co/asahala/BabyLemmatizer-Babylonian-2nd) (e.g. Middle Babylonian), [Urartian](https://huggingface.co/asahala/BabyLemmatizer-Urartian), [Latin](https://huggingface.co/asahala/BabyLemmatizer-Latin) (demo), [Ancient Greek](https://huggingface.co/asahala/BabyLemmatizer-Greek) (demo).
