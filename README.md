@@ -215,16 +215,20 @@ In order of priority:
 
 
 # Todo
-* [DONE] --lemmatize to work with conlluplus
+* Simplify commandline parameters, --lemmatize is a bit illogical now
+* Make filepaths and star expressions more robust
+* Fix missing = causing problems
+<!--* [DONE] --lemmatize to work with conlluplus-->
 * conf score-wise evaluation
-* [DONE] lemmatization cycle as automatic as possible
+<!--* [DONE] lemmatization cycle as automatic as possible
 * [DONE] write-protected fields
-* [DONE] model versioning
+* [DONE] model versioning-->
 * global __version__ and logger
-* [DONE but needs CMD params] adjustable context window
-* [DONE] normalize function for conlluplus
-* data splitter for conlluplus
+<!--* [DONE but needs CMD params] adjustable context window
+* [DONE] normalize function for conlluplus-->
 * [DONE] force determinative capitalization for train data
+* publish data splitter for conlluplus
+* make data merger and augmentation scripts public
 * remove unused code
 * Oracc guideword field for conllu+
 
