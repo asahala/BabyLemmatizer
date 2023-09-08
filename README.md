@@ -105,7 +105,9 @@ GENERAL PARAMETERS (use only one)
 --build-train=<arg>            Builds data and trains a model or models
 --evaluate=<arg>               Evaluates and cross-validates your model or models
 --evaluate-fast=<arg>          Rerun evaluation without running POS-tagger and lemmatizer
-                               (only post-corrections are applied, useful if you want to tweak the override lexicon)
+                               (only post-corrections are applied, useful if you want to tweak the override lexicon
+                                or if you just want to quickly see the evaluation results of your model again.
+                                You must run --evaluate at least once for you model before using --evaluate-fast)
 
 PATH AND OPTIONS
 --use-cpu                      Use CPU instead of GPU (read more below)
