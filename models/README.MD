@@ -1,11 +1,5 @@
-# Models for BabyLemmatizer 2.0
+# Models for BabyLemmatizer
 
-Download pretrained models from [...] 
+Following pretrained models are available for version 2.1 (and newer): [Sumerian](https://huggingface.co/asahala/BabyLemmatizer-Sumerian) (includes two sub-models: literary and administrative), [Neo-Assyrian](https://huggingface.co/asahala/BabyLemmatizer-Neo-Assyrian), [Middle Assyrian](https://huggingface.co/asahala/BabyLemmatizer-Middle-Assyrian) (augmented model), [First Millennium Babylonian](https://huggingface.co/asahala/BabyLemmatizer-Babylonian-1st) (Late and Neo-Babylonian, Standard Babylonian), [Second Millennium Babylonian](https://huggingface.co/asahala/BabyLemmatizer-Babylonian-2nd) (e.g. Middle Babylonian), [Urartian](https://huggingface.co/asahala/BabyLemmatizer-Urartian), [Latin](https://huggingface.co/asahala/BabyLemmatizer-Latin) (demo), [Ancient Greek](https://huggingface.co/asahala/BabyLemmatizer-Greek) (demo).
 
-## Upcoming models in order of priority
-* 1st Millennium Babylonian
-* Assyrian (Old/Middle/Neo)
-* Babylonian
-* Sumerian
-* Hurrian
-* Ancient Greek
+To use these models, clone or download the repository you want and extract the ```.tar.gz``` file, e.g. ```tar -xf sumerian-lit.tar.gz``` to the models directory. You can rerun the evaluation with ```python babylemmatizer.py --evaluate=sumerian-lit```. If you want to use custom model path, see command-line parameters how to specify it. To lemmatize a text, see instructions later in this file and the [User Manual](https://docs.google.com/document/d/1j11N2bsIEcuZpAzJP1wmVaWrsjd0ml3HF7K-PK0AXdQ/).
