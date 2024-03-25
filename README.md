@@ -35,7 +35,7 @@ Then you need to clone the **BabyLemmatizer** repository and edit ```preferences
 
 ```
 python_path = '/yourpath/OpenNMT/bin/'
-onmt_path = '/yourpath/OpenNMT/lib/python3.9/site-packages/onmt/bin'
+onmt_path = '/yourpath/OpenNMT/lib/python3.9/site-packages/onmt/bin/'
 ``` 
 
 Now you can run ```preferences.py``` and if lots of OpenNMT documentation prints on your screen, everything should be okay. 
