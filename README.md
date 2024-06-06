@@ -1,5 +1,7 @@
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/lemmatizer2.png)
 
+**2024-06-06: there's a weird randomly occurring bug that can cause post-processed results to be significantly force than the neural net output. I'm currently fixing this issue. It's useful to compare a few first lines of output_nn and output_pp CoNLL-U files before taking the _pp file as better for granted.**
+
 # BabyLemmatizer 2.1
 State-of-the-art neural part-of-speech-tagger and lemmatizer finetuned for Cuneiform languages such as Akkadian, Sumerian and Urartian. BabyLemmatizer models also exist for other ancient languages such as Ancient Greek. 
 
