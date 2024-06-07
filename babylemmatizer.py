@@ -96,6 +96,8 @@ if __name__ == "__main__":
             *models)
     elif args.build_train:
         Tokenizer.setting = args.tokenizer
+        Context.lemmatizer_context = args.lemmatizer_context
+        Context.tagger_context = args.tagger_context        
         models = parse_prefix(args.build_train, build=True)
         train_pipeline.build_train_data(
             *models)
