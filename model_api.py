@@ -1,5 +1,5 @@
 import os
-from preferences import python_path, onmt_path
+from preferences import python_path, onmt_path, Context
 #import conllutools as ct
 import preprocessing as PP
 
@@ -68,8 +68,11 @@ def merge_tags(neural_net_output, conllu_object, output_file, field, fieldctx):
     annotations = read_results(neural_net_output)
     conllu_object.update_value(field, annotations)
 
+    contexts = {'xpos': Context.lemmatizer_context,
+                'form': Context.tagger_context}
+    
     if fieldctx is not None:
-        ctx_annotations = conllu_object.get_contexts(field)
+        ctx_annotations = conllu_object.get_contexts(field, size=contexts[field])
         conllu_object.update_value(fieldctx, ctx_annotations)
 
     if output_file is not None and fieldctx is not None:

@@ -7,7 +7,7 @@ import shutil
 import conlluplus
 import preprocessing as pp
 import model_api
-from preferences import Paths, Tokenizer
+from preferences import Paths, Tokenizer, Context
 import postprocess
 
 info = """===========================================================
@@ -26,7 +26,7 @@ def io(message):
     print(f'> {message}')
 
 ## TODO: READ context settigns from MODEL!"!!!!
-CONTEXT = 1
+#CONTEXT = Context.pos_context
 
 class Lemmatizer:
 
@@ -68,7 +68,7 @@ class Lemmatizer:
     def preprocess_source(self):
         
         self.source_file.normalize()
-        formctx = self.source_file.get_contexts('form')
+        formctx = self.source_file.get_contexts('form', size=Context.tagger_context)
         self.source_file.update_value('formctx', formctx)
         
         with open(self.tagger_input, 'w', encoding='utf-8') as pos_src,\
@@ -76,7 +76,7 @@ class Lemmatizer:
             io(f'Generating input data for neural net {self.input_file}')
             for id_, form, formctx in self.source_file.get_contents('id', 'form', 'formctx'):
                 pos_src.write(
-                    pp.make_tagger_src(formctx, context=CONTEXT) + '\n')
+                    pp.make_tagger_src(formctx, context=Context.tagger_context) + '\n')
                 wf.write(pp.get_chars(form + '\n'))
                 self.line_count += 1
                 if id_ == '1':
@@ -105,6 +105,7 @@ class Lemmatizer:
 
         """ Read Tokenizer Preferences """
         Tokenizer.read(model_name)
+        Context.read(model_name)
         
         """ Update model override """
         self.update_model(model_name)
@@ -112,7 +113,7 @@ class Lemmatizer:
         """ Load and normalize source CoNLL-U+ file """
         self.source_file = conlluplus.ConlluPlus(
             self.input_file, validate=False)
-                
+        
         """ Backup for write-protected fields """
         pp_file = self.input_file.replace('.conllu', '_pp.conllu')
         if os.path.isfile(pp_file):
@@ -172,8 +173,8 @@ class Lemmatizer:
             model_name = model_name)
 
         P.initialize_scores()
-        P.fill_unambiguous(threshold = 0.7)
-        P.disambiguate_by_pos_context(threshold = 0.7)
+        P.fill_unambiguous(threshold = 0.6)
+        P.disambiguate_by_pos_context(threshold = 0.6)
         P.apply_override()
         
         if self.ignore_numbers:
@@ -182,15 +183,15 @@ class Lemmatizer:
         """ Temporary field cleanup """
         self.source_file.force_value('xposctx', '_')
         self.source_file.force_value('formctx', '_')
-
+        
         self.source_file.write_file(
             self.input_file.replace('.conllu', '_pp.conllu'), add_info=True)
 
         """ Merge backup """
         print('> Merging manual corrections')
-        if is_backup:
-            conlluplus.merge_backup(self.backup_file, pp_file)
-        
+        #if is_backup:
+        #    conlluplus.merge_backup(self.backup_file, pp_file)
+            
         """ Write lemmalists """
         self.source_file.make_lemmalists()
         

@@ -9,7 +9,7 @@ from collections import defaultdict
 from collections import Counter
 from command_parser import parse_prefix
 from postcorrect import pipeline as PP
-from preferences import Paths, Tokenizer
+from preferences import Paths, Tokenizer, Context
 import postprocess
 import model_api
 import conllutools
@@ -301,6 +301,7 @@ def pipeline(*models, cpu=False, fast=False):
         
         """ Load Tokenizer preferences """
         Tokenizer.read(model)                
+        Context.read(model)
         
         """ Intermediate files """
         tagger_output = 'output_tagger.txt'
@@ -378,7 +379,7 @@ def pipeline(*models, cpu=False, fast=False):
             this_data.update_value('lemma', lemmas)
 
             """ Add XPOS context field based on predictions """
-            this_data.update_value('xposctx', this_data.get_contexts('xpos', size=1))
+            this_data.update_value('xposctx', this_data.get_contexts('xpos', size=Context.tagger_context))
         
         #""" Force 0.0 confidence scores """
         #this_data.force_value(field='score', value=str(0.0))

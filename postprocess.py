@@ -129,6 +129,7 @@ class Postprocessor:
 
         _dict = {}
         for form, lemma, xpos in override.get_contents('form', 'lemma', 'xpos'):
+            #form = form.strip('*') # remove stars
             _dict[form] = {'lemma': lemma, 'xpos': xpos}
             
         # aa override ja ylikirjoita jokainen form overriden lemma + pos kombolla

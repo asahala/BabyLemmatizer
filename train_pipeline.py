@@ -7,7 +7,7 @@ import math
 import shutil
 import re
 from collections import defaultdict
-from preferences import python_path, onmt_path, Paths, Tokenizer, __version__
+from preferences import python_path, onmt_path, Paths, Tokenizer, Context, __version__
 from command_parser import parse_prefix, split_train_filename
 import preprocessing as PP
 import conllutools
@@ -162,7 +162,7 @@ def _make_training_data(filename):
     prefix is arbitrary identifier and suffix `dev`, `test`,
     or `train` depending on which set the data belongs. """
 
-    context = 2
+    #context = Context.pos_context
     
     """ Create required folder structures for the model """
     orig_fn = os.path.split(filename)[-1]
@@ -194,6 +194,8 @@ def _make_training_data(filename):
     with open(os.path.join(Paths.models, prefix, 'config.yaml'), 'w', encoding='utf-8') as conffile:
         conffile.write(f'## Built with version {__version__}\n')
         conffile.write(f'tokenizer: {Tokenizer.setting}\n')
+        conffile.write(f'tagger_context: {Context.tagger_context}\n')
+        conffile.write(f'lemmatizer_context: {Context.lemmatizer_context}\n')
     
     """ Load CoNLL-U+ file """
     this_data = conlluplus.ConlluPlus(filename)
@@ -209,11 +211,11 @@ def _make_training_data(filename):
     #for src_field, tgt_field in ('xpos', 'xposctx'):
     this_data.update_value(
             field = 'xposctx',
-            values = this_data.get_contexts('xpos', size=1))
+            values = this_data.get_contexts('xpos', size=Context.lemmatizer_context))
 
     this_data.update_value(
             field = 'formctx',
-            values = this_data.get_contexts('form', size=context))
+            values = this_data.get_contexts('form', size=Context.tagger_context))
     
 
     """ Create override file """
@@ -249,7 +251,7 @@ def _make_training_data(filename):
         fields = ('form', 'lemma', 'xpos', 'formctx', 'xposctx')
         for data in this_data.get_contents(*fields):
             form, lemma, xpos, formctx, xposctx = data
-            pos_src.write(PP.make_tagger_src(formctx, context=context) + '\n')
+            pos_src.write(PP.make_tagger_src(formctx, context=Context.tagger_context) + '\n')
             pos_tgt.write(xpos + '\n')
             lem_src.write(PP.make_lem_src(form, xposctx) + '\n')
             lem_tgt.write(PP.get_chars_lemma(lemma) + '\n')

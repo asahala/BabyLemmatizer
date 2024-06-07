@@ -42,7 +42,9 @@ def remove_brackets(xlit):
     
 @lru_cache(maxsize=256)
 def reformat(sign):
-    """ Reformat cuneiform input """ 
+    """ Reformat cuneiform input """
+    sign = sign.replace('*', '') # remove stars
+    
     if sign.upper() == sign:
         return sign
     elif sign.lower() == sign:
@@ -78,6 +80,9 @@ def get_chars(xlit):
         return ' '.join(list(xlit))
 
     #return ' '.join(list(xlit))
+    ## TODO MAKE THESE OPTIONAL
+    xlit = xlit.replace('*', '')
+    xlit = xlit.replace('{d}+', '{d}')
 
     xlit = uppercase_determinatives(xlit)
     signs, delimiters = util.unzip_xlit(xlit)
@@ -117,6 +122,7 @@ def get_signs(xlit):
 def clean_traindata(xlit):
     xlit = remove_brackets(xlit)
     xlit = uppercase_determinatives(xlit)
+    #xlit = xlit.replace('{d}+', '{d}')
     xlit = get_chars(xlit)
     return xlit
 

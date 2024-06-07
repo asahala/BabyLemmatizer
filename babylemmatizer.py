@@ -9,7 +9,7 @@ import evaluate_models
 #import conllutools
 import lemmatizer_pipeline
 from command_parser import parse_prefix
-from preferences import Paths, __version__, Tokenizer
+from preferences import Paths, __version__, Tokenizer, Context
 
 div = '‹<>›'*16
 
@@ -19,7 +19,7 @@ f"""
 
    BabyLemmatizer {__version__}
 
-   A. Aleksi Sahala 2023
+   A. Aleksi Sahala 2023-2024
       + https://github.com/asahala
 
    University of Helsinki
@@ -50,6 +50,10 @@ def get_args():
         '--build-train', type=str)
     ap.add_argument(
         '--tokenizer', type=int, default=0)
+    ap.add_argument(
+        '--lemmatizer-context', type=int, default=1)
+    ap.add_argument(
+        '--tagger-context', type=int, default=2)
     ap.add_argument(
         '--normalize-conllu', action='store_true')
     ap.add_argument(
@@ -85,6 +89,8 @@ if __name__ == "__main__":
             *models, cpu=args.use_cpu)
     elif args.build:
         Tokenizer.setting = args.tokenizer
+        Context.lemmatizer_context = args.lemmatizer_context
+        Context.tagger_context = args.tagger_context
         models = parse_prefix(args.build, build=True)
         train_pipeline.build_train_data(
             *models)
