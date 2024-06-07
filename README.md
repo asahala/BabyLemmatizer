@@ -1,8 +1,6 @@
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/lemmatizer2.png)
 
-**2024-06-06: there's a weird randomly occurring bug that can cause post-processed results to be significantly worse than the neural net output. I'm currently fixing this issue. It's useful to compare a few first lines of output_nn and output_pp CoNLL-U files before taking the _pp file as better for granted.**
-
-# BabyLemmatizer 2.1
+# BabyLemmatizer 2.2
 State-of-the-art neural part-of-speech-tagger and lemmatizer finetuned for Cuneiform languages such as Akkadian, Sumerian and Urartian. BabyLemmatizer models also exist for other ancient languages such as Ancient Greek. 
 
 BabyLemmatizer is fully based on OpenNMT, which makes it simpler to use than the previous BabyLemmatizer version that was dependent on an outdated version of TurkuNLP with some problematic dependencies. At its current stage, BabyLemmatizer can be used for part-of-speech tagging and lemmatization of transliterated Akkadian texts. Unlike the old version, BabyLemmatizer uses an unindexed character based representation for syllabic signs and sign-based tokenization for logograms, that maximize its capability to discriminate between predictable and suppletive grapheme to phoneme relations. For network architecture and encoding of the input sequences, see [this description](network.md). For the user manual of BabyLemmatizer, click [here](https://docs.google.com/document/d/1j11N2bsIEcuZpAzJP1wmVaWrsjd0ml3HF7K-PK0AXdQ/).
@@ -114,11 +112,15 @@ GENERAL PARAMETERS (use only one)
 PATH AND OPTIONS
 --use-cpu                      Use CPU instead of GPU (read more below)
 --conllu-path=<arg>            Path where to read CoNLL-U files
---model-path=<arg>             Path where to save/read models  
+--model-path=<arg>             Path where to save/read models
+
+OPTIONAL OPTIONS FOR --build and --build-train
 --tokenizer=<arg>              Select input tokenization type when you use --build or --build-train (default = 0)
                                0 : Partly unindexed logo-syllabic tokenization (Akkadian, Elamite, Hittite, Urartian, Hurrian)
                                1 : Indexed logo-syllabic (Sumerian)
                                2 : Character sequences (Non-cuneiform languages, like Greek, Latin, Sanskrit etc.)
+--lemmatizer-context=<arg>     Number of surrounding XPOS tags used in lemmatization (default = 1)
+--tagger-context=<arg>         Number of surrounding forms used in tagging (default = 2)
 ```
 
 All these parameters have one mandatory argument, which points to the data in your ```conllu``` folder if you are building new data, or to your ```models``` folder if you are training or evaluating models. For example, if you have CoNLL-U files ```assyrian-train.conllu, assyrian-dev.conllu, assyrian-test.conllu``` and want to build data and train models for them, you can call BabyLemmatizer ```python babylemmatizer.py --build-train=assyrian```. In case you want to train several models for n-fold cross-validation, you can have train/dev/test CoNLL-U files with prefixes followed by numbers, e.g. with n=10 ```assyrian0, assyrian1, ..., assyrian9``` and use the command ```python babylemmatizer.py --build-train=assyrian*```. Similarly, to cross-validate these models after training, use ```python babylemmatizer.py --evaluate=assyrian*```.
@@ -244,7 +246,8 @@ If willpower
 * add possibility to use external validation set
 
 # Latest updates
-* 2.1 (2023-09-05): ```--tokenizer``` parameter, models now rembember which tokenization to use if it is defined during --build. Models created in version 2.0 will use logo-syllabic tokenization by default, unless you make a file ```config.txt``` in your model directory (the same place where the yaml files are) and type ```tokenizer=2``` on the first line (see command line parameters for possible values).
+* 2.2 (2024-06-07) ```--lemmatizer-context``` and ```--tagger-context``` parameters can be used to adjust how much context information is taken into account in tagging and lemmatization. These parameters are used only with ```--build``` and ```--build-train``` parameters. These settings are saved in the model's ```config.yaml```.
+* 2.1 (2023-09-05): ```--tokenizer``` parameter, models now rembember which tokenization to use if it is defined during --build. Models created in version 2.0 will use logo-syllabic tokenization by default, unless you make a file ```config.yaml``` in your model directory (the same place where the yaml files are) and type ```tokenizer=2``` on the first line (see command line parameters for possible values).
 
 # Data-openness Disclaimer
 This tool was made possible by open data, namely thousands of work-hours invested in annotating Oracc projects. If you use BabyLemmatizer for your dataset, it is HIGHLY advised that your corpus will be shared openly (e.g. CC-BY SA). Sitting on a corpus does not give it the recognition it could have, if it were distributed openly. Just be sure to publish a paper describing your data to ensure academically valued citations.
