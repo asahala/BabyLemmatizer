@@ -61,7 +61,7 @@ Crucial fields are ```FORM``` that contains *transliteration* and ```LEMMA``` th
 | FORMCTX | Word's context, filled automatically |
 | XPOSCTX | Word's part-of-speech context, filled automatically |
 | **SCORE** | Confidence score of the lemmatization: 0.0 OOV logogram, 1.0 OOV logo-syllabic, 2.0 OOV syllabi, 3.0 ambiguous, 4.0 close-to-unambiguous, 5.0 close-to-unambiguous and exists in a previously known context. |
-| **LOCK** | Write-protection, underscore if the field is not write-protected. If you make manual corrections to the lemmatization, change this value to TRUE to tell the lemmatizer to never touch this word or its annotation again. |
+| **LOCK** | [DISABLED AS OF AUGUST 2024 DUE TO A BUG! DO NOT USE, ALWAYS USE _ IN THIS FIELD] Write-protection, underscore if the field is not write-protected. If you make manual corrections to the lemmatization, change this value to TRUE to tell the lemmatizer to never touch this word or its annotation again. |
 
 # CoNLL-U+ files for training models
 The files **must** be named as follows ```modelname-type.conllu```, where *modelname* is an arbitrary name that describes your model, *type* is either ```train```, ```test``` or ```dev``` depending on the function of your dataset. For example: ```latebabylonian-train.conllu```, ```latebabylonian-dev.conllu``` and ```latebabylonian-test.conllu```. Do not use any special characters in your model names, excluding numbers and underscore.
