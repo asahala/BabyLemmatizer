@@ -219,6 +219,7 @@ In order of priority:
 
 # Bugs
 * If user forgets = between parameter and argument in command line use, things go wrong
+* Conll-u line write protection DOES NOT WORK! Do not use it or you will get weird results (as of August 2024)
 
 
 # Todo
