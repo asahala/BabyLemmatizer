@@ -1,7 +1,5 @@
 ![alt text](https://www.mv.helsinki.fi/home/asahala/img/lemmatizer2.png)
 
-# NOTE: A bug detected in august 2024 that causes potential errors with lemmatiser-pipeline.py. This is being fixed.
-
 # BabyLemmatizer 2.2
 State-of-the-art neural part-of-speech-tagger and lemmatizer finetuned for Cuneiform languages such as Akkadian, Sumerian and Urartian. BabyLemmatizer models also exist for other ancient languages such as Ancient Greek. 
 
