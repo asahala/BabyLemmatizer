@@ -1,10 +1,11 @@
 import time
 import re
 import os
+import sys
 from collections import defaultdict
+from preferences import __version__
 import preprocessing as PP
 import cuneiformtools.tests as tests
-from preferences import __version__
 
 """ ============================================================
 
@@ -93,21 +94,21 @@ def sort_dict(dictionary):
 
 def merge_backup(backup_file, pp_file):
     with open(pp_file, 'r', encoding='utf-8') as f:
-        pp = [x for x in f.read().splitlines() if x and not x.startswith('#')]
+        pp = f.read().splitlines()
     
     with open(backup_file, 'r', encoding='utf-8') as f,\
-         open(pp_file+'2', 'w', encoding='utf-8') as f_o:
+         open(pp_file, 'w', encoding='utf-8') as f_o:
         for line in f.read().splitlines():
-            if line and not line.startswith('#'):
-                pp_line = pp.pop(0)
-                #print(pp_line)
-                #print(line.split('\t'))
-                if line.split('\t')[-1] == '_':
+            pp_line = pp.pop(0)
+            if not line:
+                f_o.write(line + '\n')
+            elif line.startswith('#'):
+                f_o.write(line + '\n')
+            else:
+                if line.split('\t')[-1] != '_':
                     f_o.write(line + '\n')
                 else:
-                    f_o.write(pp_line + '\n')
-            else:
-                f_o.write(line + '\n')
+                    f_o.write(line + '\n')
     
                         
 class LemmaDict:
@@ -255,7 +256,7 @@ class ConlluPlus:
                            .split(LDICT_SEP)
                 
                 if len(line) != 4:
-                    print(f'ärör {e}')
+                    print(f'Corrupted file: {filename} at line {e}')
                     sys.exit(0)
 
                 _, form, lemma, xpos = line
@@ -297,6 +298,9 @@ class ConlluPlus:
                     if len(line) < LAST_FIELD:
                         line.extend(['_'] * (LAST_FIELD - len(line) + 1))
 
+                    # DELETE LOCK
+                    line[-1] = '_'
+                    
                     """ Fix empty elements """
                     if '' in set(line):
                         print(f'> ERROR: Empty field at line {e} -> '\
@@ -335,8 +339,6 @@ class ConlluPlus:
         """ Compiles and writes a CoNLL-U+ file
         :param filename        filename
         :type filename         str / path  """
-
-        # temporary fix
 
         print(f'> Writing {filename}')
         with open(filename, 'w', encoding='utf-8') as f:
@@ -440,15 +442,17 @@ class ConlluPlus:
         def update(sent):
             if sent[LOCK] != '_':
                 return sent
-
-            #print(list(values))
-            try:
-                vals = next(values)
-            except:
-                pass
+            #print(sent)
+            #try:
+            vals = next(values)
+            #print(vals, sent[:5])
+            #except StopIteration:
+            #    vals = ''
                 
             if isinstance(vals, (tuple, list)):
                 vals = '|'.join(vals)
+
+            #if vals:
             sent[FIELDS[field]] = str(vals)
             #else:
             #    vals = next(values)
@@ -458,7 +462,6 @@ class ConlluPlus:
             #        sent[FIELDS[field]] = str(vals)
                 
             return sent
-
         self.data = [(comments, [update(sent) for sent in sents])
                      for comments, sents in self.data]
 
@@ -477,7 +480,7 @@ class ConlluPlus:
 
     def remove_unannotated(self, sent):
         pass
-
+    
 
     def normalize(self, is_traindata=False):
         """ Run all normalizations for lemmatization and 
@@ -566,28 +569,15 @@ class ConlluPlus:
     def unlemmatize(self, numbers=True):
         """ Remove lemmatization from numerals """
 
-        #if numbers:
-        #    print('> Removing lemmatizations of numbers')
-
-        self.comments_removed = 0
+        if numbers:
+            print('> Removing lemmatizations of numbers')
+        
         self.nums_removed = 0
         self.lacunae_removed = 0
-        self.stars_removed = 0
-
         def update(sent):
             if sent[LOCK] != '_':
                 return sent
 
-            if sent[FORM] == '*':
-                sent[LEMMA] = '_'
-                sent[XPOS] = '_'
-                self.stars_removed += 1                       
-            
-            if sent[FORM].startswith('($'):
-                sent[LEMMA] = '_'
-                sent[XPOS] = '_'
-                self.comments_removed += 1
-            
             field_type = tests.is_numeral(sent[FORM])
             if field_type:
                 self.nums_removed += 1
@@ -595,7 +585,7 @@ class ConlluPlus:
                 sent[XPOS] = 'n'
                 sent[MISC] = field_type
                 sent[SCORE] = '_'
-                
+
             lacuna_type = tests.is_lacuna(sent[FORM])
             if lacuna_type:
                 self.lacunae_removed += 1
@@ -613,12 +603,7 @@ class ConlluPlus:
             print(f'  + {self.nums_removed} numbers flattened')
         if self.lacunae_removed:
             print(f'  + {self.lacunae_removed} lacunae flattened')
-        if self.comments_removed:
-            print(f'  + {self.comments_removed} comments flattened')
-        if self.stars_removed:
-            print(f'  + {self.stars_removed} stars flattened')
-                        
-            
+
 
 if __name__ == "__main__":
     #y = ConlluPlus('achemenet/achemenet-murashu.conllu', validate=False)
@@ -628,13 +613,10 @@ if __name__ == "__main__":
     #for l in x.get_contents():
     #    print('NEW\t', l)
 
-    #y = ConlluPlus('everling/EverlingNB_pp.conllu', validate=False)
+    y = ConlluPlus('everling/EverlingNB_pp.conllu', validate=False)
     #y.read_corrections('input/test_pp_10.tsv')
     #for x in y.get_contents():
     #    print(x)
     #merge_backup('demo/backup.conllu', 'demo/enuma_pp.conllu')                   
-    # x = y.get_contexts('form')
-    #print(x)
-    bfile = '/projappl/project_2001876/babylemmatizer/achemenet202405/backup_yos7.conllu'
-    cfile = '/projappl/project_2001876/babylemmatizer/achemenet202405/yos7_nn.conllu'
-    merge_backup(bfile, cfile)
+    x = y.get_contexts('form')
+    print(x)
