@@ -6,7 +6,7 @@ State-of-the-art neural part-of-speech-tagger and lemmatizer finetuned for Cunei
 BabyLemmatizer is fully based on OpenNMT, which makes it simpler to use than the previous BabyLemmatizer version that was dependent on an outdated version of TurkuNLP with some problematic dependencies. At its current stage, BabyLemmatizer can be used for part-of-speech tagging and lemmatization of transliterated Akkadian texts. Unlike the old version, BabyLemmatizer uses an unindexed character based representation for syllabic signs and sign-based tokenization for logograms, that maximize its capability to discriminate between predictable and suppletive grapheme to phoneme relations. For network architecture and encoding of the input sequences, see [this description](network.md). For the user manual of BabyLemmatizer, click [here](https://docs.google.com/document/d/1j11N2bsIEcuZpAzJP1wmVaWrsjd0ml3HF7K-PK0AXdQ/).
 
 ### Brief description
-BabyLemmatizer approaches POS-tagging and lemmatization as a Machine Translation task. It features a POS-tagger and lemmatizer that combine strengths of encoder-decoder neural networks (i.e. predicting analyses for unseen word forms), and (at the moment very slightly) statistical and heuristic dictionary-based methods to post-correct and score the reliability of the annotations. BabyLemmatizer is useful for making Akkadian texts searchable and useable for other Natural Language Processing tasks, such as building [Word Embeddings](https://github.com/asahala/pmi-embeddings), as transliterated texts are practically impossible to use efficiently due to orthographic and morphological complexity of the language.
+BabyLemmatizer approaches POS-tagging and lemmatization as a Machine Translation (i.e. a sequence-to-sequence) task. It features a POS-tagger and lemmatizer that combine strengths of encoder-decoder neural networks (i.e. predicting analyses for unseen word forms), and (at the moment very slightly) statistical and heuristic dictionary-based methods to post-correct and score the reliability of the annotations. BabyLemmatizer is useful for making Akkadian texts searchable and useable for other Natural Language Processing tasks, such as building [Word Embeddings](https://github.com/asahala/pmi-embeddings), as transliterated texts are practically impossible to use efficiently due to orthographic and morphological complexity of the language.
 
 |***Transliteration*** | ***Lemma*** | ***POS-tag*** |
 | --- | --- | --- |
@@ -21,6 +21,8 @@ BabyLemmatizer approaches POS-tagging and lemmatization as a Machine Translation
 2. [Python 3.9+](https://www.python.org/downloads/)
 
 BabyLemmatizer has been tested with Python 3.9 and OpenNMT-py 3.2.0 and it's highly recommended to use these versions for the virtual environment. **Versions other than 3.2.0 of OpenNMT might cause unexpected crashes.** See instructions below for installing the supported version.
+
+Note that OpenNMT might fail to install older PyTorch versions as of 2025!
 
 # Setting up BabyLemmatizer
 The easiest way to get BabyLemmatizer running is to create a Python 3.9 virtual environment for OpenNMT-py. This ensures that you have permanently all necessary requirements installed and they do not conflict with your other libraries. This is fairly simple to do:
