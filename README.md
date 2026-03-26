@@ -221,8 +221,8 @@ In order of priority:
 
 # Bugs
 * If user forgets = between parameter and argument in command line use, things go wrong
-* Conll-u line write protection DOES NOT WORK! Do not use it or you will get weird results (as of August 2024)
-
+* CoNLL-U line write protection DOES NOT WORK! Do not use it or you will get weird results (as of August 2024)
+* CoNLL-U files with Byte Order Marker (BOM) crash the lemmatizer. Make sure they are not present.
 
 # Todo
 * Simplify commandline parameters, --lemmatize is a bit illogical now
