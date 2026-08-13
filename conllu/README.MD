@@ -1,7 +1,7 @@
 # Input data format
 Input data format must follow [Oracc conventions](http://oracc.museum.upenn.edu/doc/help/languages/akkadian/akkadianstylesheet/index.html). If you have your transliteration in any other notation, you must convert it into Oracc notation. BabyLemmatizer automatically normalizes transliterations to a certain extent:
 
-1. Accented and numeric indexation is converted into subscripts.
+1. Accented and numeric indexing is converted into subscripts.
 2. Brackets, question marks etc. indicating lacunae are removed.
 3. Determinatives are lowercased as long as they are wrapped between curly brackets.
 4. Character ḫ is normalized into h.
