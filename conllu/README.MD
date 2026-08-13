@@ -58,8 +58,8 @@ Crucial fields are ```FORM``` that contains *transliteration* and ```LEMMA``` th
 | DEPS | Always underscore _ |
 | MISC | Arbitrary information |
 | ENG | English translation of the word if available |
-| NORM | Normalization (phonological transcription of the word) if available |
-| LANG | Word's language, for now always underscore _ |
+| NORM | Normalization (phonological transcription of the word) if available. For training transcribers, one must, however, currently replace the lemma field with transcriptions in BabyLemmatizer. This will be fixed in the future versions. |
+| LANG | Word's language. BabyLemmatizer does not use this field for now. |
 | FORMCTX | Word's context, filled automatically |
 | XPOSCTX | Word's part-of-speech context, filled automatically |
 | **SCORE** | Confidence score of the lemmatization: 0.0 OOV logogram, 1.0 OOV logo-syllabic, 2.0 OOV syllabi, 3.0 ambiguous, 4.0 close-to-unambiguous, 5.0 close-to-unambiguous and exists in a previously known context. |
