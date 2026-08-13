@@ -43,6 +43,8 @@ ConLL-U+ files must not contain BOM. Otherwise the lemmatizezr will crash.
 # BabyLemmatizer CoNLL-U+ file format description
 CoNLL-U is a standardized format used by the Universal Dependencies [Universal Dependencies website](https://universaldependencies.org/format.html). In short, it is a word-per-line format closely related to TSV (Tab Separated Columns) and VRT (VeRticalized Text). BabyLemmatizer uses an extended CoNLL-U format known as CoNLL-U+. Each segment (e.g. line, sentence, text, whichever you prefer) is separated by an empty line, and each line of text data consists of 10 tab-separated standard CoNLL-U fields: ```ID, FORM, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC``` and seven additional fields for extra information ```ENG, NORM, LANG, FORMCTX, XPOSCTX, SCORE, LOCK```. The fields are explained in the table below. The most important fields have been bolded.
 
+In case you want to have metadata for the whole text (or the segment, that is sentence, phrase etc), you can do it with comment lines using a leading hash symbol, e.g. ```# Text_id = P447993 | Genre = Lexical ``` etc. You may add an arbitrary number of these lines between each segment as long as there is one empty line between the end of the previous segment and the comment line.
+
 Crucial fields are ```FORM``` that contains *transliteration* and ```LEMMA``` that contains the lemma. **Note that CoNLL-U always ends with and empty line.**
 
 | Field | Description |
