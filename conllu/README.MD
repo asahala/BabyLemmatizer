@@ -51,7 +51,7 @@ Crucial fields are ```FORM``` that contains *transliteration* and ```LEMMA``` th
 | **FORM** | Transliteration |
 | **LEMMA** | Lemma (dictionary form) of the word |
 | UPOS | UD Part-of-speech tag, for now always underscore _ |
-| **XPOS** | Oracc part-of-speech tag. ***NOTE that if you are using UD corpora, the models predict what's in the XPOS field only, now what's in the UPOS!*** This will be changed in the future in a way that he model will predict both, UPOS and XPOS. |
+| **XPOS** | Oracc part-of-speech tag. ***NOTE that if you are using any Universal Dependencies corpora, BabyLemmatizer predicts what's in the XPOS field only and ignores the UPOS field. So you will have to copy the UPOS field into the XPOS field if the latter is empty in your file.***  |
 | FEATS | Morphological feats, for now always underscore _ |
 | HEAD | Dependency stuff, 0 for the first word of the unit, otherwise 1 |
 | DEPREL | Dependency stuff, root for the first word of the unit, otherwise child |
